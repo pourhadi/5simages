@@ -10,16 +10,6 @@ const prismaClientSingleton = () => {
       db: {
         url: process.env.DATABASE_URL,
       },
-    },
-    // Add PostgreSQL connection options
-    // @ts-expect-error - The typing for this is not available in the public types
-    // but it is supported by Prisma
-    engineConfig: {
-      postgres: {
-        // Only allow one connection to perform queries with a specific prepared statement
-        // This helps prevent the error: "prepared statement xxxx already exists"
-        prepared_statement_cache_size: 0
-      }
     }
   })
 }
