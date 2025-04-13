@@ -1,11 +1,22 @@
 import Stripe from 'stripe';
 
-// Initialize Stripe with API key from environment variables
+// Check if the Stripe secret key is available in the environment
 if (!process.env.STRIPE_SECRET_KEY) {
   console.warn('STRIPE_SECRET_KEY is not defined. Stripe integration will not work.');
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+// Initialize Stripe with API key from environment variables and explicit API version
+export const stripe = new Stripe(
+  process.env.STRIPE_SECRET_KEY || 'test_key_for_development_only', 
+  {
+    // @ts-expect-error - TypeScript doesn't have updated API versions
+    apiVersion: '2025-03-31', // Using the latest API version
+    appInfo: {
+      name: 'I2V App',
+      version: '1.0.0',
+    },
+  }
+);
 
 // Credit package options
 export const CREDIT_PACKAGES = [
@@ -23,11 +34,22 @@ export async function createCheckoutSession(
   packageId: string
 ): Promise<{ url: string } | { error: string }> {
   try {
+    // Check if Stripe is properly configured
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return { error: 'Stripe is not configured. Please add STRIPE_SECRET_KEY to your environment.' };
+    }
+
     // Find the selected credit package
     const creditPackage = CREDIT_PACKAGES.find(pkg => pkg.id === packageId);
     if (!creditPackage) {
       return { error: 'Invalid package selected' };
     }
+
+    // Make sure APP_URL is configured
+    if (!process.env.NEXT_PUBLIC_APP_URL) {
+      console.warn('NEXT_PUBLIC_APP_URL is not configured. Using fallback URL.');
+    }
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
     // Create a Stripe checkout session
     const session = await stripe.checkout.sessions.create({
@@ -46,8 +68,8 @@ export async function createCheckoutSession(
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/credits/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/credits/cancel`,
+      success_url: `${baseUrl}/credits/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/credits/cancel`,
       customer_email: userEmail,
       metadata: {
         userId,
@@ -56,7 +78,11 @@ export async function createCheckoutSession(
       },
     });
 
-    return { url: session.url || '' };
+    if (!session.url) {
+      return { error: 'Failed to create checkout session URL' };
+    }
+
+    return { url: session.url };
   } catch (error) {
     console.error('Error creating checkout session:', error);
     return { 
@@ -77,6 +103,14 @@ export async function processPaymentSession(sessionId: string): Promise<{
   error?: string 
 }> {
   try {
+    // Check if Stripe is properly configured
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return { 
+        success: false, 
+        error: 'Stripe is not configured. Please add STRIPE_SECRET_KEY to your environment.' 
+      };
+    }
+
     // Retrieve the session to verify payment was successful
     const session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ['payment_intent'],
