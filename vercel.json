@@ -1,5 +1,5 @@
 {
-  "buildCommand": "prisma generate && node prisma/deploy.js && next build",
+  "buildCommand": "prisma generate && prisma migrate deploy && next build",
   "installCommand": "npm install",
   "framework": "nextjs",
   "outputDirectory": ".next"
