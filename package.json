@@ -9,7 +9,7 @@
     "db:migrate:direct": "node prisma/direct-migrate.js",
     "db:migrate:create": "node prisma/create-migration.js",
     "db:seed": "node prisma/seed.js",
-    "build": "DATABASE_URL=\"postgresql://\" prisma generate && npm run db:migrate:direct && npm run db:seed && next build",
+    "build": "DATABASE_URL=\"postgresql://\" prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "DATABASE_URL=\"postgresql://\" prisma generate"
