@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
+    "db:migrate": "node prisma/deploy.js",
+    "db:migrate:create": "node prisma/create-migration.js",
+    "build": "prisma generate && npm run db:migrate && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
