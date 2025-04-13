@@ -31,7 +31,7 @@ const setupBuckets = async () => {
     // 1. Create images bucket (user uploads, private by default)
     const { error: imagesError } = await supabase.storage.createBucket(STORAGE_BUCKETS.IMAGES, {
       public: false, // Prevent public access by default
-      fileSizeLimit: 10485760, // 10MB limit
+      fileSizeLimit: 5242880, // 5MB limit
       allowedMimeTypes: ['image/jpeg', 'image/png', 'image/jpg']
     });
 

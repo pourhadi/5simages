@@ -37,9 +37,9 @@ export async function POST(request: Request) {
     }
     
     // Check file size (5MB max)
-    const MAX_SIZE = 10 * 1024 * 1024; // 5MB
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
     if (file.size > MAX_SIZE) {
-      return NextResponse.json({ error: 'File size exceeds 10MB limit' }, { status: 400 });
+      return NextResponse.json({ error: 'File size exceeds 5MB limit' }, { status: 400 });
     }
     
     // Generate a unique filename
