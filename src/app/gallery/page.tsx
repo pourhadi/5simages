@@ -27,7 +27,7 @@ function LoadingState() {
 
 // Main content component that uses searchParams
 function GalleryContent() {
-  const { status: authStatus } = useSession();
+  const { data: session, status: authStatus } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [videos, setVideos] = useState<Video[]>([]);
@@ -47,6 +47,13 @@ function GalleryContent() {
       fetchVideos();
     }
   }, [authStatus, router]);
+
+  // Update credits whenever session changes
+  useEffect(() => {
+    if (session?.user) {
+      setUserCredits(session.user.credits);
+    }
+  }, [session]);
 
   const fetchUserData = async () => {
     try {

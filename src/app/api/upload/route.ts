@@ -2,20 +2,21 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '@/lib/supabaseClient';
+import { authOptions } from '@/lib/authOptions';
 
 // Get bucket name from environment variables
 const BUCKET_NAME = process.env.NEXT_PUBLIC_SUPABASE_IMAGES_BUCKET_NAME || 'images';
 
 export async function POST(request: Request) {
   try {
-    // Check authentication
-    const session = await getServerSession();
+    // Check authentication with authOptions to properly include user ID
+    const session = await getServerSession(authOptions);
     
-    if (!session?.user?.email) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    // Get current user
+    // Get current user ID
     const userId = session.user.id;
     
     if (!userId) {

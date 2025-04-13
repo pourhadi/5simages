@@ -66,6 +66,8 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.sub as string;
+        
+        // Use token credits instead of querying the database on every session request
         session.user.credits = token.credits as number;
       }
       return session;

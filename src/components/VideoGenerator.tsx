@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import Image from 'next/image';
 import { Upload, ImageIcon, Trash2, RefreshCw, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 // Define a fetcher function for SWR
 const axiosFetcher = (url: string) => axios.get(url).then(res => res.data);
@@ -17,9 +19,22 @@ export default function VideoGenerator() {
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   
-  // Fetch user data including credits
+  // Get credits from both session and API to ensure consistency
+  const { data: session } = useSession();
   const { data: userData, mutate: mutateUser } = useSWR('/api/user', axiosFetcher);
-  const userCredits = userData?.credits || 0;
+  const [userCredits, setUserCredits] = useState(0);
+  
+  // Combine session and API data to get the most up-to-date credits
+  useEffect(() => {
+    // Prefer userData from API if available, fall back to session
+    if (userData?.credits !== undefined) {
+      setUserCredits(userData.credits);
+    } else if (session?.user?.credits !== undefined) {
+      setUserCredits(session.user.credits);
+    }
+  }, [userData, session]);
+
+  const router = useRouter();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -86,6 +101,9 @@ export default function VideoGenerator() {
       
       // Update credits display after successful generation
       mutateUser();
+      
+      // Force router refresh to update all components with new credit value
+      router.refresh();
       
       toast.dismiss('generate');
       toast.success('Video generation started! Check your gallery in a minute.');

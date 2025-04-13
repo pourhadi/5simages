@@ -4,17 +4,25 @@ import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Zap, ChevronRight, LogOut, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Logo from './Logo';
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [credits, setCredits] = useState<number | undefined>(session?.user?.credits);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
-
+  
+  // Update credits from session when it changes
+  useEffect(() => {
+    if (session?.user) {
+      setCredits(session.user.credits);
+    }
+  }, [session]);
+  
   // Don't show navbar on success/cancel pages
   if (pathname?.includes('/credits/success') || pathname?.includes('/credits/cancel')) {
     return null;
@@ -72,7 +80,7 @@ export default function Navbar() {
                 >
                   <Zap size={16} className="text-[#FF7733]" />
                   <span className="text-sm font-medium text-white">
-                    {session.user.credits || 0} credits
+                    {credits || 0} credits
                   </span>
                   <ChevronRight size={14} className="text-gray-400 group-hover:text-white transition-colors" />
                 </Link>
@@ -173,7 +181,7 @@ export default function Navbar() {
                 </div>
                 <div className="ml-auto bg-gray-700 rounded-full px-3 py-1 flex items-center">
                   <Zap size={14} className="text-[#FF7733] mr-1" />
-                  <span className="text-sm font-medium text-white">{session.user.credits || 0}</span>
+                  <span className="text-sm font-medium text-white">{credits || 0}</span>
                 </div>
               </div>
               <div className="mt-3 px-2 space-y-1">
