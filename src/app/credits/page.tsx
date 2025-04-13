@@ -148,7 +148,7 @@ export default function CreditsPage() {
               <li>1 credit = 1 video generation</li>
               <li>Credits never expire</li>
               <li>Payment is processed securely through Stripe</li>
-              <li>We don't store your payment information</li>
+              <li>We don&apos;t store your payment information</li>
             </ul>
           </div>
         </div>

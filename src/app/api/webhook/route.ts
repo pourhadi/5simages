@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stripe, processPaymentSession } from '@/lib/stripe';
 import { prisma } from '@/lib/prisma';
-import { headers } from 'next/headers';
 
 // Stripe webhook handler
 export async function POST(request: Request) {
@@ -9,10 +8,8 @@ export async function POST(request: Request) {
     // Get the request body as text
     const body = await request.text();
     
-    // Get Stripe signature from headers - properly typed for Next.js 15
-    // @ts-expect-error - headers() in Next.js 15 has a different type than what TypeScript expects
-    const headerList = headers();
-    const signature = headerList.get('stripe-signature') || '';
+    // Get Stripe signature directly from request headers
+    const signature = request.headers.get('stripe-signature') || '';
     
     // Verify Stripe webhook signature
     if (!process.env.STRIPE_WEBHOOK_SECRET) {

@@ -3,16 +3,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Initialize Prisma client with specific options to avoid prepared statement conflicts
-const prisma = new PrismaClient({
-  log: ['error', 'warn'],
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
-});
-
 // Define migrations as an array of SQL statements
 const migrations = [
   // Migration 1: Create User table with credits column
@@ -98,45 +88,50 @@ const directMigrations = async () => {
   let successCount = 0;
   let errorCount = 0;
   
-  try {
-    // Use a transaction for the migrations to ensure consistency
-    await prisma.$transaction(async (tx) => {
-      for (let i = 0; i < migrations.length; i++) {
-        try {
-          // Execute the migration within the transaction
-          await tx.$executeRawUnsafe(migrations[i]);
-          console.log(`✅ Migration ${i + 1} successful`);
-          successCount++;
-        } catch (error) {
-          console.error(`❌ Migration ${i + 1} failed: ${error.message}`);
-          
-          // Only abort if it's not a "table already exists" error
-          if (!error.message.includes('already exists')) {
-            errorCount++;
-            throw error; // Rethrow to fail the transaction
-          } else {
-            console.log(`   (Skipping - table already exists)`);
-          }
-        }
-      }
-      
-      console.log(`------------------`);
-      console.log(`Summary:`);
-      console.log(`✅ ${successCount} migrations successful`);
-      console.log(`❌ ${errorCount} migrations failed`);
+  // Create a fresh Prisma client for each migration to avoid prepared statement conflicts
+  for (let i = 0; i < migrations.length; i++) {
+    // Create a new client instance for each migration
+    const singleClient = new PrismaClient({
+      log: ['error', 'warn'],
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
     });
-  } catch (error) {
-    console.error('Transaction failed:', error);
-  } finally {
-    // Always disconnect to prevent connection pool issues
-    await prisma.$disconnect();
+    
+    try {
+      // Execute the migration with this dedicated client
+      await singleClient.$executeRawUnsafe(migrations[i]);
+      console.log(`✅ Migration ${i + 1} successful`);
+      successCount++;
+    } catch (error) {
+      console.error(`❌ Migration ${i + 1} failed: ${error.message}`);
+      
+      // Only report as error if it's not a "table already exists" error
+      if (!error.message.includes('already exists')) {
+        errorCount++;
+      } else {
+        console.log(`   (Skipping - table already exists)`);
+      }
+    } finally {
+      // Disconnect this client before moving to the next migration
+      await singleClient.$disconnect();
+    }
+    
+    // Small delay between migrations
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
+  
+  console.log(`------------------`);
+  console.log(`Summary:`);
+  console.log(`✅ ${successCount} migrations successful`);
+  console.log(`❌ ${errorCount} migrations failed`);
 };
 
 // Execute migrations
 directMigrations()
   .catch(async (e) => {
     console.error(e);
-    await prisma.$disconnect();
     process.exit(1);
   }); 
