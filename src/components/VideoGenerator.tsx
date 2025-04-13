@@ -79,15 +79,20 @@ export default function VideoGenerator() {
     }
     
     setIsGenerating(true);
-    toast.loading('Uploading image...', { id: 'upload' });
+    toast.loading('Uploading image... This may take a minute for larger files.', { id: 'upload' });
     
     try {
       // Create a FormData object to upload the image to Supabase
       const formData = new FormData();
       formData.append('file', selectedImage);
       
-      // Upload image to storage
-      const uploadResponse = await axios.post('/api/upload', formData);
+      // Upload image to storage with increased timeout (60 seconds)
+      const uploadResponse = await axios.post('/api/upload', formData, {
+        timeout: 60000, // 60 seconds timeout
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       const imageUrl = uploadResponse.data.url;
       
       toast.dismiss('upload');
