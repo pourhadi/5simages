@@ -39,5 +39,6 @@ if (process.env.NODE_ENV !== 'production') {
   globalThis.prisma = prisma
 }
 
-// Export prisma instance for use throughout the app
+// Export both as default and named export to support both import styles
+export default prisma
 export { PrismaClient } 

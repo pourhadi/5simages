@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stripe, processPaymentSession } from '@/lib/stripe';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 
 // Stripe webhook handler
 export async function POST(request: Request) {

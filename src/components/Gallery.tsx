@@ -60,7 +60,6 @@ export default function Gallery() {
   const {
     data: userData,
     error: userDataError,
-    mutate: mutateUser
   } = useSWR('/api/user', axiosFetcher);
   
   // User credits (default to 0 if not loaded yet)
