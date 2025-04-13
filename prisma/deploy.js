@@ -10,8 +10,10 @@ async function deployMigrations() {
                        || process.env.VERCEL_ENV === 'production';
     
     console.log(`Running database migrations in ${isProduction ? 'production' : 'preview'} mode`);
-
+    console.log('Database provider:', process.env.DATABASE_URL?.startsWith('postgresql') ? 'PostgreSQL' : 'SQLite');
+    
     // Run migrations
+    console.log('Running prisma migrate deploy...');
     const { stdout: migrateStdout, stderr: migrateStderr } = await execAsync('npx prisma migrate deploy');
     
     console.log('Migration output:', migrateStdout);

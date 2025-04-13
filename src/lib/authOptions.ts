@@ -47,6 +47,11 @@ export const authOptions: AuthOptions = {
         return userWithoutPassword;
       },
     }),
+    // You can add more OAuth providers here in the future
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    // }),
   ],
   debug: process.env.NODE_ENV === "development",
   session: {
@@ -76,6 +81,17 @@ export const authOptions: AuthOptions = {
       }
       return token;
     },
+  },
+  events: {
+    // Ensure all new users get 5 free credits when created
+    createUser: async ({ user }) => {
+      // This is only triggered for OAuth users - Credentials users are handled in the register API
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { credits: 5 }
+      });
+      console.log(`Added 5 free credits to new user: ${user.email}`);
+    }
   },
   pages: {
     signIn: "/login", // Redirect users to /login page for sign in

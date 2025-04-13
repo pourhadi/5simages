@@ -7,7 +7,8 @@
     "dev": "next dev --turbopack",
     "db:migrate": "node prisma/deploy.js",
     "db:migrate:create": "node prisma/create-migration.js",
-    "build": "prisma generate && npm run db:migrate && next build",
+    "db:seed": "node prisma/seed.js",
+    "build": "prisma generate && npm run db:migrate && npm run db:seed && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"

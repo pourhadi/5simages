@@ -22,7 +22,7 @@ model User {
   hashedPassword String?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  credits       Int             @default(0)
+  credits       Int             @default(5)
   accounts      Account[]
   sessions      Session[]
   videos        Video[]
