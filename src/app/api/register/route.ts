@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
 export async function POST(request: Request) {
-  // Create a dedicated client for this request to avoid prepared statement conflicts
-  const prisma = new PrismaClient();
-  
   try {
     const body = await request.json();
     const { email, name, password } = body;
@@ -45,8 +42,5 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("REGISTRATION_ERROR", error);
     return new NextResponse('Internal Error', { status: 500 });
-  } finally {
-    // Always disconnect to release the connection
-    await prisma.$disconnect();
   }
 } 

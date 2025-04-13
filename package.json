@@ -4,15 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "db:migrate": "node prisma/deploy.js",
     "db:migrate:direct": "node prisma/direct-migrate.js",
     "db:migrate:create": "node prisma/create-migration.js",
     "db:seed": "node prisma/seed.js",
-    "build": "DATABASE_URL=\"postgresql://\" prisma generate && next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "DATABASE_URL=\"postgresql://\" prisma generate"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
