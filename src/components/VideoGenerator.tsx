@@ -54,7 +54,7 @@ export default function VideoGenerator() {
       'image/png': [],
       'image/jpg': []
     },
-    maxSize: 5 * 1024 * 1024, // 5MB max
+    maxSize: 10 * 1024 * 1024, // 10MB max
     maxFiles: 1
   });
   
@@ -153,7 +153,7 @@ export default function VideoGenerator() {
             ) : (
               <>
                 <p className="text-gray-300">Drag & drop an image here, or <span className="text-[#FF7733]">browse</span></p>
-                <p className="text-gray-500 text-sm mt-1">JPG, PNG • Max size: 5MB</p>
+                <p className="text-gray-500 text-sm mt-1">JPG, PNG • Max size: 10MB</p>
               </>
             )}
           </div>
