@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { CreditCard, Package, Zap, Check } from 'lucide-react';
+import { CreditCard, Package, Zap, Check, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface CreditPurchaseProps {
   userCredits: number;
-  onPurchaseComplete: () => void;
+  onPurchaseComplete?: () => void; // Make optional since we're redirecting
 }
 
 interface CreditPackage {
@@ -17,16 +17,15 @@ interface CreditPackage {
   popular?: boolean;
 }
 
-export default function CreditPurchase({ userCredits, onPurchaseComplete }: CreditPurchaseProps) {
+export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   
   // Define credit packages
   const creditPackages: CreditPackage[] = [
-    { id: 'basic', credits: 10, price: 5 },
-    { id: 'standard', credits: 25, price: 10, popular: true },
-    { id: 'premium', credits: 50, price: 18 },
-    { id: 'unlimited', credits: 100, price: 30 }
+    { id: 'credits_5', credits: 5, price: 499 }, // $4.99
+    { id: 'credits_20', credits: 20, price: 1499, popular: true }, // $14.99
+    { id: 'credits_50', credits: 50, price: 2999 } // $29.99
   ];
   
   const handlePurchase = async () => {
@@ -38,25 +37,30 @@ export default function CreditPurchase({ userCredits, onPurchaseComplete }: Cred
     setIsLoading(true);
     
     try {
-      // In a real implementation, this would redirect to a Stripe checkout or similar
-      const pkg = creditPackages.find(p => p.id === selectedPackage);
-      
-      // Call your backend to initialize the payment
-      await axios.post('/api/credits/purchase', {
-        packageId: selectedPackage,
-        credits: pkg?.credits,
-        amount: pkg?.price
+      // Call the Stripe checkout API
+      const response = await axios.post('/api/checkout', {
+        packageId: selectedPackage
       });
       
-      // For demo purposes, just simulate success
-      toast.success(`Successfully purchased ${pkg?.credits} credits!`);
-      onPurchaseComplete();
+      if (response.data.url) {
+        // Redirect to Stripe checkout page
+        window.location.href = response.data.url;
+      } else {
+        throw new Error('Failed to create checkout session');
+      }
     } catch (error) {
-      console.error('Error purchasing credits:', error);
-      toast.error('Failed to purchase credits. Please try again.');
-    } finally {
+      console.error('Error initiating checkout:', error);
+      toast.error('Failed to process payment request. Please try again.');
       setIsLoading(false);
     }
+  };
+  
+  // Format price as currency
+  const formatPrice = (price: number): string => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(price / 100);
   };
   
   return (
@@ -74,7 +78,7 @@ export default function CreditPurchase({ userCredits, onPurchaseComplete }: Cred
         Select a package below to purchase credits.
       </p>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         {creditPackages.map((pkg) => (
           <div 
             key={pkg.id}
@@ -100,13 +104,13 @@ export default function CreditPurchase({ userCredits, onPurchaseComplete }: Cred
             <div className="flex justify-between items-start mb-3">
               <div>
                 <h3 className="font-medium text-white text-lg">{pkg.credits} Credits</h3>
-                <p className="text-sm text-gray-400">${pkg.price.toFixed(2)}</p>
+                <p className="text-sm text-gray-400">{formatPrice(pkg.price)}</p>
               </div>
               <Package size={24} className={selectedPackage === pkg.id ? "text-[#FF7733]" : "text-gray-400"} />
             </div>
             
             <div className="text-xs text-gray-500 mt-2">
-              ${(pkg.price / pkg.credits).toFixed(2)} per credit
+              {formatPrice(pkg.price / pkg.credits)} per credit
             </div>
             
             <div className="mt-3 text-xs text-gray-300 bg-gray-800/50 p-2 rounded">
@@ -122,17 +126,23 @@ export default function CreditPurchase({ userCredits, onPurchaseComplete }: Cred
         disabled={isLoading || !selectedPackage}
       >
         {isLoading ? (
-          <>Processing...</>
+          <>
+            <Loader2 className="animate-spin mr-2" size={18} />
+            Processing...
+          </>
         ) : (
           <>
             <CreditCard size={18} />
-            Purchase Credits
+            Proceed to Checkout
           </>
         )}
       </button>
       
       <p className="text-xs text-gray-400 text-center mt-4">
-        Secure payment processing. Credits are added to your account immediately.
+        Secure payment processing with Stripe. You will be redirected to complete your purchase.
+      </p>
+      <p className="text-xs text-gray-400 text-center mt-2">
+        After payment, credits will be added to your account automatically.
       </p>
     </div>
   );

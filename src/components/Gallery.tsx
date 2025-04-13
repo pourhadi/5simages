@@ -143,14 +143,6 @@ export default function Gallery() {
     setIsModalOpen(false);
     toast.success("Closed video detail view");
   };
-  
-  const handleCreditPurchaseComplete = () => {
-    // Refresh user data to get updated credit balance
-    mutateUser();
-    // Hide the credit purchase UI
-    setShowCreditPurchase(false);
-    toast.success("Credits added to your account!");
-  };
 
   // Add a console log to show current state
   console.log("Modal state:", { isModalOpen, selectedVideo });
@@ -182,7 +174,6 @@ export default function Gallery() {
             <div className="mt-4">
               <CreditPurchase 
                 userCredits={userCredits} 
-                onPurchaseComplete={handleCreditPurchaseComplete} 
               />
             </div>
           )}
