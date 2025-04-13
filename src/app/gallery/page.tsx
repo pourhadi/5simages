@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, Info, AlertCircle } from 'lucide-react';
@@ -16,7 +16,17 @@ interface Video {
   createdAt: string;
 }
 
-export default function GalleryPage() {
+// Loading fallback component
+function LoadingState() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+    </div>
+  );
+}
+
+// Main content component that uses searchParams
+function GalleryContent() {
   const { status: authStatus } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -73,11 +83,7 @@ export default function GalleryPage() {
 
   // Show loading state while checking authentication
   if (authStatus === 'loading') {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   return (
@@ -213,5 +219,14 @@ export default function GalleryPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function GalleryPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <GalleryContent />
+    </Suspense>
   );
 } 

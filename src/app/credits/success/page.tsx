@@ -1,13 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { CheckCircle, RefreshCw, AlertCircle } from 'lucide-react';
-import { ProcessingState } from '@/types/payments';
 
-export default function SuccessPage() {
+// Define the ProcessingState type locally to avoid import issues
+type ProcessingState = 'loading' | 'success' | 'error';
+
+// Child component that uses useSearchParams
+function SuccessContent() {
   const router = useRouter();
   const { status: sessionStatus, update: updateSession } = useSession();
   const searchParams = useSearchParams();
@@ -122,5 +125,23 @@ export default function SuccessPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+          <div className="flex flex-col items-center space-y-4">
+            <RefreshCw className="w-16 h-16 text-blue-500 animate-spin" />
+            <h2 className="text-2xl font-bold text-gray-900">Loading...</h2>
+          </div>
+        </div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 } 
