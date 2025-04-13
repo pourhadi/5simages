@@ -81,6 +81,25 @@ export const authOptions: AuthOptions = {
           token.credits = user.credits as number;
         }
       }
+      
+      // Occasionally fetch latest credit count directly from database
+      // This helps ensure we have fresh credit data on the token
+      if (token.sub && Math.random() < 0.3) { // 30% chance to refresh on each token refresh
+        try {
+          const latestUser = await prisma.user.findUnique({
+            where: { id: token.sub as string },
+            select: { credits: true }
+          });
+          
+          if (latestUser) {
+            token.credits = latestUser.credits;
+          }
+        } catch (error) {
+          console.error('Error refreshing credits in JWT callback:', error);
+          // Continue with existing token data if refresh fails
+        }
+      }
+      
       return token;
     },
   },

@@ -20,7 +20,7 @@ export default function VideoGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   
   // Get credits from both session and API to ensure consistency
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
   const { data: userData, mutate: mutateUser } = useSWR('/api/user', axiosFetcher);
   const [userCredits, setUserCredits] = useState(0);
   
@@ -104,10 +104,14 @@ export default function VideoGenerator() {
         prompt
       });
       
-      // Update credits display after successful generation
-      mutateUser();
+      // Properly update all places that show credits
+      // 1. Update user data from API 
+      await mutateUser();
       
-      // Force router refresh to update all components with new credit value
+      // 2. Force refresh session data to update navbar
+      await updateSession();
+      
+      // 3. Force router refresh to update all components with new credit value
       router.refresh();
       
       toast.dismiss('generate');
