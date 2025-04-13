@@ -1,9 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// Create a new Prisma client with specific configuration
+const prisma = new PrismaClient({
+  log: ['warn', 'error']
+});
 
 // SQL statements needed for a fresh database
 const migrations = [
+  // Drop all existing tables if they exist
+  `
+  DROP TABLE IF EXISTS "Video";
+  DROP TABLE IF EXISTS "Session";
+  DROP TABLE IF EXISTS "Account";
+  DROP TABLE IF EXISTS "VerificationToken";
+  DROP TABLE IF EXISTS "User";
+  `,
+
   // Users table
   `
   CREATE TABLE IF NOT EXISTS "User" (
@@ -82,11 +94,6 @@ const migrations = [
   );
   CREATE UNIQUE INDEX IF NOT EXISTS "Video_replicatePredictionId_key" ON "Video"("replicatePredictionId");
   ALTER TABLE "Video" ADD CONSTRAINT "Video_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-  `,
-
-  // Update default credits for new users
-  `
-  ALTER TABLE "User" ALTER COLUMN "credits" SET DEFAULT 5;
   `
 ];
 
@@ -95,11 +102,20 @@ async function directMigrations() {
     console.log('Starting direct SQL migrations...');
     let successCount = 0;
 
+    // Create a new connection for each migration to avoid prepared statement conflicts
     for (const [index, migration] of migrations.entries()) {
       try {
+        // Create a fresh connection per migration
+        const migrationPrisma = new PrismaClient({
+          log: ['error']
+        });
+        
         console.log(`Running migration ${index + 1}/${migrations.length}...`);
-        await prisma.$executeRawUnsafe(migration);
+        await migrationPrisma.$executeRawUnsafe(migration);
         successCount++;
+        
+        // Disconnect immediately after each migration
+        await migrationPrisma.$disconnect();
       } catch (err) {
         // Skip errors about tables/constraints that already exist
         if (
