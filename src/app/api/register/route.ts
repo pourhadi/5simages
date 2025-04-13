@@ -33,8 +33,10 @@ export async function POST(request: Request) {
       },
     });
 
-    // Don't return the password hash
-    const { hashedPassword: _, ...userWithoutPassword } = user;
+    // Destructure to exclude hashedPassword from response
+    const { hashedPassword: removed, ...userWithoutPassword } = user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    void removed; // Mark as intentionally unused
 
     return NextResponse.json(userWithoutPassword);
   } catch (error) {

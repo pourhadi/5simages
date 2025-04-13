@@ -19,7 +19,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const { data: _session, status } = useSession();
+  const { status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
 
   const {

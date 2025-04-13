@@ -26,7 +26,10 @@ function getPathFromUrl(url: string | null): string | null {
     }
 }
 
-export async function GET(_request: Request) {
+export async function GET(request: Request) {
+  // Request param is required by Next.js API routes even if unused
+  void request;
+  
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user?.id) {
@@ -106,7 +109,7 @@ export async function DELETE(request: Request) {
                 if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
                     console.warn(`Skipping file deletion for video ${videoId} because SUPABASE_SERVICE_ROLE_KEY is not set.`);
                 } else {
-                    const { data: _data, error: deleteError } = await supabaseAdmin.storage
+                    const { error: deleteError } = await supabaseAdmin.storage
                         .from(BUCKET_NAME)
                         .remove(pathsToDelete);
     

@@ -39,8 +39,10 @@ export const authOptions: AuthOptions = {
         }
 
         // Remove hashedPassword from the user object before returning
-        // Prefix with _ to indicate it's intentionally unused
-        const { hashedPassword: _hashedPassword, ...userWithoutPassword } = user;
+        const { hashedPassword, ...userWithoutPassword } = user;
+        
+        // Mark hashedPassword as intentionally unused
+        void hashedPassword;
 
         return userWithoutPassword;
       },
@@ -67,8 +69,10 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
-        // @ts-expect-error - User model has credits but default type might not reflect it
-        token.credits = user.credits;
+        // Add credits if available on the user object
+        if ('credits' in user) {
+          token.credits = user.credits as number;
+        }
       }
       return token;
     },
