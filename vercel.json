@@ -1,5 +1,5 @@
 {
-  "buildCommand": "prisma generate && node prisma/deploy.js && next build",
+  "buildCommand": "DATABASE_URL=\"postgresql://\" prisma generate && node prisma/direct-migrate.js && node prisma/seed.js && next build",
   "installCommand": "npm install",
   "framework": "nextjs",
   "outputDirectory": ".next"

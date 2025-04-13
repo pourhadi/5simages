@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "db:migrate": "node prisma/deploy.js",
+    "db:migrate:direct": "node prisma/direct-migrate.js",
     "db:migrate:create": "node prisma/create-migration.js",
     "db:seed": "node prisma/seed.js",
-    "build": "prisma generate && npm run db:migrate && npm run db:seed && next build",
+    "build": "DATABASE_URL=\"postgresql://\" prisma generate && npm run db:migrate:direct && npm run db:seed && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "DATABASE_URL=\"postgresql://\" prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
