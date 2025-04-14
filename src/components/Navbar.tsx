@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 import Logo from './Logo';
 
 export default function Navbar() {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [credits, setCredits] = useState<number | undefined>(session?.user?.credits);
@@ -22,44 +22,6 @@ export default function Navbar() {
       setCredits(session.user.credits);
     }
   }, [session]);
-
-  // Update session data when on important pages or when credits might change
-  useEffect(() => {
-    // Define pages where credits might change
-    const creditSensitivePages = ['/', '/gallery', '/credits'];
-    const isOnCreditSensitivePage = creditSensitivePages.some(page => pathname === page);
-    
-    if (status === 'authenticated' && isOnCreditSensitivePage) {
-      // Create a function to refresh the session
-      const refreshSession = async () => {
-        await update(); // This forces a session refresh from the server
-      };
-      
-      // Refresh session immediately on mount
-      refreshSession();
-      
-      // Set up event listener for focus to update credits when tab becomes active
-      const handleVisibilityChange = () => {
-        if (document.visibilityState === 'visible') {
-          refreshSession();
-        }
-      };
-      
-      // Add listeners for tab focus/visibility
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-      window.addEventListener('focus', refreshSession);
-      
-      // Poll for updates every 30 seconds, but only on pages where credits change
-      const intervalId = setInterval(refreshSession, 30000);
-      
-      return () => {
-        // Clean up listeners and interval
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-        window.removeEventListener('focus', refreshSession);
-        clearInterval(intervalId);
-      };
-    }
-  }, [pathname, status, update]);
   
   // Don't show navbar on success/cancel pages
   if (pathname?.includes('/credits/success') || pathname?.includes('/credits/cancel')) {
