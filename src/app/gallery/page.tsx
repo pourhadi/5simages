@@ -3,9 +3,12 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Loader2, Info, AlertCircle } from 'lucide-react';
+import { Loader2, Info, AlertCircle, Maximize2 } from 'lucide-react';
 import Link from 'next/link';
 import BuyCreditsButton from '@/components/BuyCreditsButton';
+import VideoDetailModal from '@/components/VideoDetailModal';
+import toast from 'react-hot-toast';
+import { Video as PrismaVideo } from '@prisma/client';
 
 interface Video {
   id: string;
@@ -14,7 +17,19 @@ interface Video {
   prompt: string;
   status: string;
   createdAt: string;
+  userId: string;
+  replicatePredictionId: string | null;
+  updatedAt: string;
 }
+
+// Function to convert our API Video to PrismaVideo
+const convertToPrismaVideo = (video: Video): PrismaVideo => {
+  return {
+    ...video,
+    createdAt: new Date(video.createdAt),
+    updatedAt: new Date(video.updatedAt)
+  } as PrismaVideo;
+};
 
 // Loading fallback component
 function LoadingState() {
@@ -35,6 +50,8 @@ function GalleryContent() {
   const [error, setError] = useState<string | null>(null);
   const [userCredits, setUserCredits] = useState<number | null>(null);
   const showCredits = searchParams.get('showCredits') === 'true';
+  const [selectedVideo, setSelectedVideo] = useState<PrismaVideo | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (authStatus === 'unauthenticated') {
@@ -85,6 +102,86 @@ function GalleryContent() {
       setError('Failed to load your videos. Please try again later.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (videoId: string) => {
+    try {
+      if (!confirm('Are you sure you want to delete this video?')) {
+        return;
+      }
+      
+      // Optimistically update UI
+      setVideos(videos.filter(video => video.id !== videoId));
+      
+      const response = await fetch(`/api/videos?id=${videoId}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete video');
+      }
+      
+      // Close modal if the deleted video was being viewed
+      if (selectedVideo?.id === videoId) {
+        setIsModalOpen(false);
+      }
+      
+      toast.success('Video deleted successfully');
+    } catch (err) {
+      console.error('Error deleting video:', err);
+      toast.error('Failed to delete video');
+      // Revert the optimistic update by refetching
+      fetchVideos();
+    }
+  };
+  
+  const openVideoDetail = (video: Video) => {
+    setSelectedVideo(convertToPrismaVideo(video));
+    setIsModalOpen(true);
+  };
+
+  const closeVideoDetail = () => {
+    setIsModalOpen(false);
+  };
+
+  // Handle video regeneration
+  const handleRegenerate = async (prompt: string, imageUrl: string) => {
+    // Check if user has enough credits
+    if (userCredits !== null && userCredits <= 0) {
+      toast.error('You need at least 1 credit to generate a video. Please purchase credits.');
+      return;
+    }
+    
+    toast.loading('Starting regeneration...', { id: 'regenerate' });
+    
+    try {
+      // Generate the video with our backend API using the existing prompt and image
+      const response = await fetch('/api/generate-video', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          imageUrl,
+          prompt
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to regenerate video');
+      }
+      
+      // Reload videos and user data after initiating regeneration
+      fetchVideos();
+      fetchUserData();
+      
+      toast.dismiss('regenerate');
+      toast.success('Video regeneration started! Check your gallery in a minute.');
+    } catch (error) {
+      toast.dismiss('regenerate');
+      console.error('Error regenerating video:', error);
+      toast.error('Failed to regenerate video. Please try again later.');
     }
   };
 
@@ -153,15 +250,37 @@ function GalleryContent() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {videos.map((video) => (
-            <div key={video.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div 
+              key={video.id} 
+              className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow relative group"
+              onClick={() => openVideoDetail(video)}
+            >
               <div className="aspect-w-16 aspect-h-9 bg-gray-100">
                 {video.videoUrl ? (
-                  <video 
-                    src={video.videoUrl} 
-                    controls 
-                    className="w-full h-full object-cover"
-                    poster={video.imageUrl}
-                  />
+                  <div className="relative">
+                    <video 
+                      src={video.videoUrl} 
+                      muted 
+                      loop
+                      className="w-full h-full object-cover"
+                      poster={video.imageUrl}
+                      preload="metadata"
+                      onMouseEnter={(e) => {
+                        try {
+                          e.currentTarget.play().catch(() => console.error('Autoplay prevented'));
+                        } catch {
+                          console.error('Error playing video');
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.pause();
+                        e.currentTarget.currentTime = 0;
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/30">
+                      <Maximize2 className="text-white" size={24} />
+                    </div>
+                  </div>
                 ) : (
                   <div className="w-full h-full relative">
                     <img 
@@ -194,17 +313,6 @@ function GalleryContent() {
                   <span className="text-xs text-gray-500">
                     {new Date(video.createdAt).toLocaleDateString()}
                   </span>
-                  {video.status === 'completed' && (
-                    <a 
-                      href={video.videoUrl || ''} 
-                      download 
-                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Download
-                    </a>
-                  )}
                 </div>
               </div>
             </div>
@@ -225,6 +333,15 @@ function GalleryContent() {
           </div>
         </div>
       )}
+
+      {/* Video Detail Modal */}
+      <VideoDetailModal
+        video={selectedVideo}
+        isOpen={isModalOpen}
+        onClose={closeVideoDetail}
+        onDelete={handleDelete}
+        onRegenerate={handleRegenerate}
+      />
     </div>
   );
 }

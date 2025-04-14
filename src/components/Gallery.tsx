@@ -143,6 +143,41 @@ export default function Gallery() {
     toast.success("Closed video detail view");
   };
 
+  // Handle video regeneration
+  const handleRegenerate = async (prompt: string, imageUrl: string) => {
+    // Check if user has enough credits
+    if (userCredits <= 0) {
+      toast.error('You need at least 1 credit to generate a video. Please purchase credits.');
+      return;
+    }
+    
+    toast.loading('Starting regeneration...', { id: 'regenerate' });
+    
+    try {
+      // Generate the video with our backend API using the existing prompt and image
+      await axios.post('/api/generate-video', {
+        imageUrl,
+        prompt
+      });
+      
+      // Reload videos after initiating regeneration
+      mutate();
+      
+      toast.dismiss('regenerate');
+      toast.success('Video regeneration started! Check your gallery in a minute.');
+    } catch (error) {
+      toast.dismiss('regenerate');
+      
+      if (axios.isAxiosError(error) && error.response?.status === 402) {
+        toast.error('Insufficient credits. Please purchase more credits to generate videos.');
+      } else {
+        console.error('Error regenerating video:', error);
+        toast.error('Failed to regenerate video. Please try again later.');
+        throw error; // Rethrow to be handled by the modal
+      }
+    }
+  };
+
   // Add a console log to show current state
   console.log("Modal state:", { isModalOpen, selectedVideo });
 
@@ -302,6 +337,8 @@ export default function Gallery() {
         video={selectedVideo}
         isOpen={isModalOpen}
         onClose={closeVideoDetail}
+        onDelete={handleDelete}
+        onRegenerate={handleRegenerate}
       />
     </>
   );

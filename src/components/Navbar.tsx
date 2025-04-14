@@ -4,17 +4,37 @@ import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Zap, ChevronRight, LogOut, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Logo from './Logo';
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [credits, setCredits] = useState<number | undefined>(session?.user?.credits);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const menuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
+  
+  const openUserMenu = () => {
+    if (menuTimeoutRef.current) {
+      clearTimeout(menuTimeoutRef.current);
+      menuTimeoutRef.current = null;
+    }
+    setIsUserMenuOpen(true);
+  };
+  
+  const closeUserMenuWithDelay = () => {
+    if (menuTimeoutRef.current) {
+      clearTimeout(menuTimeoutRef.current);
+    }
+    menuTimeoutRef.current = setTimeout(() => {
+      setIsUserMenuOpen(false);
+    }, 300); // 300ms delay before closing
+  };
   
   // Update credits from session when it changes
   useEffect(() => {
@@ -22,6 +42,29 @@ export default function Navbar() {
       setCredits(session.user.credits);
     }
   }, [session]);
+  
+  // Handle clicks outside the user menu
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (menuTimeoutRef.current) {
+        clearTimeout(menuTimeoutRef.current);
+      }
+    };
+  }, []);
   
   // Don't show navbar on success/cancel pages
   if (pathname?.includes('/credits/success') || pathname?.includes('/credits/cancel')) {
@@ -84,36 +127,50 @@ export default function Navbar() {
                   </span>
                   <ChevronRight size={14} className="text-gray-400 group-hover:text-white transition-colors" />
                 </Link>
-                <div className="relative group ml-3">
+                <div 
+                  className="relative ml-3" 
+                  ref={userMenuRef}
+                  onMouseEnter={openUserMenu}
+                  onMouseLeave={closeUserMenuWithDelay}
+                >
                   <div className="flex items-center">
-                    <button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                    <button 
+                      className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    >
                       <span className="sr-only">Open user menu</span>
                       <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-white uppercase font-bold">
                         {session.user.name?.charAt(0) || session.user.email?.charAt(0) || '?'}
                       </div>
                     </button>
                   </div>
-                  <div className="hidden group-hover:block absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="px-4 py-2 text-xs text-gray-500">
-                      Signed in as
-                    </div>
-                    <div className="px-4 py-2 text-sm font-medium text-gray-700 truncate border-b">
-                      {session.user.email}
-                    </div>
-                    <Link
-                      href="/credits"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={closeMenu}
+                  {isUserMenuOpen && (
+                    <div 
+                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      onMouseEnter={openUserMenu}
+                      onMouseLeave={closeUserMenuWithDelay}
                     >
-                      Buy Credits
-                    </Link>
-                    <button
-                      onClick={() => signOut({ callbackUrl: '/login' })}
-                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Sign out
-                    </button>
-                  </div>
+                      <div className="px-4 py-2 text-xs text-gray-500">
+                        Signed in as
+                      </div>
+                      <div className="px-4 py-2 text-sm font-medium text-gray-700 truncate border-b">
+                        {session.user.email}
+                      </div>
+                      <Link
+                        href="/credits"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={closeMenu}
+                      >
+                        Buy Credits
+                      </Link>
+                      <button
+                        onClick={() => signOut({ callbackUrl: '/login' })}
+                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Sign out
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
