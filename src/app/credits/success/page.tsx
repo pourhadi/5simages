@@ -46,12 +46,20 @@ function SuccessContent() {
         // Update session to reflect new credit balance
         if (sessionStatus === 'authenticated') {
           try {
-            // First try to update the session
+            console.log('Success page: Updating session with new credit balance');
+            
+            // Multiple session updates to ensure it catches the latest data
             await updateSession();
             
-            // After a short delay, reload the page to ensure the session is fully refreshed
-            setTimeout(() => {
-              window.location.reload();
+            // Add a small delay then try once more
+            setTimeout(async () => {
+              console.log('Success page: Refreshing session again after delay');
+              await updateSession();
+              
+              // Force reload after updates to ensure UI refreshes
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
             }, 1500);
           } catch (err) {
             console.error('Error updating session:', err);
@@ -97,6 +105,12 @@ function SuccessContent() {
                 className="block w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-md shadow transition duration-150"
               >
                 Go to your gallery
+              </Link>
+              <Link
+                href="/credits"
+                className="block w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white text-center rounded-md shadow transition duration-150"
+              >
+                Check my balance
               </Link>
               <Link
                 href="/"

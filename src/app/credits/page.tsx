@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Zap, AlertCircle, CreditCard } from 'lucide-react';
@@ -9,10 +9,18 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 export default function CreditsPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
   const [selectedPackage, setSelectedPackage] = useState(CREDIT_PACKAGES[0].id);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Force a session refresh when the component mounts
+  useEffect(() => {
+    if (status === 'authenticated') {
+      console.log('Credits page: Refreshing session');
+      update();
+    }
+  }, [status, update]);
 
   const handlePurchase = async () => {
     if (status !== 'authenticated') {

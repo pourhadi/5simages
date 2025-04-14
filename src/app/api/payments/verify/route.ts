@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { processPaymentSession } from '@/lib/stripe';
+import prisma from '@/lib/prisma';
 
 export async function GET(request: Request) {
   try {
@@ -44,10 +45,35 @@ export async function GET(request: Request) {
       );
     }
     
+    // Get current user credits
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { credits: true },
+    });
+    
+    if (!user) {
+      return NextResponse.json(
+        { error: 'User not found in database' },
+        { status: 404 }
+      );
+    }
+    
+    const creditAmount = result.credits || 0;
+    const newTotal = user.credits + creditAmount;
+    
+    // Update the user's credits in the database
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { credits: newTotal },
+    });
+    
+    console.log(`[Verify API] Added ${creditAmount} credits to user ${session.user.id}. New balance: ${newTotal}`);
+    
     // Return success with credits added
     return NextResponse.json({
       success: true,
-      credits: result.credits || 0,
+      credits: creditAmount,
+      newBalance: newTotal
     });
     
   } catch (error) {

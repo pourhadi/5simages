@@ -8,13 +8,13 @@ import { useState, useEffect, useRef } from 'react';
 import Logo from './Logo';
 
 export default function Navbar() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [credits, setCredits] = useState<number | undefined>(session?.user?.credits);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const menuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastPathRef = useRef<string | null>(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -36,17 +36,16 @@ export default function Navbar() {
     }, 300); // 300ms delay before closing
   };
   
-  // Update credits from session when it changes
+  // Refresh session when path changes
   useEffect(() => {
-    if (session?.user) {
-      console.log('Navbar: updating credits from session', {
-        previousCredits: credits,
-        newCredits: session.user.credits, 
-        sessionId: session.user.id
-      });
-      setCredits(session.user.credits);
+    // Only update when path changes and not on initial render
+    if (lastPathRef.current !== null && lastPathRef.current !== pathname && status === 'authenticated') {
+      console.log('Navbar: path changed, refreshing session', { from: lastPathRef.current, to: pathname });
+      update();
     }
-  }, [session]);
+    
+    lastPathRef.current = pathname;
+  }, [pathname, status, update]);
   
   // Handle clicks outside the user menu
   useEffect(() => {
@@ -125,10 +124,11 @@ export default function Navbar() {
                 <Link 
                   href="/credits" 
                   className="flex items-center gap-1 bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full transition-colors group"
+                  onClick={() => update()}
                 >
                   <Zap size={16} className="text-[#FF7733]" />
                   <span className="text-sm font-medium text-white">
-                    {credits || 0} credits
+                    {session?.user?.credits || 0} credits
                   </span>
                   <ChevronRight size={14} className="text-gray-400 group-hover:text-white transition-colors" />
                 </Link>
@@ -243,7 +243,7 @@ export default function Navbar() {
                 </div>
                 <div className="ml-auto bg-gray-700 rounded-full px-3 py-1 flex items-center">
                   <Zap size={14} className="text-[#FF7733] mr-1" />
-                  <span className="text-sm font-medium text-white">{credits || 0}</span>
+                  <span className="text-sm font-medium text-white">{session?.user?.credits || 0}</span>
                 </div>
               </div>
               <div className="mt-3 px-2 space-y-1">

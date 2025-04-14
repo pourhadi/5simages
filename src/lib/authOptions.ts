@@ -94,7 +94,7 @@ export const authOptions: AuthOptions = {
         try {
           // Skip database lookup unless specifically required (for credit updates)
           // This prevents unnecessary database calls
-          const shouldFetchLatestCredits = false; // Set to true only when we know we need fresh data
+          const shouldFetchLatestCredits = true; // Enable database lookup to get latest credit balance
           
           if (shouldFetchLatestCredits) {
             console.log('JWT callback: Fetching latest credits from database');
