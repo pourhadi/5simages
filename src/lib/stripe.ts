@@ -9,10 +9,9 @@ if (!process.env.STRIPE_SECRET_KEY) {
 export const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY || 'test_key_for_development_only', 
   {
-    // @ts-expect-error - TypeScript doesn't have updated API versions
-    apiVersion: '2025-03-31', // Using the latest API version
+    apiVersion: '2025-03-31.basil', // Using the latest API version
     appInfo: {
-      name: 'I2V App',
+      name: 'i2v',
       version: '1.0.0',
     },
   }

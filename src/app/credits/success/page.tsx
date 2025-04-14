@@ -45,7 +45,17 @@ function SuccessContent() {
         
         // Update session to reflect new credit balance
         if (sessionStatus === 'authenticated') {
-          await updateSession();
+          try {
+            // First try to update the session
+            await updateSession();
+            
+            // After a short delay, reload the page to ensure the session is fully refreshed
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+          } catch (err) {
+            console.error('Error updating session:', err);
+          }
         }
       } catch (err) {
         setState('error');

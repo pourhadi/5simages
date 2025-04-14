@@ -34,6 +34,8 @@ export async function POST(request: Request) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
       
+      console.log('Processing completed checkout session:', session.id);
+      
       // Process the completed payment
       const result = await processPaymentSession(session.id);
       
@@ -57,18 +59,21 @@ export async function POST(request: Request) {
           }
           
           const creditAmount = result.credits; // Copy to a constant to satisfy TypeScript
+          const newTotal = user.credits + creditAmount;
+          
+          console.log(`Updating credits for user ${result.userId}: ${user.credits} + ${creditAmount} = ${newTotal}`);
           
           // Update user credits using a transaction to avoid race conditions
           await prisma.$transaction(async (tx) => {
             await tx.user.update({
               where: { id: result.userId },
               data: {
-                credits: user.credits + creditAmount,
+                credits: newTotal,
               },
             });
           });
           
-          console.log(`Added ${creditAmount} credits to user ${result.userId}`);
+          console.log(`Successfully added ${creditAmount} credits to user ${result.userId}. New balance: ${newTotal}`);
         } catch (dbError) {
           console.error('Database error while updating credits:', dbError);
           return new NextResponse('Database error', { status: 500 });

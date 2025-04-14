@@ -26,12 +26,13 @@ export default function HomePage() {
   // Ensure session and user exist before proceeding
   if (status === 'authenticated' && session?.user) {
     const user = session.user;
+    const credits = typeof user.credits === 'number' ? user.credits : 0;
 
     return (
       <div className="space-y-8">
         <h1 className="text-3xl font-bold text-gray-900">Welcome, {user.name || user.email}!</h1>
 
-        {user.credits > 0 ? (
+        {credits > 0 ? (
           <div className="space-y-6">
             <VideoGenerator />
             {/* Placeholder for Gallery */}

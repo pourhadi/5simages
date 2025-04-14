@@ -8,7 +8,14 @@ interface AuthProviderProps {
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  return <SessionProvider>{children}</SessionProvider>;
+  return (
+    <SessionProvider
+      // Only refresh when window is focused, avoid interval refreshing
+      refetchOnWindowFocus={true}
+    >
+      {children}
+    </SessionProvider>
+  );
 };
 
 export default AuthProvider; 

@@ -39,6 +39,11 @@ export default function Navbar() {
   // Update credits from session when it changes
   useEffect(() => {
     if (session?.user) {
+      console.log('Navbar: updating credits from session', {
+        previousCredits: credits,
+        newCredits: session.user.credits, 
+        sessionId: session.user.id
+      });
       setCredits(session.user.credits);
     }
   }, [session]);

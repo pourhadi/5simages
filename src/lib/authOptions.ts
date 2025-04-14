@@ -73,14 +73,54 @@ export const authOptions: AuthOptions = {
       return session;
     },
     // Include user.id and credits on JWT token
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
+      // Initial sign in - set the token from the user object
       if (user) {
         token.sub = user.id;
         // Add credits if available on the user object
         if ('credits' in user) {
+          console.log('JWT callback: Setting initial credits from user object', {
+            userId: user.id,
+            credits: user.credits,
+            trigger
+          });
           token.credits = user.credits as number;
         }
+        return token;
       }
+      
+      // Handle explicit update triggers - but only if we actually need to update something
+      if (trigger === 'update') {
+        try {
+          // Skip database lookup unless specifically required (for credit updates)
+          // This prevents unnecessary database calls
+          const shouldFetchLatestCredits = false; // Set to true only when we know we need fresh data
+          
+          if (shouldFetchLatestCredits) {
+            console.log('JWT callback: Fetching latest credits from database');
+            
+            // Fetch the latest user data to get updated credits
+            const latestUser = await prisma.user.findUnique({
+              where: { id: token.sub as string },
+              select: { credits: true }
+            });
+            
+            if (latestUser && latestUser.credits !== token.credits) {
+              console.log('JWT callback: Updated credits in token', {
+                userId: token.sub,
+                oldCredits: token.credits,
+                newCredits: latestUser.credits
+              });
+              token.credits = latestUser.credits;
+            }
+          } else {
+            console.log('JWT callback: Skipping database fetch for token update');
+          }
+        } catch (error) {
+          console.error('Failed to update token with latest user data:', error);
+        }
+      }
+      
       return token;
     },
   },
