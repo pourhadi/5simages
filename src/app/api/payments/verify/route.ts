@@ -59,21 +59,16 @@ export async function GET(request: Request) {
     }
     
     const creditAmount = result.credits || 0;
-    const newTotal = user.credits + creditAmount;
     
-    // Update the user's credits in the database
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: { credits: newTotal },
-    });
+    // Don't add credits here as they are already added by the webhook handler
+    // Just return the current balance and the amount that was purchased
+    console.log(`[Verify API] Verified payment for ${creditAmount} credits for user ${session.user.id}. Current balance: ${user.credits}`);
     
-    console.log(`[Verify API] Added ${creditAmount} credits to user ${session.user.id}. New balance: ${newTotal}`);
-    
-    // Return success with credits added
+    // Return success with credits information
     return NextResponse.json({
       success: true,
       credits: creditAmount,
-      newBalance: newTotal
+      newBalance: user.credits
     });
     
   } catch (error) {

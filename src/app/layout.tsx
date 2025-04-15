@@ -9,10 +9,10 @@ import RefreshCredits from "@/components/RefreshCredits";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "5simages.ai - Turn Images Into Videos",
+  title: "FirstFrame.ai - Turn Images Into Videos",
   description: "Transform your static images into engaging videos with AI",
   icons: {
-    icon: [{ url: '/5simages.svg' }],
+    icon: [{ url: '/images/firstframe-logo.svg' }],
   },
 };
 
