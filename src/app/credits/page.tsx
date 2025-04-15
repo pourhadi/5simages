@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Zap, AlertCircle, CreditCard } from 'lucide-react';
@@ -13,11 +13,13 @@ export default function CreditsPage() {
   const router = useRouter();
   const [selectedPackage, setSelectedPackage] = useState(CREDIT_PACKAGES[0].id);
   const [isLoading, setIsLoading] = useState(false);
+  const hasRefreshed = useRef(false);
   
-  // Force a session refresh when the component mounts
+  // Force a session refresh only once when the component mounts
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (status === 'authenticated' && !hasRefreshed.current) {
       console.log('Credits page: Refreshing session');
+      hasRefreshed.current = true;
       update();
     }
   }, [status, update]);
@@ -75,10 +77,10 @@ export default function CreditsPage() {
   if (status === 'unauthenticated') {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-8">
-        <div className="text-center bg-white rounded-lg shadow-md p-8">
+        <div className="text-center bg-gray-800 rounded-lg shadow-md p-8 border border-gray-700">
           <AlertCircle className="mx-auto text-amber-500 h-16 w-16 mb-4" />
-          <h1 className="text-2xl font-bold mb-4">Sign In Required</h1>
-          <p className="text-gray-600 mb-6">
+          <h1 className="text-2xl font-bold mb-4 text-white">Sign In Required</h1>
+          <p className="text-gray-300 mb-6">
             You need to be signed in to purchase credits.
           </p>
           <Link 
@@ -96,13 +98,13 @@ export default function CreditsPage() {
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Purchase Credits</h1>
       
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-700">
         <div className="p-6">
           <div className="flex items-center mb-6">
             <Zap className="h-8 w-8 text-amber-500 mr-3" />
             <div>
-              <h2 className="text-xl font-semibold">Buy Credits</h2>
-              <p className="text-gray-600">Credits are used to generate videos</p>
+              <h2 className="text-xl font-semibold text-white">Buy Credits</h2>
+              <p className="text-gray-300">Credits are used to generate videos</p>
             </div>
           </div>
 
@@ -112,21 +114,21 @@ export default function CreditsPage() {
                 key={pkg.id}
                 className={`border rounded-lg p-4 cursor-pointer transition-all ${
                   selectedPackage === pkg.id 
-                    ? 'border-blue-500 bg-blue-50 shadow-md' 
-                    : 'hover:border-gray-300 hover:shadow'
+                    ? 'border-amber-500 bg-gray-700 shadow-md' 
+                    : 'border-gray-600 hover:border-gray-500 hover:shadow bg-gray-700/70'
                 }`}
                 onClick={() => setSelectedPackage(pkg.id)}
               >
                 <div className="flex flex-col h-full">
-                  <h3 className="font-semibold text-lg">{pkg.name}</h3>
-                  <div className="my-2 text-3xl font-bold">{formatPrice(pkg.price)}</div>
-                  <p className="text-gray-600 text-sm mb-4">
+                  <h3 className="font-semibold text-lg text-white">{pkg.name}</h3>
+                  <div className="my-2 text-3xl font-bold text-white">{formatPrice(pkg.price)}</div>
+                  <p className="text-gray-300 text-sm mb-4">
                     {pkg.credits} credits to generate videos
                   </p>
                   <div className="mt-auto">
                     <div 
                       className={`h-5 w-5 rounded-full border-2 ml-auto ${
-                        selectedPackage === pkg.id ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                        selectedPackage === pkg.id ? 'border-amber-500 bg-amber-500' : 'border-gray-500'
                       }`}
                     />
                   </div>
@@ -135,23 +137,23 @@ export default function CreditsPage() {
             ))}
           </div>
 
-          <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg mb-6">
+          <div className="flex justify-between items-center p-4 bg-gray-700 rounded-lg mb-6">
             <div>
-              <p className="text-gray-700 font-medium">Current balance</p>
-              <p className="text-2xl font-bold">{session?.user?.credits || 0} credits</p>
+              <p className="text-gray-300 font-medium">Current balance</p>
+              <p className="text-2xl font-bold text-white">{session?.user?.credits || 0} credits</p>
             </div>
             <button
               onClick={handlePurchase}
               disabled={isLoading}
-              className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <CreditCard className="h-5 w-5" />
               <span>{isLoading ? 'Processing...' : 'Purchase Now'}</span>
             </button>
           </div>
 
-          <div className="text-sm text-gray-500">
-            <h3 className="font-medium text-gray-700 mb-2">How credits work:</h3>
+          <div className="text-sm text-gray-300">
+            <h3 className="font-medium text-gray-200 mb-2">How credits work:</h3>
             <ul className="list-disc pl-5 space-y-1">
               <li>1 credit = 1 video generation</li>
               <li>Credits never expire</li>

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { processPaymentSession } from '@/lib/stripe';
-import prisma from '@/lib/prisma';
+import { db } from '@/lib/supabaseDb';
 
 export async function GET(request: Request) {
   try {
@@ -45,11 +45,8 @@ export async function GET(request: Request) {
       );
     }
     
-    // Get current user credits
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { credits: true },
-    });
+    // Get current user credits from Supabase
+    const user = await db.users.findById(session.user.id);
     
     if (!user) {
       return NextResponse.json(
@@ -62,13 +59,13 @@ export async function GET(request: Request) {
     
     // Don't add credits here as they are already added by the webhook handler
     // Just return the current balance and the amount that was purchased
-    console.log(`[Verify API] Verified payment for ${creditAmount} credits for user ${session.user.id}. Current balance: ${user.credits}`);
+    console.log(`[Verify API] Verified payment for ${creditAmount} credits for user ${session.user.id}. Current balance: ${user.credits || 0}`);
     
     // Return success with credits information
     return NextResponse.json({
       success: true,
       credits: creditAmount,
-      newBalance: user.credits
+      newBalance: user.credits || 0
     });
     
   } catch (error) {

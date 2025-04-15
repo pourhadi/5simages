@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stripe, processPaymentSession } from '@/lib/stripe';
-import prisma from '@/lib/prisma';
+import { db } from '@/lib/supabaseDb';
 
 // Stripe webhook handler
 export async function POST(request: Request) {
@@ -47,30 +47,23 @@ export async function POST(request: Request) {
       // Add credits to the user's account
       if (result.userId && typeof result.credits === 'number') {
         try {
-          // Get current user credits
-          const user = await prisma.user.findUnique({
-            where: { id: result.userId },
-            select: { credits: true },
-          });
+          // Get current user credits from Supabase
+          const user = await db.users.findById(result.userId);
           
           if (!user) {
             console.error('User not found:', result.userId);
             return new NextResponse('User not found', { status: 404 });
           }
           
-          const creditAmount = result.credits; // Copy to a constant to satisfy TypeScript
-          const newTotal = user.credits + creditAmount;
+          const currentCredits = user.credits || 0;
+          const creditAmount = result.credits;
+          const newTotal = currentCredits + creditAmount;
           
-          console.log(`Updating credits for user ${result.userId}: ${user.credits} + ${creditAmount} = ${newTotal}`);
+          console.log(`Updating credits for user ${result.userId}: ${currentCredits} + ${creditAmount} = ${newTotal}`);
           
-          // Update user credits using a transaction to avoid race conditions
-          await prisma.$transaction(async (tx) => {
-            await tx.user.update({
-              where: { id: result.userId },
-              data: {
-                credits: newTotal,
-              },
-            });
+          // Update user credits in Supabase
+          await db.users.update(result.userId, { 
+            credits: newTotal,
           });
           
           console.log(`Successfully added ${creditAmount} credits to user ${result.userId}. New balance: ${newTotal}`);
