@@ -217,7 +217,7 @@ export default function VideoGenerator() {
           ) : (
             <>
               <ImageIcon size={18} />
-              Generate Video
+              Generate GIF
             </>
           )}
         </button>

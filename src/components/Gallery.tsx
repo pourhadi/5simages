@@ -216,7 +216,7 @@ export default function Gallery() {
         {/* Gallery container */}
         <div className="bg-gray-800 shadow-md rounded-lg p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-white">Your Video Gallery</h2>
+            <h2 className="text-xl font-semibold text-white">Your GIF Gallery</h2>
             {/* Refresh button can still manually trigger revalidation if needed */}
             <button
               onClick={() => mutate()} // Manually trigger revalidation
@@ -291,7 +291,7 @@ export default function Gallery() {
                       handleDelete(video.id);
                     }}
                     className="absolute top-1 right-1 p-1 bg-red-600/80 hover:bg-red-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    title="Delete Video"
+                    title="Delete GIF"
                   >
                     <Trash2 size={14} />
                   </button>

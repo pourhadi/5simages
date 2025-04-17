@@ -309,7 +309,7 @@ export default function VideoDetailModal({ video, isOpen, onClose, onDelete, onR
                         className="flex items-center justify-center gap-2 p-2 rounded-lg bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white col-span-2 transition-colors mt-2"
                       >
                         <Trash2 size={16} />
-                        <span>Delete Video</span>
+                        <span>Delete GIF</span>
                       </button>
                     )}
                   </div>
