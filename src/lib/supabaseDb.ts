@@ -3,11 +3,12 @@ import { createId } from '@paralleldrive/cuid2';
 
 // Database tables 
 export const TABLES = {
-  USERS: 'users',
-  ACCOUNTS: 'accounts',
-  SESSIONS: 'sessions',
-  VERIFICATION_TOKENS: 'verification_tokens',
-  VIDEOS: 'videos',
+  // Table names must match the ones created by direct SQL migrations (case-sensitive)
+  USERS: 'User',
+  ACCOUNTS: 'Account',
+  SESSIONS: 'Session',
+  VERIFICATION_TOKENS: 'VerificationToken',
+  VIDEOS: 'Video',
 };
 
 // Define types for user data
