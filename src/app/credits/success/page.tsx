@@ -30,7 +30,11 @@ function SuccessContent() {
     // Verify payment success
     const verifyPayment = async () => {
       try {
-        const response = await fetch(`/api/payments/verify?session_id=${sessionId}`);
+        // Send auth cookie so Supabase session is available server-side
+        const response = await fetch(
+          `/api/payments/verify?session_id=${sessionId}`,
+          { credentials: 'include' }
+        );
         const data = await response.json();
 
         if (!response.ok) {
