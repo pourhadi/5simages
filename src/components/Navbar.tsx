@@ -13,7 +13,7 @@ export default function Navbar() {
       if (!res.ok) throw new Error('Unauthorized');
       return res.json();
     });
-  const { data: user, error, isLoading, mutate } = useSWR('/api/user', fetcher);
+  const { data: user, isLoading, mutate } = useSWR('/api/user', fetcher);
   const router = useRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
