@@ -27,14 +27,15 @@ export async function POST(request: Request) {
     }
     // Manually set Supabase auth cookie with session tokens
     const session = data.session;
-    // Build cookie value as [access_token, refresh_token, provider_token, provider_refresh_token, user.factors]
+    // Manually extract potential multi-factor info (if present) and build the cookie value
+    const maybeFactors = (session.user as unknown as Record<string, unknown>).factors;
+    const factors = Array.isArray(maybeFactors) ? maybeFactors : [];
     const cookieValue = JSON.stringify([
       session.access_token,
       session.refresh_token,
       session.provider_token ?? '',
       session.provider_refresh_token ?? '',
-      // user.factors may be undefined
-      (session.user && (session.user as any).factors) ?? []
+      factors
     ]);
     // Create JSON response and attach cookie
     const response = NextResponse.json({ user: data.user });
