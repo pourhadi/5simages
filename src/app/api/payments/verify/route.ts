@@ -65,15 +65,32 @@ export async function GET(request: Request) {
     
     const creditAmount = result.credits || 0;
     
-    // Don't add credits here as they are already added by the webhook handler
-    // Just return the current balance and the amount that was purchased
-    console.log(`[Verify API] Verified payment for ${creditAmount} credits for user ${userId}. Current balance: ${user.credits || 0}`);
+    // Add purchased credits to user's account (fallback if webhook did not run)
+    // Compute new balance
+    const oldBalance = user.credits || 0;
+    const newBalance = oldBalance + creditAmount;
+    if (creditAmount > 0) {
+      try {
+        await db.users.update(userId, { credits: newBalance });
+        console.log(
+          `[Verify API] Added ${creditAmount} credits to user ${userId}. New balance: ${newBalance}`
+        );
+      } catch (updateError) {
+        console.error(
+          `[Verify API] Failed to update credits for user ${userId}:`, updateError
+        );
+        return NextResponse.json(
+          { error: 'Failed to update user credits' },
+          { status: 500 }
+        );
+      }
+    }
     
     // Return success with credits information
     return NextResponse.json({
       success: true,
       credits: creditAmount,
-      newBalance: user.credits || 0
+      newBalance
     });
     
   } catch (error) {

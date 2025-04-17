@@ -6,7 +6,8 @@ import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
-// We'll locate the ffmpeg-static binary in node_modules at runtime
+// Use ffmpeg-static to locate the ffmpeg binary path at runtime
+import ffmpegPath from 'ffmpeg-static';
 import prisma from '@/lib/prisma';
 import { getSupabaseAdmin } from '@/lib/supabaseClient';
 import { randomUUID } from 'crypto';
@@ -17,14 +18,8 @@ const replicate = new Replicate({
 
 // Supabase buckets (videos bucket unused in this handler)
 const GIFS_BUCKET = process.env.SUPABASE_GIFS_BUCKET_NAME || 'gifs';
-// Point to the ffmpeg-static binary in node_modules rather than the bundled location
-const ffmpegBinary = path.join(
-  process.cwd(),
-  'node_modules',
-  'ffmpeg-static',
-  process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg'
-);
-ffmpeg.setFfmpegPath(ffmpegBinary);
+// Configure fluent-ffmpeg to use the static ffmpeg binary
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 export async function GET(request: Request) {
   const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
