@@ -24,6 +24,18 @@ const nextConfig = {
   images: {
     domains: ['afzjzoefogvzdnqmnidz.supabase.co'],
   },
+  // Prevent bundling ffmpeg-static so require('ffmpeg-static') works at runtime
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Ensure externals is an array
+      config.externals = Array.isArray(config.externals)
+        ? config.externals
+        : [];
+      // Mark ffmpeg-static as external
+      config.externals.push('ffmpeg-static');
+    }
+    return config;
+  },
 };
 
 // Log environment variables status for debugging
