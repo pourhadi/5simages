@@ -7,7 +7,13 @@ import prisma from '@/lib/prisma';
  * Register a new user: sign up in Supabase Auth, then mirror in Prisma.
  */
 export async function POST(request: Request) {
-  const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
+  // Initialize Supabase client with awaited cookies and headers
+  const cookieStore = await cookies();
+  const headerStore = headers();
+  const supabase = createRouteHandlerSupabaseClient({
+    cookies: () => cookieStore,
+    headers: () => headerStore,
+  });
   try {
     const { email, name, password } = await request.json();
     if (!email || !name || !password) {

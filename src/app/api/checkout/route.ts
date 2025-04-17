@@ -5,8 +5,14 @@ import { createCheckoutSession, CREDIT_PACKAGES } from '@/lib/stripe';
 
 export async function POST(request: Request) {
   try {
+    // Initialize Supabase client with awaited cookies and headers
+    const cookieStore = await cookies();
+    const headerStore = headers();
+    const supabase = createRouteHandlerSupabaseClient({
+      cookies: () => cookieStore,
+      headers: () => headerStore,
+    });
     // Get the authenticated user via Supabase
-    const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user?.id || !session.user.email) {
       return NextResponse.json(

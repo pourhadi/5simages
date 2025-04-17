@@ -173,8 +173,13 @@ export default function Navbar() {
                       </Link>
                       <button
                         onClick={async () => {
+                          // Sign out via API and redirect to login (full reload)
                           await fetch('/api/logout', { method: 'POST', credentials: 'include' });
-                          router.push('/login');
+                          if (typeof window !== 'undefined') {
+                            window.location.href = '/login';
+                          } else {
+                            router.push('/login');
+                          }
                         }}
                         className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
@@ -263,8 +268,13 @@ export default function Navbar() {
                 </Link>
                 <button
                   onClick={async () => {
+                    // Sign out via API and redirect to login (full reload)
                     await fetch('/api/logout', { method: 'POST', credentials: 'include' });
-                    router.push('/login');
+                    if (typeof window !== 'undefined') {
+                      window.location.href = '/login';
+                    } else {
+                      router.push('/login');
+                    }
                   }}
                   className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700 flex items-center"
                 >

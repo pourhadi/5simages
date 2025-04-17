@@ -9,7 +9,13 @@ import prisma from '@/lib/prisma';
  */
 export async function GET() {
   try {
-    const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
+    // Initialize Supabase client with awaited cookies and headers
+    const cookieStore = await cookies();
+    const headerStore = headers();
+    const supabase = createRouteHandlerSupabaseClient({
+      cookies: () => cookieStore,
+      headers: () => headerStore,
+    });
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

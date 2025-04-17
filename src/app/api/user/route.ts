@@ -5,8 +5,13 @@ import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // Get authenticated user from session
-    const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
+    // Initialize Supabase client with awaited cookies and headers
+    const cookieStore = await cookies();
+    const headerStore = headers();
+    const supabase = createRouteHandlerSupabaseClient({
+      cookies: () => cookieStore,
+      headers: () => headerStore,
+    });
     const {
       data: { session },
     } = await supabase.auth.getSession();

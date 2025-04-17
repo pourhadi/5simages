@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import axios from 'axios';
+// Removed axios import; using fetch for API requests to ensure proper cookie handling
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
@@ -37,17 +37,28 @@ export default function LoginPage() {
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     setIsLoading(true);
     try {
-      await axios.post('/api/login', data, { withCredentials: true });
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const message = await res.text();
+        throw new Error(message || 'Login failed');
+      }
       toast.success('Login successful!');
-      router.push('/');
+      // Redirect to home page after login (full reload to ensure cookies are applied)
+      if (typeof window !== 'undefined') {
+        window.location.href = '/';
+      } else {
+        router.push('/');
+      }
     } catch (error) {
       console.error('Login failed:', error);
-      let errorMessage = 'Login failed. Please check your credentials.';
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data || errorMessage;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
+      const errorMessage = error instanceof Error
+        ? error.message
+        : 'Login failed. Please check your credentials.';
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
