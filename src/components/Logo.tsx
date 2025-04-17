@@ -12,7 +12,7 @@ export default function Logo({ className = '' }: LogoProps) {
         {/* Text Section */}
         <div className="flex flex-col">
           <span className="text-2xl font-bold leading-none text-white">First<span className="text-gradient">Frame</span></span>
-          <span className="text-sm text-[#F2EFE8]">firstframe.ai</span>
+          <span className="text-sm text-[#F2EFE8]">firstframe.app</span>
         </div>
       </div>
     </div>
