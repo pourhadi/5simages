@@ -6,8 +6,8 @@ import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
-// Use ffmpeg-static to locate the ffmpeg binary path at runtime
-import ffmpegPath from 'ffmpeg-static';
+// Dynamically resolve the ffmpeg-static binary at runtime
+import { createRequire } from 'module';
 import prisma from '@/lib/prisma';
 import { getSupabaseAdmin } from '@/lib/supabaseClient';
 import { randomUUID } from 'crypto';
@@ -18,8 +18,13 @@ const replicate = new Replicate({
 
 // Supabase buckets (videos bucket unused in this handler)
 const GIFS_BUCKET = process.env.SUPABASE_GIFS_BUCKET_NAME || 'gifs';
-// Configure fluent-ffmpeg to use the static ffmpeg binary
-ffmpeg.setFfmpegPath(ffmpegPath);
+// Resolve the ffmpeg-static package to locate the binary alongside its package.json
+const require = createRequire(import.meta.url);
+const ffmpegPkgPath = require.resolve('ffmpeg-static/package.json');
+const ffmpegBinaryName = process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg';
+const ffmpegBinaryPath = path.join(path.dirname(ffmpegPkgPath), ffmpegBinaryName);
+// Configure fluent-ffmpeg to use the resolved binary path
+ffmpeg.setFfmpegPath(ffmpegBinaryPath);
 
 export async function GET(request: Request) {
   const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
