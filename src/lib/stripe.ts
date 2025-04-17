@@ -19,9 +19,10 @@ export const stripe = new Stripe(
 
 // Credit package options
 export const CREDIT_PACKAGES = [
-  { id: 'credits_5', name: '5 Credits', credits: 5, price: 499, currency: 'usd' }, // $4.99
-  { id: 'credits_20', name: '20 Credits', credits: 20, price: 1499, currency: 'usd' }, // $14.99
-  { id: 'credits_50', name: '50 Credits', credits: 50, price: 2999, currency: 'usd' }, // $29.99
+  { id: 'credits_1', name: '1 Credit1', credits: 1, price: 100, currency: 'usd' }, // $4.99
+  { id: 'credits_5', name: '5 Credits', credits: 5, price: 500, currency: 'usd' }, // $4.99
+  { id: 'credits_20', name: '20 Credits', credits: 20, price: 1500, currency: 'usd' }, // $14.99
+  { id: 'credits_50', name: '50 Credits', credits: 50, price: 3000, currency: 'usd' }, // $29.99
 ];
 
 /**
