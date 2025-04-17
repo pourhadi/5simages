@@ -110,7 +110,7 @@ function GalleryContent() {
 
   const handleDelete = async (videoId: string) => {
     try {
-      if (!confirm('Are you sure you want to delete this video?')) {
+      if (!confirm('Are you sure you want to delete this GIF?')) {
         return;
       }
       
@@ -152,7 +152,7 @@ function GalleryContent() {
   const handleRegenerate = async (prompt: string, imageUrl: string) => {
     // Check if user has enough credits
     if (userCredits !== null && userCredits <= 0) {
-      toast.error('You need at least 1 credit to generate a video. Please purchase credits.');
+      toast.error('You need at least 1 credit to generate a GIF. Please purchase credits.');
       return;
     }
     
@@ -215,7 +215,7 @@ function GalleryContent() {
           <div>
             <h3 className="font-medium text-blue-800">Credits Updated</h3>
             <p className="text-blue-600 text-sm">
-              Your credit balance is updated and ready to use for creating new videos.
+              Your credit balance is updated and ready to use for creating new GIFs.
             </p>
           </div>
         </div>
@@ -224,7 +224,7 @@ function GalleryContent() {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-12">
           <Loader2 className="w-10 h-10 text-blue-500 animate-spin mb-4" />
-          <p className="text-gray-500">Loading your videos...</p>
+          <p className="text-gray-500">Loading your GIFs...</p>
         </div>
       ) : error ? (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start">
@@ -233,16 +233,16 @@ function GalleryContent() {
         </div>
       ) : videos.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <h2 className="text-2xl font-bold text-gray-700 mb-4">No videos yet</h2>
+          <h2 className="text-2xl font-bold text-gray-700 mb-4">No GIFs yet</h2>
           <p className="text-gray-500 mb-6">
-            You haven&apos;t created any videos yet. Start by creating your first one!
+            You haven&apos;t created any GIFs yet. Start by creating your first one!
           </p>
           <div className="flex flex-col md:flex-row justify-center gap-4">
             <Link 
               href="/" 
               className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
             >
-              Create Your First Video
+              Create Your First GIF
             </Link>
             {/* Low credit message if applicable */}
             {userCredits !== null && userCredits < 1 && (
@@ -338,7 +338,7 @@ function GalleryContent() {
           <div className="flex-1">
             <h3 className="text-amber-800 font-medium">You&apos;re out of credits</h3>
             <p className="text-amber-700 text-sm mb-3">
-              You need credits to create new videos. Purchase more credits to continue creating.
+              You need credits to create new GIFs. Purchase more credits to continue creating.
             </p>
             <BuyCreditsButton variant="small" />
           </div>
