@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { cookies, headers } from 'next/headers';
 import { createCheckoutSession, CREDIT_PACKAGES } from '@/lib/stripe';
 
 export async function POST(request: Request) {
   try {
     // Get the authenticated user via Supabase
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user?.id || !session.user.email) {
       return NextResponse.json(

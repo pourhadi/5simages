@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { cookies, headers } from 'next/headers';
 import { processPaymentSession } from '@/lib/stripe';
 import { db } from '@/lib/supabaseDb';
 
 export async function GET(request: Request) {
   try {
     // Get authenticated session
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
     const {
       data: { session },
     } = await supabase.auth.getSession();

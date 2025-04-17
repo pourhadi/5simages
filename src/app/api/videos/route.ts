@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { cookies, headers } from 'next/headers';
 import prisma from '@/lib/prisma';
 import { getSupabaseAdmin } from '@/lib/supabaseClient'; // Import admin client getter
 
@@ -30,7 +30,7 @@ export async function GET(request: Request) {
   // Request param is required by Next.js API routes even if unused
   void request;
   
-  const supabase = createRouteHandlerClient({ cookies });
+  const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session?.user?.id) {
@@ -60,8 +60,8 @@ export async function GET(request: Request) {
 }
 
 // Optional: Add DELETE endpoint for deleting videos
-export async function DELETE(request: Request) {
-    const supabase = createRouteHandlerClient({ cookies });
+ export async function DELETE(request: Request) {
+    const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user?.id) {
         return new NextResponse('Unauthorized', { status: 401 });

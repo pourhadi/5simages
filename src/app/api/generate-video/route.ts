@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { cookies, headers } from 'next/headers';
 import Replicate from 'replicate';
 import prisma from '@/lib/prisma';
 
@@ -16,7 +16,7 @@ if (!process.env.REPLICATE_API_TOKEN) {
 const REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
 
 export async function POST(request: Request) {
-  const supabase = createRouteHandlerClient({ cookies });
+  const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session?.user?.id) {

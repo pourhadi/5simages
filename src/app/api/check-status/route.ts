@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { cookies, headers } from 'next/headers';
 import Replicate from 'replicate';
 import prisma from '@/lib/prisma';
 import { getSupabaseAdmin } from '@/lib/supabaseClient';
@@ -13,7 +13,7 @@ const replicate = new Replicate({
 const VIDEOS_BUCKET = process.env.SUPABASE_VIDEOS_BUCKET_NAME || 'videos';
 
 export async function GET(request: Request) {
-  const supabase = createRouteHandlerClient({ cookies });
+  const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
   const {
     data: { session },
   } = await supabase.auth.getSession();

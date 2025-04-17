@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { cookies, headers } from 'next/headers';
 import prisma from '@/lib/prisma';
 
 /**
  * Register a new user: sign up in Supabase Auth, then mirror in Prisma.
  */
 export async function POST(request: Request) {
-  const supabase = createRouteHandlerClient({ cookies });
+  const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
   try {
     const { email, name, password } = await request.json();
     if (!email || !name || !password) {
