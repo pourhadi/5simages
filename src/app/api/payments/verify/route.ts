@@ -6,8 +6,13 @@ import { db } from '@/lib/supabaseDb';
 
 export async function GET(request: Request) {
   try {
-    // Get authenticated session
-    const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
+    // Initialize Supabase client with the incoming request’s cookies and headers
+    const cookieStore = cookies();
+    const headerStore = headers();
+    const supabase = createRouteHandlerSupabaseClient({
+      cookies: () => cookieStore,
+      headers: () => headerStore,
+    });
     const {
       data: { session },
     } = await supabase.auth.getSession();
