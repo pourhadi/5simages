@@ -1,14 +1,20 @@
 'use client';
 
-import { useSession, signOut } from 'next-auth/react';
+import useSWR from 'swr';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { Zap, ChevronRight, LogOut, Menu, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import Logo from './Logo';
 
 export default function Navbar() {
-  const { data: session, status, update } = useSession();
+  const fetcher = (url: string) =>
+    fetch(url, { credentials: 'include' }).then((res) => {
+      if (!res.ok) throw new Error('Unauthorized');
+      return res.json();
+    });
+  const { data: user, error, isLoading, mutate } = useSWR('/api/user', fetcher);
+  const router = useRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -36,16 +42,13 @@ export default function Navbar() {
     }, 300); // 300ms delay before closing
   };
   
-  // Refresh session when path changes
+  // Refresh user data on path change
   useEffect(() => {
-    // Only update when path changes and not on initial render
-    if (lastPathRef.current !== null && lastPathRef.current !== pathname && status === 'authenticated') {
-      console.log('Navbar: path changed, refreshing session', { from: lastPathRef.current, to: pathname });
-      update();
+    if (lastPathRef.current !== null && lastPathRef.current !== pathname) {
+      mutate();
     }
-    
     lastPathRef.current = pathname;
-  }, [pathname, status, update]);
+  }, [pathname, mutate]);
   
   // Handle clicks outside the user menu
   useEffect(() => {
@@ -119,16 +122,16 @@ export default function Navbar() {
           
           {/* User section */}
           <div className="hidden md:flex md:items-center">
-            {status === 'authenticated' && session?.user && (
+            {user && (
               <div className="flex items-center space-x-4">
                 <Link 
                   href="/credits" 
                   className="flex items-center gap-1 bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full transition-colors group"
-                  onClick={() => update()}
+                  onClick={() => mutate()}
                 >
                   <Zap size={16} className="text-[#FF7733]" />
                   <span className="text-sm font-medium text-white">
-                    {session?.user?.credits || 0} credits
+                    {user.credits || 0} credits
                   </span>
                   <ChevronRight size={14} className="text-gray-400 group-hover:text-white transition-colors" />
                 </Link>
@@ -145,7 +148,7 @@ export default function Navbar() {
                     >
                       <span className="sr-only">Open user menu</span>
                       <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-white uppercase font-bold">
-                        {session.user.name?.charAt(0) || session.user.email?.charAt(0) || '?'}
+                        {user.name?.charAt(0) || user.email?.charAt(0) || '?'}
                       </div>
                     </button>
                   </div>
@@ -159,17 +162,20 @@ export default function Navbar() {
                         Signed in as
                       </div>
                       <div className="px-4 py-2 text-sm font-medium text-gray-700 truncate border-b">
-                        {session.user.email}
+                        {user.email}
                       </div>
                       <Link
                         href="/credits"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={closeMenu}
+                        onClick={() => mutate()}
                       >
                         Buy Credits
                       </Link>
                       <button
-                        onClick={() => signOut({ callbackUrl: '/login' })}
+                        onClick={async () => {
+                          await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+                          router.push('/login');
+                        }}
                         className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
                         Sign out
@@ -180,7 +186,7 @@ export default function Navbar() {
               </div>
             )}
             
-            {status === 'unauthenticated' && (
+            {!user && !isLoading && (
               <div className="flex items-center space-x-2">
                 <Link
                   href="/login"
@@ -225,25 +231,25 @@ export default function Navbar() {
           </div>
           
           {/* Mobile user section */}
-          {status === 'authenticated' && session?.user && (
+          {user && (
             <div className="pt-4 pb-3 border-t border-gray-700">
               <div className="flex items-center px-5">
                 <div className="flex-shrink-0">
                   <div className="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-white uppercase font-bold">
-                    {session.user.name?.charAt(0) || session.user.email?.charAt(0) || '?'}
+                    {user.name?.charAt(0) || user.email?.charAt(0) || '?'}
                   </div>
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium leading-none text-white">
-                    {session.user.name || 'User'}
+                    {user.name || 'User'}
                   </div>
                   <div className="text-sm font-medium leading-none text-gray-400 mt-1">
-                    {session.user.email}
+                    {user.email}
                   </div>
                 </div>
                 <div className="ml-auto bg-gray-700 rounded-full px-3 py-1 flex items-center">
                   <Zap size={14} className="text-[#FF7733] mr-1" />
-                  <span className="text-sm font-medium text-white">{session?.user?.credits || 0}</span>
+                  <span className="text-sm font-medium text-white">{user.credits || 0}</span>
                 </div>
               </div>
               <div className="mt-3 px-2 space-y-1">
@@ -256,7 +262,10 @@ export default function Navbar() {
                   Buy Credits
                 </Link>
                 <button
-                  onClick={() => signOut({ callbackUrl: '/login' })}
+                  onClick={async () => {
+                    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+                    router.push('/login');
+                  }}
                   className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700 flex items-center"
                 >
                   <LogOut className="mr-2 h-5 w-5" />
@@ -266,7 +275,7 @@ export default function Navbar() {
             </div>
           )}
           
-          {status === 'unauthenticated' && (
+          {!user && !isLoading && (
             <div className="pt-4 pb-3 border-t border-gray-700">
               <div className="px-2 space-y-1">
                 <Link

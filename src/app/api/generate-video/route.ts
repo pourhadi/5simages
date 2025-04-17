@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import Replicate from 'replicate';
 import prisma from '@/lib/prisma';
-import { authOptions } from '@/lib/authOptions';
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN || '',
@@ -16,9 +16,10 @@ if (!process.env.REPLICATE_API_TOKEN) {
 const REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
+  const supabase = createRouteHandlerClient({ cookies });
+  const { data: { session } } = await supabase.auth.getSession();
 
-  if (!session || !session.user?.id) {
+  if (!session?.user?.id) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
 

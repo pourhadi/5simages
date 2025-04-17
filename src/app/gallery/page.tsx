@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSession } from 'next-auth/react';
+import useSWR from 'swr';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, Info, AlertCircle, Maximize2 } from 'lucide-react';
 import Link from 'next/link';
@@ -42,7 +42,12 @@ function LoadingState() {
 
 // Main content component that uses searchParams
 function GalleryContent() {
-  const { data: session, status: authStatus } = useSession();
+  const fetcher = (url: string) =>
+    fetch(url, { credentials: 'include' }).then((res) => {
+      if (!res.ok) throw new Error('Unauthorized');
+      return res.json();
+    });
+  const { data: user, error: authError, isLoading: authLoading } = useSWR('/api/user', fetcher);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [videos, setVideos] = useState<Video[]>([]);
@@ -54,23 +59,19 @@ function GalleryContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (authStatus === 'unauthenticated') {
+    if (!authLoading && authError) {
       router.push('/login');
-      return;
     }
+  }, [authLoading, authError, router]);
 
-    if (authStatus === 'authenticated') {
+  // After successful auth, load initial data
+  useEffect(() => {
+    if (user) {
+      setUserCredits(user.credits);
       fetchUserData();
       fetchVideos();
     }
-  }, [authStatus, router]);
-
-  // Update credits whenever session changes
-  useEffect(() => {
-    if (session?.user) {
-      setUserCredits(session.user.credits);
-    }
-  }, [session]);
+  }, [user]);
 
   const fetchUserData = async () => {
     try {
@@ -186,7 +187,7 @@ function GalleryContent() {
   };
 
   // Show loading state while checking authentication
-  if (authStatus === 'loading') {
+  if (authLoading) {
     return <LoadingState />;
   }
 
@@ -283,6 +284,7 @@ function GalleryContent() {
                   </div>
                 ) : (
                   <div className="w-full h-full relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img 
                       src={video.imageUrl} 
                       alt={video.prompt} 

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import Replicate from 'replicate';
 import prisma from '@/lib/prisma';
-import { authOptions } from '@/lib/authOptions';
 import { getSupabaseAdmin } from '@/lib/supabaseClient';
 import { randomUUID } from 'crypto';
 
@@ -13,10 +13,14 @@ const replicate = new Replicate({
 const VIDEOS_BUCKET = process.env.SUPABASE_VIDEOS_BUCKET_NAME || 'videos';
 
 export async function GET(request: Request) {
-  const session = await getServerSession(authOptions);
+  const supabase = createRouteHandlerClient({ cookies });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   if (!session?.user?.id) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
+  const userId = session.user.id;
 
   // Get the videoId from the URL
   const { searchParams } = new URL(request.url);
@@ -37,7 +41,7 @@ export async function GET(request: Request) {
     }
 
     // Check ownership
-    if (video.userId !== session.user.id) {
+    if (video.userId !== userId) {
       return new NextResponse('Forbidden', { status: 403 });
     }
 

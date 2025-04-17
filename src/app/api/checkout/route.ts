@@ -1,19 +1,21 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { createCheckoutSession, CREDIT_PACKAGES } from '@/lib/stripe';
 
 export async function POST(request: Request) {
   try {
-    // Get the authenticated user
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id || !session?.user?.email) {
+    // Get the authenticated user via Supabase
+    const supabase = createRouteHandlerClient({ cookies });
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id || !session.user.email) {
       return NextResponse.json(
         { error: 'You must be signed in to purchase credits' },
         { status: 401 }
       );
     }
+    const userId = session.user.id;
+    const userEmail = session.user.email;
     
     // Get the requested package from the request
     const body = await request.json();
@@ -37,8 +39,8 @@ export async function POST(request: Request) {
     
     // Create checkout session
     const checkoutResult = await createCheckoutSession(
-      session.user.id,
-      session.user.email,
+      userId,
+      userEmail,
       packageId
     );
     

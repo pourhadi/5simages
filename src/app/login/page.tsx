@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { signIn, useSession } from 'next-auth/react';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
@@ -19,7 +19,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const { status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -34,33 +33,19 @@ export default function LoginPage() {
     },
   });
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (status === 'authenticated') {
-      router.push('/');
-    }
-  }, [status, router]);
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     setIsLoading(true);
     try {
-      const result = await signIn('credentials', {
-        ...data,
-        redirect: false, // Handle redirect manually
-      });
-
-      if (result?.error) {
-        throw new Error(result.error);
-      }
-
-      // Login successful - handled by useEffect redirect
+      await axios.post('/api/login', data, { withCredentials: true });
       toast.success('Login successful!');
-      // router.push('/'); // Let useEffect handle redirect
-
+      router.push('/');
     } catch (error) {
       console.error('Login failed:', error);
       let errorMessage = 'Login failed. Please check your credentials.';
-      if (error instanceof Error) {
+      if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data || errorMessage;
+      } else if (error instanceof Error) {
         errorMessage = error.message;
       }
       toast.error(errorMessage);
@@ -69,15 +54,6 @@ export default function LoginPage() {
     }
   };
 
-  // Show loading state while session is loading
-  if (status === 'loading') {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  // Don't render form if already authenticated (avoids flash)
-  if (status === 'authenticated') {
-    return null;
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

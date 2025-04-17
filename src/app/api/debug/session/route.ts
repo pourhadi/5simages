@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 
 /**
@@ -14,15 +14,17 @@ export async function GET() {
   }
 
   try {
-    const session = await getServerSession(authOptions);
+    const supabase = createRouteHandlerClient({ cookies });
+    const { data: { session } } = await supabase.auth.getSession();
     
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
     
     // Get the user from the database to compare credits
+    const userId = session.user.id;
     const dbUser = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       select: { id: true, email: true, credits: true }
     });
     
@@ -32,18 +34,17 @@ export async function GET() {
       session: {
         id: session.user.id,
         email: session.user.email,
-        credits: session.user.credits || 0,
-        sessionExpires: session.expires,
+        sessionExpires: session.expires_at
+          ? new Date(session.expires_at * 1000).toISOString()
+          : session.expires_at,
       },
-      database: dbUser ? {
-        id: dbUser.id,
-        email: dbUser.email,
-        credits: dbUser.credits || 0,
-      } : null,
-      syncStatus: {
-        isInSync: dbUser ? (session.user.credits || 0) === (dbUser.credits || 0) : false,
-        creditDiff: dbUser ? ((session.user.credits || 0) - (dbUser.credits || 0)) : null
-      }
+      database: dbUser
+        ? {
+            id: dbUser.id,
+            email: dbUser.email,
+            credits: dbUser.credits ?? 0,
+          }
+        : null,
     });
     
   } catch (error) {

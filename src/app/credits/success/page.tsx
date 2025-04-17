@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSWRConfig } from 'swr';
 import Link from 'next/link';
 import { CheckCircle, RefreshCw, AlertCircle } from 'lucide-react';
 
@@ -12,68 +12,48 @@ type ProcessingState = 'loading' | 'success' | 'error';
 // Child component that uses useSearchParams
 function SuccessContent() {
   const router = useRouter();
-  const { status: sessionStatus, update: updateSession } = useSession();
+  const { mutate } = useSWRConfig();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
-  
+
   const [state, setState] = useState<ProcessingState>('loading');
   const [error, setError] = useState<string | null>(null);
   const [creditCount, setCreditCount] = useState<number | null>(null);
-  
+
   useEffect(() => {
     // Redirect to home if no session ID
     if (!sessionId) {
       router.push('/');
       return;
     }
-    
+
     // Verify payment success
     const verifyPayment = async () => {
       try {
         const response = await fetch(`/api/payments/verify?session_id=${sessionId}`);
         const data = await response.json();
-        
+
         if (!response.ok) {
           setState('error');
           setError(data.error || 'Failed to verify payment');
           return;
         }
-        
+
         // Payment verified
         setState('success');
         setCreditCount(data.credits || 0);
         
-        // Update session to reflect new credit balance
-        if (sessionStatus === 'authenticated') {
-          try {
-            console.log('Success page: Updating session with new credit balance');
-            
-            // Multiple session updates to ensure it catches the latest data
-            await updateSession();
-            
-            // Add a small delay then try once more
-            setTimeout(async () => {
-              console.log('Success page: Refreshing session again after delay');
-              await updateSession();
-              
-              // Force reload after updates to ensure UI refreshes
-              setTimeout(() => {
-                window.location.reload();
-              }, 1000);
-            }, 1500);
-          } catch (err) {
-            console.error('Error updating session:', err);
-          }
-        }
+        // Refresh user data
+        mutate('/api/user');
       } catch (err) {
         setState('error');
         setError('An error occurred while verifying your payment');
         console.error('Payment verification error:', err);
       }
     };
-    
+
     verifyPayment();
-  }, [sessionId, router, sessionStatus, updateSession]);
+  }, [sessionId, router, mutate]);
   
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import BuyCredits from '@/components/BuyCredits';
@@ -8,24 +8,26 @@ import VideoGenerator from '@/components/VideoGenerator';
 import Gallery from '@/components/Gallery'; // Placeholder for Gallery component
 
 export default function HomePage() {
-  const { data: session, status } = useSession();
+  const fetcher = (url: string) =>
+    fetch(url, { credentials: 'include' }).then((res) => {
+      if (!res.ok) throw new Error('Unauthorized');
+      return res.json();
+    });
+  const { data: user, error, isLoading } = useSWR('/api/user', fetcher);
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to login if not authenticated and status is not loading
-    if (status === 'unauthenticated') {
+    if (!isLoading && error) {
       router.push('/login');
     }
-  }, [status, router]);
+  }, [isLoading, error, router]);
 
-  // Show loading state
-  if (status === 'loading') {
+  if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><p>Loading...</p></div>;
   }
 
-  // Ensure session and user exist before proceeding
-  if (status === 'authenticated' && session?.user) {
-    const user = session.user;
+  // Ensure user exists before proceeding
+  if (user) {
     const credits = typeof user.credits === 'number' ? user.credits : 0;
 
     return (

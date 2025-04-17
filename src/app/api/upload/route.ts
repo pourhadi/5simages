@@ -1,21 +1,20 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '@/lib/supabaseClient';
-import { authOptions } from '@/lib/authOptions';
 
 // Get bucket name from environment variables
 const BUCKET_NAME = process.env.NEXT_PUBLIC_SUPABASE_IMAGES_BUCKET_NAME || 'images';
 
 export async function POST(request: Request) {
   try {
-    // Check authentication with authOptions to properly include user ID
-    const session = await getServerSession(authOptions);
-    
+    // Authenticate user via Supabase
+    const supabaseAuth = createRouteHandlerClient({ cookies });
+    const { data: { session } } = await supabaseAuth.auth.getSession();
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
     // Get current user ID
     const userId = session.user.id;
     

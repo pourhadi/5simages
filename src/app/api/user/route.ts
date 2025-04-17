@@ -1,19 +1,23 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
     // Get authenticated user from session
-    const session = await getServerSession();
-    
+    const supabase = createRouteHandlerClient({ cookies });
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const userEmail = session.user.email;
     
     // Fetch user from database including credit information
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: userEmail },
       select: {
         id: true,
         name: true,

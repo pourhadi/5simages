@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 
 /**
@@ -9,19 +9,18 @@ import prisma from '@/lib/prisma';
  */
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    
+    const supabase = createRouteHandlerClient({ cookies });
+    const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
-    // Fetch the user from the database to get the accurate credit count
+    const userId = session.user.id;
     const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { 
+      where: { id: userId },
+      select: {
         id: true,
         email: true,
-        credits: true 
+        credits: true
       }
     });
     
@@ -29,13 +28,11 @@ export async function GET() {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
     
-    // Return the database credit count and session credit count for comparison
+    // Return the user's current credit count from the database
     return NextResponse.json({
-      sessionCredits: session.user.credits,
-      databaseCredits: user.credits,
-      inSync: session.user.credits === user.credits,
-      userId: user.id,
-      email: user.email
+      id: user.id,
+      email: user.email,
+      credits: user.credits ?? 0
     });
     
   } catch (error) {

@@ -1,31 +1,26 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
-import { Zap, AlertCircle, CreditCard } from 'lucide-react';
+import { Zap, AlertCircle, CreditCard, Loader2 } from 'lucide-react';
 import { CREDIT_PACKAGES } from '@/lib/stripe';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 export default function CreditsPage() {
-  const { data: session, status, update } = useSession();
+  const fetcher = (url: string) =>
+    fetch(url, { credentials: 'include' }).then(res => {
+      if (!res.ok) throw new Error('Unauthorized');
+      return res.json();
+    });
+  const { data: user, error: authError, isLoading: authLoading } = useSWR('/api/user', fetcher);
   const router = useRouter();
   const [selectedPackage, setSelectedPackage] = useState(CREDIT_PACKAGES[0].id);
   const [isLoading, setIsLoading] = useState(false);
-  const hasRefreshed = useRef(false);
-  
-  // Force a session refresh only once when the component mounts
-  useEffect(() => {
-    if (status === 'authenticated' && !hasRefreshed.current) {
-      console.log('Credits page: Refreshing session');
-      hasRefreshed.current = true;
-      update();
-    }
-  }, [status, update]);
 
   const handlePurchase = async () => {
-    if (status !== 'authenticated') {
+    if (!user) {
       toast.error('You must be signed in to purchase credits');
       router.push('/login');
       return;
@@ -73,8 +68,17 @@ export default function CreditsPage() {
     }).format(price / 100);
   };
 
+  // Show loading state while checking authentication
+  if (authLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin h-8 w-8 text-amber-500" />
+      </div>
+    );
+  }
+
   // Show sign-in prompt for unauthenticated users
-  if (status === 'unauthenticated') {
+  if (authError) {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <div className="text-center bg-gray-800 rounded-lg shadow-md p-8 border border-gray-700">
@@ -83,8 +87,8 @@ export default function CreditsPage() {
           <p className="text-gray-300 mb-6">
             You need to be signed in to purchase credits.
           </p>
-          <Link 
-            href="/login" 
+          <Link
+            href="/login"
             className="inline-block px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
           >
             Sign In
@@ -140,7 +144,7 @@ export default function CreditsPage() {
           <div className="flex justify-between items-center p-4 bg-gray-700 rounded-lg mb-6">
             <div>
               <p className="text-gray-300 font-medium">Current balance</p>
-              <p className="text-2xl font-bold text-white">{session?.user?.credits || 0} credits</p>
+            <p className="text-2xl font-bold text-white">{user?.credits || 0} credits</p>
             </div>
             <button
               onClick={handlePurchase}

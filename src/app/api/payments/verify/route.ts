@@ -1,20 +1,23 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { processPaymentSession } from '@/lib/stripe';
 import { db } from '@/lib/supabaseDb';
 
 export async function GET(request: Request) {
   try {
     // Get authenticated session
-    const session = await getServerSession(authOptions);
-    
+    const supabase = createRouteHandlerClient({ cookies });
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: 'You must be signed in to verify payments' },
         { status: 401 }
       );
     }
+    const userId = session.user.id;
     
     // Get the session ID from the URL
     const { searchParams } = new URL(request.url);
@@ -38,7 +41,7 @@ export async function GET(request: Request) {
     }
     
     // Ensure the payment is for the authenticated user
-    if (result.userId !== session.user.id) {
+    if (result.userId !== userId) {
       return NextResponse.json(
         { error: 'Unauthorized payment verification' },
         { status: 403 }
@@ -46,7 +49,7 @@ export async function GET(request: Request) {
     }
     
     // Get current user credits from Supabase
-    const user = await db.users.findById(session.user.id);
+    const user = await db.users.findById(userId);
     
     if (!user) {
       return NextResponse.json(
@@ -59,7 +62,7 @@ export async function GET(request: Request) {
     
     // Don't add credits here as they are already added by the webhook handler
     // Just return the current balance and the amount that was purchased
-    console.log(`[Verify API] Verified payment for ${creditAmount} credits for user ${session.user.id}. Current balance: ${user.credits || 0}`);
+    console.log(`[Verify API] Verified payment for ${creditAmount} credits for user ${userId}. Current balance: ${user.credits || 0}`);
     
     // Return success with credits information
     return NextResponse.json({

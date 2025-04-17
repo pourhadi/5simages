@@ -1,46 +1,48 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 
+/**
+ * Register a new user: sign up in Supabase Auth, then mirror in Prisma.
+ */
 export async function POST(request: Request) {
+  const supabase = createRouteHandlerClient({ cookies });
   try {
-    const body = await request.json();
-    const { email, name, password } = body;
-
+    const { email, name, password } = await request.json();
     if (!email || !name || !password) {
       return new NextResponse('Missing fields', { status: 400 });
     }
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
+    // Create user in Supabase Auth
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } }
     });
-
-    if (existingUser) {
-      return new NextResponse('Email already in use', { status: 409 }); // 409 Conflict
+    if (signUpError) {
+      return new NextResponse(signUpError.message, { status: 400 });
+    }
+    const user = data.user;
+    if (!user || !user.id) {
+      return new NextResponse('Failed to sign up user', { status: 500 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12); // Salt rounds = 12
-
-    const user = await prisma.user.create({
+    // Mirror user in Prisma DB with same ID and initial credits
+    await prisma.user.create({
       data: {
-        email,
+        id: user.id,
+        email: user.email,
         name,
-        hashedPassword,
-        credits: 5, // Give 5 free credits on registration
-      },
+        credits: 5
+      }
     });
-
-    // Destructure to exclude hashedPassword from response
-    const { hashedPassword: removed, ...userWithoutPassword } = user;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    void removed; // Mark as intentionally unused
-
-    return NextResponse.json(userWithoutPassword);
+    return NextResponse.json({ id: user.id, email: user.email, name, credits: 5 });
   } catch (error) {
-    console.error("REGISTRATION_ERROR", error);
-    return new NextResponse('Internal Error', { status: 500 });
+    console.error('REGISTRATION_ERROR', error);
+    return new NextResponse(
+      error instanceof Error ? error.message : 'Internal Error',
+      { status: 500 }
+    );
   }
-} 
+}
