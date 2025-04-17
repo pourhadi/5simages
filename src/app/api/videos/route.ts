@@ -30,7 +30,13 @@ export async function GET(request: Request) {
   // Request param is required by Next.js API routes even if unused
   void request;
   
-  const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
+  // Initialize Supabase client with awaited headers and cookies to avoid sync dynamic API usage
+  const cookieStore = await cookies();
+  const headerStore = await headers();
+  const supabase = createRouteHandlerSupabaseClient({
+    cookies: () => cookieStore,
+    headers: () => headerStore,
+  });
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session?.user?.id) {
@@ -61,7 +67,13 @@ export async function GET(request: Request) {
 
 // Optional: Add DELETE endpoint for deleting videos
  export async function DELETE(request: Request) {
-    const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
+    // Initialize Supabase client with awaited headers and cookies to avoid sync dynamic API usage
+    const cookieStore = await cookies();
+    const headerStore = await headers();
+    const supabase = createRouteHandlerSupabaseClient({
+      cookies: () => cookieStore,
+      headers: () => headerStore,
+    });
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user?.id) {
         return new NextResponse('Unauthorized', { status: 401 });

@@ -108,7 +108,7 @@ export default function CreditsPage() {
             <Zap className="h-8 w-8 text-amber-500 mr-3" />
             <div>
               <h2 className="text-xl font-semibold text-white">Buy Credits</h2>
-              <p className="text-gray-300">Credits are used to generate videos</p>
+              <p className="text-gray-300">Credits are used to generate GIFs</p>
             </div>
           </div>
 
@@ -127,7 +127,7 @@ export default function CreditsPage() {
                   <h3 className="font-semibold text-lg text-white">{pkg.name}</h3>
                   <div className="my-2 text-3xl font-bold text-white">{formatPrice(pkg.price)}</div>
                   <p className="text-gray-300 text-sm mb-4">
-                    {pkg.credits} credits to generate videos
+                    {pkg.credits} credits to generate GIFs
                   </p>
                   <div className="mt-auto">
                     <div 

@@ -1,0 +1,221 @@
+diff --git a/package.json b/package.json
+--- a/package.json
++++ b/package.json
+@@ "dependencies": {
+-    "zod": "^3.24.2"
++    "zod": "^3.24.2",
++    "fluent-ffmpeg": "^2.1.2",
++    "ffmpeg-static": "^5.1.0"
+
+diff --git a/src/app/api/check-status/route.ts b/src/app/api/check-status/route.ts
+--- a/src/app/api/check-status/route.ts
++++ b/src/app/api/check-status/route.ts
+@@
+-import Replicate from 'replicate';
++import Replicate from 'replicate';
++import fs from 'fs/promises';
++import os from 'os';
++import path from 'path';
++import ffmpeg from 'fluent-ffmpeg';
++import ffmpegPath from 'ffmpeg-static';
+@@
+-const VIDEOS_BUCKET = process.env.SUPABASE_VIDEOS_BUCKET_NAME || 'videos';
++const VIDEOS_BUCKET = process.env.SUPABASE_VIDEOS_BUCKET_NAME || 'videos';
++const GIFS_BUCKET    = process.env.SUPABASE_GIFS_BUCKET_NAME   || 'gifs';
++
++ffmpeg.setFfmpegPath(ffmpegPath);
+@@ if (prediction.status === 'succeeded') {
+-        // Download video from Replicate
+-        const videoResponse = await fetch(videoUrl);
+-        if (!videoResponse.ok) {
+-          throw new Error(`Failed to download from ${videoUrl}: ${videoResponse.statusText}`);
+-        }
+-        const videoData = await videoResponse.arrayBuffer();
+-
+-        // Upload to Supabase
+-        const supabaseAdmin = getSupabaseAdmin();
+-        const videoFileName = `${video.userId}/${randomUUID()}.mp4`;
+-        const { error: uploadError } = await supabaseAdmin.storage
+-          .from(VIDEOS_BUCKET)
+-          .upload(videoFileName, videoData, { contentType: 'video/mp4' });
+-        if (uploadError) {
+-          throw new Error(`Supabase upload error: ${uploadError.message}`);
+-        }
+-        // Get public URL
+-        const { data: urlData } = supabaseAdmin.storage
+-          .from(VIDEOS_BUCKET)
+-          .getPublicUrl(videoFileName);
+-        if (!urlData?.publicUrl) {
+-          throw new Error('Could not get public URL');
+-        }
+-        // Update with success status and Supabase URL
+-        const updatedVideo = await prisma.video.update({
+-          where: { id: videoId },
+-          data: { 
+-            status: 'completed',
+-            videoUrl: urlData.publicUrl
+-          },
+-        });
+-        return NextResponse.json(updatedVideo);
++        // Download video from Replicate
++        const videoResponse = await fetch(videoUrl);
++        if (!videoResponse.ok) {
++          throw new Error(`Failed to download from ${videoUrl}: ${videoResponse.statusText}`);
++        }
++        const videoData = await videoResponse.arrayBuffer();
++
++        // Convert video to GIF (16 fps)
++        const supabaseAdmin = getSupabaseAdmin();
++        const tmpDir      = os.tmpdir();
++        const inputPath   = path.join(tmpDir, `${randomUUID()}.mp4`);
++        const outputPath  = path.join(tmpDir, `${randomUUID()}.gif`);
++        await fs.writeFile(inputPath, Buffer.from(videoData));
++        await new Promise((resolve, reject) => {
++          ffmpeg(inputPath)
++            .outputOptions(['-r 16'])
++            .save(outputPath)
++            .on('end', resolve)
++            .on('error', reject);
++        });
++        const gifData = await fs.readFile(outputPath);
++
++        // Upload GIF to Supabase
++        const gifFileName = `${video.userId}/${randomUUID()}.gif`;
++        const { error: gifsError } = await supabaseAdmin.storage
++          .from(GIFS_BUCKET)
++          .upload(gifFileName, gifData, { contentType: 'image/gif' });
++        if (gifsError) {
++          throw new Error(`Supabase GIF upload error: ${gifsError.message}`);
++        }
++        const { data: gifUrlData } = supabaseAdmin.storage
++          .from(GIFS_BUCKET)
++          .getPublicUrl(gifFileName);
++        if (!gifUrlData?.publicUrl) {
++          throw new Error('Could not get GIF public URL');
++        }
++
++        // Update with success status and GIF URL
++        const updatedVideo = await prisma.video.update({
++          where: { id: videoId },
++          data: {
++            status: 'completed',
++            gifUrl: gifUrlData.publicUrl,
++          },
++        });
++        return NextResponse.json(updatedVideo);
+diff --git a/src/app/gallery/page.tsx b/src/app/gallery/page.tsx
+--- a/src/app/gallery/page.tsx
++++ b/src/app/gallery/page.tsx
+@@ interface Video {
+-  videoUrl: string | null;
++  videoUrl: string | null;
++  gifUrl:   string | null;
+@@ interface Video {
+-  updatedAt: string;
++  gifUrl:   string | null;
++  updatedAt: string;
+@@ <div className="aspect-w-16 aspect-h-9 bg-gray-100">
+-          {video.videoUrl ? (
++          {video.gifUrl ? (
++            <img
++              src={video.gifUrl}
++              alt={video.prompt}
++              className="w-full h-full object-cover"
++            />
++          ) : video.videoUrl ? (
+             <div className="relative">
+               <video 
+                 src={video.videoUrl} 
+diff --git a/src/components/Gallery.tsx b/src/components/Gallery.tsx
+--- a/src/components/Gallery.tsx
++++ b/src/components/Gallery.tsx
+@@ {video.status === 'completed' && video.videoUrl ? (
+-{video.status === 'completed' && video.videoUrl ? (
++{video.status === 'completed' && (video.gifUrl || video.videoUrl) ? (
+@@
+-  {video.imageUrl && (
+-    <div className="aspect-video w-full block group-hover:hidden">
+-      <Image src={video.imageUrl} alt={video.prompt} fill className="object-cover"/>
+-    </div>
+-  )}
+-  <div className="aspect-video w-full hidden group-hover:block">
+-    <video 
+-      src={video.videoUrl} 
+-      className="w-full h-full object-cover"
+-      preload="metadata"
+-      loop
+-      muted
+-      playsInline
+-      autoPlay
+-      onMouseEnter={(e) => e.currentTarget.play()}
+-      onMouseLeave={(e) => {e.currentTarget.pause(); e.currentTarget.currentTime=0;}}
+-    />
+-  </div>
++  <img
++    src={video.gifUrl || video.videoUrl}
++    alt={video.prompt}
++    className="aspect-video w-full object-cover"
++  />
+diff --git a/src/components/VideoDetailModal.tsx b/src/components/VideoDetailModal.tsx
+--- a/src/components/VideoDetailModal.tsx
++++ b/src/components/VideoDetailModal.tsx
+@@ const handleCopyPrompt = () => {
+-  const handleDownload = async () => {
+-    if (!video.videoUrl) return;
++  const handleDownload = async () => {
++    const downloadUrl = video.gifUrl || video.videoUrl;
++    if (!downloadUrl) return;
+     try {
+-      setIsDownloading(true);
++      setIsDownloading(true);
++      const ext = video.gifUrl ? 'gif' : 'mp4';
+       // Create a temporary link element
+       const a = document.createElement('a');
+-      a.href = video.videoUrl;
+-      a.download = `video-${video.id}.mp4`;
++      a.href = downloadUrl;
++      a.download = `download-${video.id}.${ext}`;
+       document.body.appendChild(a);
+       a.click();
+       document.body.removeChild(a);
+@@ const handleShare = async () => {
+-    if (navigator.share && video.videoUrl) {
+-      await navigator.share({
+-        title: 'Check out my AI-generated video',
+-        text: video.prompt,
+-        url: video.videoUrl
+-      });
+-    } else {
+-      navigator.clipboard.writeText(video.videoUrl || '');
++    const shareUrl = video.gifUrl || video.videoUrl;
++    if (navigator.share && shareUrl) {
++      await navigator.share({
++        title: 'Check out my AI-generated video',
++        text: video.prompt,
++        url: shareUrl
++      });
++    } else {
++      navigator.clipboard.writeText(shareUrl || '');
+       toast.success('Video URL copied to clipboard');
+@@ {/* Top section - Video */}
+-          {video.videoUrl ? (
++          {video.gifUrl ? (
++            <img
++              src={video.gifUrl}
++              alt={video.prompt}
++              className="max-w-full max-h-[50vh] object-contain shadow-2xl rounded-lg"
++            />
++          ) : video.videoUrl ? (
+             <div className="relative w-full h-full flex items-center justify-center">
+               <video 
+                 controls 
+                 autoPlay 
+                 loop 
+                 className="max-w-full max-h-[50vh] object-contain shadow-2xl rounded-lg" 
+                 src={video.videoUrl}
+               />
+             </div>
+-          ) : (
++          ) : (
+               <div className="relative w-full h-full flex items-center justify-center">
+                 {/* processing / failed UI */}

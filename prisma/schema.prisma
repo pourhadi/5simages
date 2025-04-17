@@ -70,6 +70,7 @@ model Video {
   imageUrl  String   // URL of the input image
   prompt    String
   videoUrl  String?  // URL of the generated video from Replicate
+  gifUrl    String?  // URL of the generated GIF
   status    String   @default("processing") // processing, completed, failed
   replicatePredictionId String?  @unique // Store the Replicate prediction ID
   createdAt DateTime @default(now())

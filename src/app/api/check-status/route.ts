@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
 import Replicate from 'replicate';
+import fs from 'fs/promises';
+import os from 'os';
+import path from 'path';
+import ffmpeg from 'fluent-ffmpeg';
 import prisma from '@/lib/prisma';
 import { getSupabaseAdmin } from '@/lib/supabaseClient';
 import { randomUUID } from 'crypto';
@@ -10,7 +14,16 @@ const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN || '',
 });
 
-const VIDEOS_BUCKET = process.env.SUPABASE_VIDEOS_BUCKET_NAME || 'videos';
+// Supabase buckets (videos bucket unused in this handler)
+const GIFS_BUCKET = process.env.SUPABASE_GIFS_BUCKET_NAME || 'gifs';
+// Point to the ffmpeg-static binary in node_modules to avoid bundler path issues
+const ffmpegBinary = path.join(
+  process.cwd(),
+  'node_modules',
+  'ffmpeg-static',
+  process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg'
+);
+ffmpeg.setFfmpegPath(ffmpegBinary);
 
 export async function GET(request: Request) {
   const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
@@ -100,39 +113,47 @@ export async function GET(request: Request) {
         if (!videoResponse.ok) {
           throw new Error(`Failed to download from ${videoUrl}: ${videoResponse.statusText}`);
         }
-        
+
         const videoData = await videoResponse.arrayBuffer();
-        
-        // Upload to Supabase
+
+        // Convert video to GIF (16 fps)
         const supabaseAdmin = getSupabaseAdmin();
-        const videoFileName = `${video.userId}/${randomUUID()}.mp4`;
-        
-        const { error: uploadError } = await supabaseAdmin.storage
-          .from(VIDEOS_BUCKET)
-          .upload(videoFileName, videoData, { contentType: 'video/mp4' });
-          
-        if (uploadError) {
-          throw new Error(`Supabase upload error: ${uploadError.message}`);
+        const tmpDir = os.tmpdir();
+        const inputPath = path.join(tmpDir, `${randomUUID()}.mp4`);
+        const outputPath = path.join(tmpDir, `${randomUUID()}.gif`);
+        await fs.writeFile(inputPath, Buffer.from(videoData));
+        await new Promise((resolve, reject) => {
+          ffmpeg(inputPath)
+            .outputOptions(['-r 16'])
+            .save(outputPath)
+            .on('end', resolve)
+            .on('error', reject);
+        });
+        const gifData = await fs.readFile(outputPath);
+
+        // Upload GIF to Supabase
+        const gifFileName = `${video.userId}/${randomUUID()}.gif`;
+        const { error: gifsError } = await supabaseAdmin.storage
+          .from(GIFS_BUCKET)
+          .upload(gifFileName, gifData, { contentType: 'image/gif' });
+        if (gifsError) {
+          throw new Error(`Supabase GIF upload error: ${gifsError.message}`);
         }
-        
-        // Get public URL
-        const { data: urlData } = supabaseAdmin.storage
-          .from(VIDEOS_BUCKET)
-          .getPublicUrl(videoFileName);
-          
-        if (!urlData?.publicUrl) {
-          throw new Error('Could not get public URL');
+        const { data: gifUrlData } = await supabaseAdmin.storage
+          .from(GIFS_BUCKET)
+          .getPublicUrl(gifFileName);
+        if (!gifUrlData?.publicUrl) {
+          throw new Error('Could not get GIF public URL');
         }
-        
-        // Update with success status and Supabase URL
+
+        // Update with success status and GIF URL
         const updatedVideo = await prisma.video.update({
           where: { id: videoId },
-          data: { 
+          data: {
             status: 'completed',
-            videoUrl: urlData.publicUrl
+            gifUrl: gifUrlData.publicUrl,
           },
         });
-        
         return NextResponse.json(updatedVideo);
         
       } catch (error) {

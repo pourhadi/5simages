@@ -240,45 +240,15 @@ export default function Gallery() {
               {videos.map((video) => (
                 <div key={video.id} className="border border-gray-700 rounded-lg overflow-hidden shadow-sm relative group bg-gray-900 cursor-pointer">
                   {/* Display based on status */} 
-                  {video.status === 'completed' && video.videoUrl ? (
-                      <div className="relative group">
+                  {video.status === 'completed' && (video.gifUrl || video.videoUrl) ? (
+                      <div className="relative group aspect-video w-full">
                         {/* Image thumbnail shown by default */}
-                        {video.imageUrl && (
-                          <div className="aspect-video w-full block group-hover:hidden">
-                            <Image 
-                              src={video.imageUrl} 
-                              alt={video.prompt} 
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        )}
-                        
-                        {/* Video shown/played on hover */}
-                        <div className="aspect-video w-full hidden group-hover:block">
-                          <video 
-                            src={video.videoUrl} 
-                            className="w-full h-full object-cover"
-                            preload="metadata"
-                            key={video.videoUrl}
-                            loop
-                            muted
-                            playsInline
-                            autoPlay
-                            onMouseEnter={(e) => {
-                              try {
-                                e.currentTarget.play().catch(err => console.log('Autoplay prevented:', err));
-                              } catch (err) {
-                                console.log('Error playing video:', err);
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.pause();
-                              e.currentTarget.currentTime = 0;
-                            }}
-                          >
-                          </video>
-                        </div>
+                        <Image
+                          src={(video.gifUrl || video.videoUrl)!}
+                          alt={video.prompt}
+                          fill
+                          className="object-cover"
+                        />
                         
                         {/* Overlay with maximize icon for opening detail view */}
                         <div 

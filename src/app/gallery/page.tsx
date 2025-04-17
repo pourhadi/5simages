@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, Info, AlertCircle, Maximize2 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import BuyCreditsButton from '@/components/BuyCreditsButton';
 import VideoDetailModal from '@/components/VideoDetailModal';
 import toast from 'react-hot-toast';
@@ -14,6 +15,7 @@ interface Video {
   id: string;
   imageUrl: string;
   videoUrl: string | null;
+  gifUrl:   string | null;
   prompt: string;
   status: string;
   createdAt: string;
@@ -256,8 +258,15 @@ function GalleryContent() {
               className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow relative group"
               onClick={() => openVideoDetail(video)}
             >
-              <div className="aspect-w-16 aspect-h-9 bg-gray-100">
-                {video.videoUrl ? (
+          <div className="relative aspect-w-16 aspect-h-9 bg-gray-100">
+          {video.gifUrl ? (
+            <Image
+              src={video.gifUrl!}
+              alt={video.prompt}
+              fill
+              className="object-cover"
+            />
+          ) : video.videoUrl ? (
                   <div className="relative">
                     <video 
                       src={video.videoUrl} 
@@ -284,11 +293,11 @@ function GalleryContent() {
                   </div>
                 ) : (
                   <div className="w-full h-full relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={video.imageUrl} 
-                      alt={video.prompt} 
-                      className="w-full h-full object-cover"
+                    <Image
+                      src={video.imageUrl!}
+                      alt={video.prompt}
+                      fill
+                      className="object-cover"
                     />
                     {video.status === 'processing' && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">

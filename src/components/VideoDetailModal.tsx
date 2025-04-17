@@ -48,15 +48,17 @@ export default function VideoDetailModal({ video, isOpen, onClose, onDelete, onR
   };
   
   const handleDownload = async () => {
-    if (!video.videoUrl) return;
+    const downloadUrl = video.gifUrl || video.videoUrl;
+    if (!downloadUrl) return;
     
     try {
       setIsDownloading(true);
+      const ext = video.gifUrl ? 'gif' : 'mp4';
       
       // Create a temporary link element
       const a = document.createElement('a');
-      a.href = video.videoUrl;
-      a.download = `video-${video.id}.mp4`;
+      a.href = downloadUrl;
+      a.download = `download-${video.id}.${ext}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -72,15 +74,15 @@ export default function VideoDetailModal({ video, isOpen, onClose, onDelete, onR
   
   const handleShare = async () => {
     try {
-      if (navigator.share && video.videoUrl) {
+      const shareUrl = video.gifUrl || video.videoUrl;
+      if (navigator.share && shareUrl) {
         await navigator.share({
           title: 'Check out my AI-generated video',
           text: video.prompt,
-          url: video.videoUrl
+          url: shareUrl
         });
       } else {
-        // Fallback if Web Share API not available
-        navigator.clipboard.writeText(video.videoUrl || '');
+        navigator.clipboard.writeText(shareUrl || '');
         toast.success('Video URL copied to clipboard');
       }
     } catch (err) {
@@ -157,13 +159,22 @@ export default function VideoDetailModal({ video, isOpen, onClose, onDelete, onR
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top section - Video */}
           <div className="w-full flex items-center justify-center p-4 lg:p-6 bg-black/50 overflow-hidden">
-            {video.videoUrl ? (
+            {video.gifUrl ? (
+              <div className="relative w-full h-[50vh] flex items-center justify-center">
+                <Image
+                  src={video.gifUrl!}
+                  alt={video.prompt}
+                  fill
+                  className="object-contain shadow-2xl rounded-lg"
+                />
+              </div>
+            ) : video.videoUrl ? (
               <div className="relative w-full h-full flex items-center justify-center">
-                <video 
-                  controls 
-                  autoPlay 
-                  loop 
-                  className="max-w-full max-h-[50vh] object-contain shadow-2xl rounded-lg" 
+                <video
+                  controls
+                  autoPlay
+                  loop
+                  className="max-w-full max-h-[50vh] object-contain shadow-2xl rounded-lg"
                   src={video.videoUrl}
                 />
               </div>
