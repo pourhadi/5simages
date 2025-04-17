@@ -24,17 +24,11 @@ const nextConfig = {
   images: {
     domains: ['afzjzoefogvzdnqmnidz.supabase.co'],
   },
-  // Prevent bundling ffmpeg-static so require('ffmpeg-static') works at runtime
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      // Ensure externals is an array
-      config.externals = Array.isArray(config.externals)
-        ? config.externals
-        : [];
-      // Mark ffmpeg-static as external
-      config.externals.push('ffmpeg-static');
+  // Ensure ffmpeg-static binary is packaged with serverless functions
+  experimental: {
+    outputFileTracingIncludes: {
+      [path.join(__dirname, 'node_modules', 'ffmpeg-static')]: ['ffmpeg']
     }
-    return config;
   },
 };
 
