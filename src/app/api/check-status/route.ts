@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
 import Replicate from 'replicate';
-import { Blob } from 'buffer';
 
 import prisma from '@/lib/prisma';
 import { getSupabaseAdmin } from '@/lib/supabaseClient';
@@ -16,9 +15,13 @@ const replicate = new Replicate({
 const GIFS_BUCKET = process.env.SUPABASE_GIFS_BUCKET_NAME || 'gifs';
 export async function GET(request: Request) {
   // Initialize Supabase client for this route: await cookies() and headers() to avoid sync dynamic API usage
+  // Properly await cookies and headers to avoid sync dynamic API usage
   const cookiesStore = await cookies();
   const headersStore = await headers();
-  const supabase = createRouteHandlerSupabaseClient({ cookies: cookiesStore, headers: headersStore });
+  const supabase = createRouteHandlerSupabaseClient({
+    cookies: () => cookiesStore,
+    headers: () => headersStore,
+  });
   const {
     data: { session },
   } = await supabase.auth.getSession();
