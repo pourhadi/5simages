@@ -135,7 +135,7 @@ export default function VideoGenerator() {
     <div className="bg-gray-800 shadow-md rounded-lg p-6">
       {/* Header with title and credit info */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-white">Generate Video</h2>
+        <h2 className="text-xl font-semibold text-white">Generate GIF</h2>
         <div className="flex items-center gap-2 bg-gray-700 px-3 py-1 rounded-full">
           <Zap size={16} className="text-[#FF7733]" />
           <span className="font-medium text-white">{userCredits} credits</span>
@@ -186,12 +186,12 @@ export default function VideoGenerator() {
       {/* Prompt input */}
       <div className="mb-4">
         <label htmlFor="prompt" className="block text-sm font-medium text-gray-300 mb-1">
-          Describe your video
+          Describe your GIF
         </label>
         <textarea 
           id="prompt"
           className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF7733] focus:border-transparent text-white"
-          placeholder="Describe what you want to see in the video..."
+          placeholder="Describe what you want to see in the GIF..."
           rows={3}
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
@@ -202,7 +202,7 @@ export default function VideoGenerator() {
       {/* Credit info and generate button */}
       <div className="flex justify-between items-center">
         <p className="text-sm text-gray-400">
-          Generating a video will use 1 credit.
+          Generating a GIF will use 1 credit.
         </p>
         <button
           onClick={generateVideo}
@@ -227,7 +227,7 @@ export default function VideoGenerator() {
         <div className="mt-4 p-3 bg-yellow-900/50 text-yellow-200 rounded-md text-sm border border-yellow-800">
           <p className="flex items-center gap-2">
             <Zap size={16} />
-            <span>You need credits to generate videos. Purchase credits from the gallery page.</span>
+            <span>You need credits to generate GIFs. Purchase credits from the gallery page.</span>
           </p>
         </div>
       )}

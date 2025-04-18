@@ -2,12 +2,8 @@ import { NextResponse } from 'next/server';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
 import Replicate from 'replicate';
-import fs from 'fs/promises';
-import os from 'os';
-import path from 'path';
-import ffmpeg from 'fluent-ffmpeg';
-// Use ffmpeg-static to locate the ffmpeg binary at runtime
-import ffmpegPath from 'ffmpeg-static';
+import { Blob } from 'buffer';
+
 import prisma from '@/lib/prisma';
 import { getSupabaseAdmin } from '@/lib/supabaseClient';
 import { randomUUID } from 'crypto';
@@ -18,11 +14,11 @@ const replicate = new Replicate({
 
 // Supabase buckets (videos bucket unused in this handler)
 const GIFS_BUCKET = process.env.SUPABASE_GIFS_BUCKET_NAME || 'gifs';
-// Configure fluent-ffmpeg to use the ffmpeg-static binary
-ffmpeg.setFfmpegPath(ffmpegPath);
-
 export async function GET(request: Request) {
-  const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
+  // Initialize Supabase client for this route: await cookies() and headers() to avoid sync dynamic API usage
+  const cookiesStore = await cookies();
+  const headersStore = await headers();
+  const supabase = createRouteHandlerSupabaseClient({ cookies: cookiesStore, headers: headersStore });
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -112,26 +108,57 @@ export async function GET(request: Request) {
 
         const videoData = await videoResponse.arrayBuffer();
 
-        // Convert video to GIF (16 fps)
+        // Upload video to external GIF conversion service
         const supabaseAdmin = getSupabaseAdmin();
-        const tmpDir = os.tmpdir();
-        const inputPath = path.join(tmpDir, `${randomUUID()}.mp4`);
-        const outputPath = path.join(tmpDir, `${randomUUID()}.gif`);
-        await fs.writeFile(inputPath, Buffer.from(videoData));
-        await new Promise((resolve, reject) => {
-          ffmpeg(inputPath)
-            .outputOptions(['-r 16'])
-            .save(outputPath)
-            .on('end', resolve)
-            .on('error', reject);
-        });
-        const gifData = await fs.readFile(outputPath);
-
+        const apiKey = 'dabf5af2d8d1138dee335941f670a1c2a6218cd2197b95f2178d8d21247e8bc6';
+        // Create GIF conversion job
+        const formData = new FormData();
+        formData.append('fps', '16');
+        formData.append('file', new Blob([videoData], { type: 'video/mp4' }), 'video.mp4');
+        const createJobResponse = await fetch(
+          'https://video2gif-580559758743.us-central1.run.app/jobs',
+          {
+            method: 'POST',
+            headers: { 'X-API-KEY': apiKey },
+            body: formData,
+          }
+        );
+        if (!createJobResponse.ok) {
+          throw new Error(`Failed to create GIF job: ${createJobResponse.statusText}`);
+        }
+        const { job_id: jobId } = await createJobResponse.json();
+        // Poll for job status
+        let jobStatus = '';
+        do {
+          await new Promise((res) => setTimeout(res, 2000));
+          const statusResponse = await fetch(
+            `https://video2gif-580559758743.us-central1.run.app/jobs/${jobId}`,
+            { headers: { 'X-API-KEY': apiKey } }
+          );
+          if (!statusResponse.ok) {
+            throw new Error(`Failed to get job status: ${statusResponse.statusText}`);
+          }
+          const statusJson = await statusResponse.json();
+          jobStatus = statusJson.status;
+          if (jobStatus === 'failed') {
+            throw new Error('GIF conversion failed');
+          }
+        } while (jobStatus !== 'finished');
+        // Download the generated GIF
+        const gifResponse = await fetch(
+          `https://video2gif-580559758743.us-central1.run.app/jobs/${jobId}/gif`,
+          { headers: { 'X-API-KEY': apiKey } }
+        );
+        if (!gifResponse.ok) {
+          throw new Error(`Failed to download GIF: ${gifResponse.statusText}`);
+        }
+        const gifArrayBuffer = await gifResponse.arrayBuffer();
+        const gifBuffer = Buffer.from(gifArrayBuffer);
         // Upload GIF to Supabase
         const gifFileName = `${video.userId}/${randomUUID()}.gif`;
         const { error: gifsError } = await supabaseAdmin.storage
           .from(GIFS_BUCKET)
-          .upload(gifFileName, gifData, { contentType: 'image/gif' });
+          .upload(gifFileName, gifBuffer, { contentType: 'image/gif' });
         if (gifsError) {
           throw new Error(`Supabase GIF upload error: ${gifsError.message}`);
         }
@@ -141,7 +168,6 @@ export async function GET(request: Request) {
         if (!gifUrlData?.publicUrl) {
           throw new Error('Could not get GIF public URL');
         }
-
         // Update with success status and GIF URL
         const updatedVideo = await prisma.video.update({
           where: { id: videoId },

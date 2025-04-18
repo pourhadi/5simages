@@ -264,7 +264,7 @@ function GalleryContent() {
               src={video.gifUrl!}
               alt={video.prompt}
               fill
-              className="object-cover"
+              className="object-contain"
             />
           ) : video.videoUrl ? (
                   <div className="relative">
@@ -272,7 +272,7 @@ function GalleryContent() {
                       src={video.videoUrl} 
                       muted 
                       loop
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       poster={video.imageUrl}
                       preload="metadata"
                       onMouseEnter={(e) => {
@@ -297,7 +297,7 @@ function GalleryContent() {
                       src={video.imageUrl!}
                       alt={video.prompt}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                     />
                     {video.status === 'processing' && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
