@@ -1,0 +1,30 @@
+# Docker ignore file
+
+# Node modules and package logs
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Local Next.js build output
+.next
+out
+build
+
+# Docker and git files
+Dockerfile
+.dockerignore
+.git
+.gitignore
+
+# IDE directories
+.vscode
+
+# Environment files
+.env*
+
+# Logs and temporary files
+*.log
+
+# Coverage reports
+coverage

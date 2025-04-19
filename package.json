@@ -10,7 +10,7 @@
     "db:migrate:create": "node prisma/create-migration.js",
     "db:seed": "node prisma/seed.js",
     "build": "prisma generate && next build",
-    "start": "next start",
+    "start": "next start -p 8080",
     "lint": "next lint",
     "postinstall": "prisma generate"
   },
