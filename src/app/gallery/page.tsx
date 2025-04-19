@@ -253,12 +253,12 @@ function GalleryContent() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {videos.map((video) => (
-            <div 
-              key={video.id} 
-              className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow relative group"
+            <div
+              key={video.id}
               onClick={() => openVideoDetail(video)}
+              className="relative group cursor-pointer overflow-hidden rounded-2xl bg-[#1A1A1D] shadow-md hover:shadow-xl transition-shadow duration-300"
             >
-          <div className="relative aspect-w-16 aspect-h-9 bg-gray-100">
+          <div className="relative aspect-w-16 aspect-h-9 bg-[#0D0D0E]">
           {video.gifUrl ? (
             <Image
               src={video.gifUrl!}
@@ -348,10 +348,12 @@ function GalleryContent() {
       {/* Video Detail Modal */}
       <VideoDetailModal
         video={selectedVideo}
+        videos={videos.map(convertToPrismaVideo)}
         isOpen={isModalOpen}
         onClose={closeVideoDetail}
         onDelete={handleDelete}
         onRegenerate={handleRegenerate}
+        onNavigate={(vid) => setSelectedVideo(vid)}
       />
     </div>
   );

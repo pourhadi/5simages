@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gray-900 text-gray-100`}>
+      <body className={`${inter.className} bg-[#0D0D0E] text-gray-100`}>
         <AuthProvider>
           <Toaster position="bottom-right" toastOptions={{ 
             style: {
@@ -32,7 +32,7 @@ export default function RootLayout({
             },
           }} />
           <Navbar />
-          <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          <main className="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             {children}
           </main>
           {process.env.NODE_ENV === 'development' && <RefreshCredits />}

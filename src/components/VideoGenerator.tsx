@@ -132,33 +132,33 @@ export default function VideoGenerator() {
   };
 
   return (
-    <div className="bg-gray-800 shadow-md rounded-lg p-6">
+    <div className="bg-[#1A1A1D] shadow-xl rounded-2xl p-8">
       {/* Header with title and credit info */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-white">Generate GIF</h2>
-        <div className="flex items-center gap-2 bg-gray-700 px-3 py-1 rounded-full">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-white">Generate GIF</h2>
+        <div className="flex items-center gap-2 bg-[#0D0D0E] px-4 py-2 rounded-full">
           <Zap size={16} className="text-[#FF7733]" />
-          <span className="font-medium text-white">{userCredits} credits</span>
+          <span className="font-semibold text-white">{userCredits} credits</span>
         </div>
       </div>
       
       {/* Image dropzone */}
       {!imagePreview ? (
-        <div 
-          {...getRootProps()} 
-          className={`border-2 border-dashed rounded-lg p-8 mb-4 text-center cursor-pointer transition-colors ${
-            isDragActive ? 'border-[#FF7733] bg-gray-700' : 'border-gray-600 hover:border-gray-500'
+        <div
+          {...getRootProps()}
+          className={`border-2 border-dashed rounded-2xl p-8 mb-6 text-center cursor-pointer transition-colors duration-300 ${
+            isDragActive ? 'border-[#FF7733] bg-[#0D0D0E]' : 'border-gray-600 bg-[#0D0D0E] hover:border-[#FF7733]'
           }`}
         >
           <input {...getInputProps()} />
           <div className="flex flex-col items-center">
-            <Upload className="text-gray-400 mb-2" size={32} />
+            <Upload className="text-gray-400 mb-3" size={36} />
             {isDragActive ? (
-              <p className="text-[#FF7733]">Drop your image here</p>
+              <p className="text-[#FF7733] font-medium">Drop your image here</p>
             ) : (
               <>
-                <p className="text-gray-300">Drag & drop an image here, or <span className="text-[#FF7733]">browse</span></p>
-                <p className="text-gray-500 text-sm mt-1">JPG, PNG • Max size: 5MB</p>
+                <p className="text-gray-300">Drag & drop an image here, or <span className="text-[#FF7733] font-medium">browse</span></p>
+                <p className="text-gray-500 text-sm mt-2">JPG, PNG • Max size: 5MB</p>
               </>
             )}
           </div>
@@ -184,13 +184,13 @@ export default function VideoGenerator() {
       )}
       
       {/* Prompt input */}
-      <div className="mb-4">
+      <div className="mb-6">
         <label htmlFor="prompt" className="block text-sm font-medium text-gray-300 mb-1">
           Describe your GIF
         </label>
-        <textarea 
+        <textarea
           id="prompt"
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF7733] focus:border-transparent text-white"
+          className="w-full px-4 py-3 bg-[#0D0D0E] border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF7733] focus:border-transparent text-white placeholder-gray-400"
           placeholder="Describe what you want to see in the GIF..."
           rows={3}
           value={prompt}
@@ -200,14 +200,14 @@ export default function VideoGenerator() {
       </div>
       
       {/* Credit info and generate button */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mt-4">
         <p className="text-sm text-gray-400">
           Generating a GIF will use 1 credit.
         </p>
         <button
           onClick={generateVideo}
           disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits <= 0}
-          className="flex items-center justify-center gap-2 bg-[#FF7733] hover:bg-[#E05E20] text-white px-4 py-2 rounded-lg disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF9900] to-[#FF7733] hover:from-[#FF7733] hover:to-[#E05E20] text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
         >
           {isGenerating ? (
             <>
@@ -224,7 +224,7 @@ export default function VideoGenerator() {
       </div>
       
       {userCredits <= 0 && (
-        <div className="mt-4 p-3 bg-yellow-900/50 text-yellow-200 rounded-md text-sm border border-yellow-800">
+        <div className="mt-6 p-4 bg-yellow-900/50 text-yellow-200 rounded-xl text-sm border border-yellow-800">
           <p className="flex items-center gap-2">
             <Zap size={16} />
             <span>You need credits to generate GIFs. Purchase credits from the gallery page.</span>

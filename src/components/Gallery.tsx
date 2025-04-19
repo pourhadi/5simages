@@ -9,7 +9,7 @@ import { Trash2, RefreshCw, AlertTriangle, Maximize2, Zap } from 'lucide-react';
 import Image from 'next/image';
 import VideoDetailModal from './VideoDetailModal';
 import CreditPurchase from './CreditPurchase';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 // TODO: Fetch and display user's generated videos
 // TODO: Add functionality for viewing and deleting videos
@@ -17,7 +17,11 @@ import { useSearchParams } from 'next/navigation';
 // Define a fetcher function for SWR
 const axiosFetcher = (url: string) => axios.get(url).then(res => res.data);
 
-export default function Gallery() {
+interface GalleryProps {
+  limitItems?: number;
+  showViewAll?: boolean;
+}
+export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
   const searchParams = useSearchParams();
   const showCreditsParam = searchParams.get('showCredits');
   
@@ -61,6 +65,13 @@ export default function Gallery() {
     data: userData,
     error: userDataError,
   } = useSWR('/api/user', axiosFetcher);
+  
+  // Limit displayed videos if required
+  const displayedVideos: Video[] = Array.isArray(videos)
+    ? typeof limitItems === 'number'
+      ? videos.slice(0, limitItems)
+      : videos
+    : [];
   
   // User credits (default to 0 if not loaded yet)
   const userCredits = userData?.credits || 0;
@@ -185,7 +196,7 @@ export default function Gallery() {
     <>
       <div className="space-y-6">
         {/* Credit status and purchase UI */}
-        <div id="credits-section" className="bg-gray-800 shadow-md rounded-lg p-4">
+        <div id="credits-section" className="bg-[#1A1A1D] shadow-xl rounded-2xl p-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Zap size={20} className="text-[#FF7733]" />
@@ -214,7 +225,7 @@ export default function Gallery() {
         </div>
         
         {/* Gallery container */}
-        <div className="bg-gray-800 shadow-md rounded-lg p-6">
+        <div className="bg-[#1A1A1D] shadow-xl rounded-2xl p-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-white">Your GIF Gallery</h2>
             {/* Refresh button can still manually trigger revalidation if needed */}
@@ -235,10 +246,14 @@ export default function Gallery() {
             <p className="text-gray-400">You haven&apos;t generated any videos yet, or they are still processing.</p>
           )}
 
-          {videos && videos.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {videos && videos.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {videos.map((video) => (
-                <div key={video.id} className="border border-gray-700 rounded-lg overflow-hidden shadow-sm relative group bg-gray-900 cursor-pointer">
+                <div
+                  key={video.id}
+                  onClick={() => openVideoDetail(video)}
+                  className="relative group cursor-pointer overflow-hidden rounded-2xl bg-[#1A1A1D] shadow-md hover:shadow-xl transition-shadow duration-300"
+                >
                   {/* Display based on status */} 
                   {video.status === 'completed' && (video.gifUrl || video.videoUrl) ? (
                       <div className="relative group aspect-video w-full">
@@ -280,9 +295,9 @@ export default function Gallery() {
                   )}
 
                   {/* Info Overlay */}
-                  <div className="p-2 absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p className="text-xs text-white truncate font-medium mb-1" title={video.prompt}>{video.prompt}</p>
-                  </div>
+                      <div className="p-3 absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <p className="text-sm text-white truncate font-semibold" title={video.prompt}>{video.prompt}</p>
+                      </div>
 
                   {/* Delete Button (appears on hover) */} 
                   <button 
@@ -305,10 +320,12 @@ export default function Gallery() {
       {/* Video Detail Modal - moved outside the main container */}
       <VideoDetailModal
         video={selectedVideo}
+        videos={videos || []}
         isOpen={isModalOpen}
         onClose={closeVideoDetail}
         onDelete={handleDelete}
         onRegenerate={handleRegenerate}
+        onNavigate={(vid) => setSelectedVideo(vid)}
       />
     </>
   );

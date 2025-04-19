@@ -32,16 +32,16 @@ export default function HomePage() {
 
     return (
       <div className="space-y-8">
-        <h1 className="text-3xl font-bold text-gray-900">Welcome, {user.name || user.email}!</h1>
-
+        <h1 className="text-4xl font-extrabold text-white">Welcome, {user.name || user.email}!</h1>
         {credits > 0 ? (
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <VideoGenerator />
-            {/* Placeholder for Gallery */}
             <Gallery />
           </div>
         ) : (
-          <BuyCredits />
+          <div className="max-w-md mx-auto">
+            <BuyCredits />
+          </div>
         )}
       </div>
     );
