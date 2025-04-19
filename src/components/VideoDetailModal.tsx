@@ -119,11 +119,11 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
   
   return (
     <div
-      className="fixed inset-0 z-[9999] bg-black/80 flex items-center justify-center"
+      className="fixed inset-0 z-[9999] bg-black/80 flex justify-center overflow-auto"
       onClick={onClose}
     >
       <div
-        className="w-[95%] max-w-7xl max-h-[95vh] bg-[#1A1A1D] rounded-2xl overflow-auto lg:overflow-hidden border border-[#2A2A2D] shadow-2xl flex flex-col"
+        className="w-[95%] max-w-7xl h-screen bg-[#1A1A1D] rounded-2xl overflow-auto border border-[#2A2A2D] shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top navigation bar */}
