@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Video } from '@prisma/client';
 import Image from 'next/image';
-import { X, ArrowLeft, Download, Share, Clock, Copy, Check, Zap, Trash2, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Download, Share, Clock, Copy, Check, Zap, Trash2, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface VideoDetailModalProps {
@@ -119,11 +119,11 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
   
   return (
     <div
-      className="fixed inset-0 z-[9999] bg-black/80 flex justify-center overflow-auto"
+      className="fixed inset-0 z-[9999] bg-black/80 flex justify-center items-start overflow-auto"
       onClick={onClose}
     >
       <div
-        className="w-[95%] max-w-7xl h-screen bg-[#1A1A1D] rounded-2xl overflow-auto border border-[#2A2A2D] shadow-2xl flex flex-col"
+        className="w-[95%] max-w-7xl max-h-[calc(100vh-4rem)] my-8 bg-[#1A1A1D] rounded-2xl overflow-auto border border-[#2A2A2D] shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top navigation bar */}

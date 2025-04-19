@@ -36,7 +36,7 @@ export default function HomePage() {
         {credits > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <VideoGenerator />
-            <Gallery />
+            <Gallery limitItems={9} showViewAll />
           </div>
         ) : (
           <div className="max-w-md mx-auto">

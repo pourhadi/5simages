@@ -24,6 +24,7 @@ interface GalleryProps {
 export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
   const searchParams = useSearchParams();
   const showCreditsParam = searchParams.get('showCredits');
+  const router = useRouter();
   
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,8 +67,8 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
     error: userDataError,
   } = useSWR('/api/user', axiosFetcher);
   
-  // Limit displayed videos if required
-  const displayedVideos: Video[] = Array.isArray(videos)
+  // Only show up to limitItems if specified
+  const displayedVideos = Array.isArray(videos)
     ? typeof limitItems === 'number'
       ? videos.slice(0, limitItems)
       : videos
@@ -246,9 +247,9 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
             <p className="text-gray-400">You haven&apos;t generated any videos yet, or they are still processing.</p>
           )}
 
-              {videos && videos.length > 0 && (
+              {displayedVideos.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {videos.map((video) => (
+              {displayedVideos.map((video) => (
                 <div
                   key={video.id}
                   onClick={() => openVideoDetail(video)}
@@ -312,6 +313,16 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
                   </button>
                 </div>
               ))}
+            </div>
+          )}
+          {showViewAll && (
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={() => router.push('/gallery')}
+                className="bg-[#FF7733] hover:bg-[#E05E20] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                View all GIFs
+              </button>
             </div>
           )}
         </div>
