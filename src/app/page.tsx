@@ -41,7 +41,7 @@ export default function HomePage() {
           <button onClick={() => router.push('/login')} className="mt-6 bg-[#FF7733] hover:bg-[#E05E20] text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors">
             Log In
           </button>
-          <button onClick={() => router.push('/signup')} className="mt-6 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors">
+          <button onClick={() => router.push('/register')} className="mt-6 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors">
             Sign Up
           </button>
         </div>
