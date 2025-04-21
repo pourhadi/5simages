@@ -256,11 +256,11 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
                   className="relative group cursor-pointer overflow-hidden rounded-2xl bg-[#1A1A1D] shadow-md hover:shadow-xl transition-shadow duration-300"
                 >
                   {/* Display based on status */} 
-                  {video.status === 'completed' && (video.gifUrl || video.videoUrl) ? (
+                  {video.status === 'completed' && video.imageUrl ? (
                       <div className="relative group aspect-video w-full">
                         {/* Image thumbnail shown by default */}
                         <Image
-                          src={(video.gifUrl || video.videoUrl)!}
+                          src={video.imageUrl!}
                           alt={video.prompt}
                           fill
                           className="object-cover"
