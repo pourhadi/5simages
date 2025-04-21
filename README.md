@@ -1,6 +1,6 @@
-# FirstFrame.ai
+# FirstFrame.app
 
-FirstFrame.ai is a web application that transforms static images into engaging videos using AI technology.
+FirstFrame.app is a web application that transforms static images into engaging videos using AI technology.
 
 ## Getting Started
 
