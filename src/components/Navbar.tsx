@@ -89,24 +89,26 @@ export default function Navbar() {
             </Link>
             
             {/* Desktop Nav Links */}
-            <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
-              <Link
-                href="/"
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  pathname === '/' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                }`}
-              >
-                Create
-              </Link>
-              <Link
-                href="/gallery"
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  pathname === '/gallery' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                }`}
-              >
-                Gallery
-              </Link>
-            </div>
+            {user && (
+              <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
+                <Link
+                  href="/"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                    pathname === '/' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  }`}
+                >
+                  Create
+                </Link>
+                <Link
+                  href="/gallery"
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                    pathname === '/gallery' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  }`}
+                >
+                  Gallery
+                </Link>
+              </div>
+            )}
           </div>
           
           {/* Mobile menu button */}
@@ -214,26 +216,28 @@ export default function Navbar() {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link
-              href="/"
-              className={`block px-3 py-2 rounded-md text-base font-medium ${
-                pathname === '/' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-              }`}
-              onClick={closeMenu}
-            >
-              Create
-            </Link>
-            <Link
-              href="/gallery"
-              className={`block px-3 py-2 rounded-md text-base font-medium ${
-                pathname === '/gallery' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-              }`}
-              onClick={closeMenu}
-            >
-              Gallery
-            </Link>
-          </div>
+          {user && (
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <Link
+                href="/"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === '/' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                }`}
+                onClick={closeMenu}
+              >
+                Create
+              </Link>
+              <Link
+                href="/gallery"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  pathname === '/gallery' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                }`}
+                onClick={closeMenu}
+              >
+                Gallery
+              </Link>
+            </div>
+          )}
           
           {/* Mobile user section */}
           {user && (
