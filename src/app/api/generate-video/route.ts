@@ -26,8 +26,9 @@ export async function POST(request: Request) {
   const userId = session.user.id;
 
   try {
+    // Parse request body; optional duration in seconds
     const body = await request.json();
-    const { imageUrl, prompt } = body;
+    const { imageUrl, prompt, duration } = body;
 
     if (!imageUrl || !prompt) {
       return new NextResponse('Missing imageUrl or prompt', { status: 400 });
@@ -62,35 +63,65 @@ export async function POST(request: Request) {
       return newVideo;
     });
 
+    // Attempt primary video generation via external API
+    const PRIMARY_API_URL = process.env.VIDEO_API_URL;
+    const PRIMARY_API_TOKEN = process.env.VIDEO_API_TOKEN;
+    let jobId: string | null = null;
+    if (PRIMARY_API_URL && PRIMARY_API_TOKEN) {
+      try {
+        // Fetch the input image
+        const imgRes = await fetch(imageUrl);
+        if (!imgRes.ok) throw new Error(`Failed to fetch input image: ${imgRes.statusText}`);
+        const imgBuffer = await imgRes.arrayBuffer();
+        // Prepare form data
+        const form = new FormData();
+        form.append('prompt', prompt);
+        // Use provided duration or default to 5 seconds
+        form.append('duration', String(duration ?? 5));
+        form.append('image', new Blob([imgBuffer], { type: imgRes.headers.get('content-type') || 'application/octet-stream' }), 'input.png');
+        // Call external generate endpoint
+        const genRes = await fetch(`${PRIMARY_API_URL.replace(/\/+$/, '')}/generate`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${PRIMARY_API_TOKEN}` },
+          body: form,
+        });
+        if (!genRes.ok) throw new Error(`Primary API generate failed: ${genRes.statusText}`);
+        const genData = await genRes.json();
+        if (!genData.job_id) throw new Error('No job_id returned from primary API');
+        jobId = genData.job_id;
+      } catch (err) {
+        console.error('Primary video generation API error:', err);
+      }
+    }
+    // If primary API succeeded, record its job ID and return
+    if (jobId) {
+      await prisma.video.update({
+        where: { id: videoRecord.id },
+        data: { replicatePredictionId: jobId },
+      });
+      return NextResponse.json({
+        message: 'Video generation initiated',
+        videoId: videoRecord.id,
+      }, { status: 202 });
+    }
+    // Fallback to Replicate API
     // Start an asynchronous prediction
     const prediction = await replicate.predictions.create({
       model: REPLICATE_MODEL_VERSION,
-      input: {
-        image: imageUrl,
-        prompt: prompt,
-        // output_format: "mp4",
-        // num_frames: 25,
-        // num_inference_steps: 50,
-        // guidance_scale: 12,
-        // motion_scale: 0.9
-      },
+      input: { image: imageUrl, prompt: prompt },
     });
-
     if (!prediction?.id) {
       throw new Error("Failed to create Replicate prediction.");
     }
-
     // Update video record with the prediction ID
     await prisma.video.update({
       where: { id: videoRecord.id },
       data: { replicatePredictionId: prediction.id },
     });
-
     // Return the videoId for polling
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: 'Video generation initiated',
       videoId: videoRecord.id,
-      predictionId: prediction.id
     }, { status: 202 });
 
   } catch (error) {

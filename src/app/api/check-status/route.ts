@@ -47,6 +47,7 @@ export async function GET(request: Request) {
     if (!video) {
       return new NextResponse('Video not found', { status: 404 });
     }
+    
 
     // Check ownership
     if (video.userId !== userId) {
@@ -64,6 +65,118 @@ export async function GET(request: Request) {
         ...video,
         error: 'No prediction ID available'
       });
+    }
+    
+    // Attempt primary API status check
+    const PRIMARY_API_URL = process.env.VIDEO_API_URL;
+    const PRIMARY_API_TOKEN = process.env.VIDEO_API_TOKEN;
+    if (PRIMARY_API_URL && PRIMARY_API_TOKEN) {
+      try {
+        // Call primary API status endpoint
+        const statusRes = await fetch(
+          `${PRIMARY_API_URL.replace(/\/+$/, '')}/status/${video.replicatePredictionId}`,
+          {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${PRIMARY_API_TOKEN}` },
+          }
+        );
+        if (!statusRes.ok) throw new Error(`Primary API status failed: ${statusRes.statusText}`);
+        const statusData = await statusRes.json();
+        const status = statusData.status;
+        if (status === 'done') {
+          // Download video from primary API
+          const downloadRes = await fetch(
+            `${PRIMARY_API_URL.replace(/\/+$/, '')}/download/${video.replicatePredictionId}`,
+            {
+              method: 'GET',
+              headers: { Authorization: `Bearer ${PRIMARY_API_TOKEN}` },
+            }
+          );
+          if (!downloadRes.ok) throw new Error(`Primary API download failed: ${downloadRes.statusText}`);
+          const videoData = await downloadRes.arrayBuffer();
+          // Upload video to external GIF conversion service
+          const supabaseAdmin = getSupabaseAdmin();
+          const apiKey = 'dabf5af2d8d1138dee335941f670a1c2a6218cd2197b95f2178d8d21247e8bc6';
+          const formData = new FormData();
+          formData.append('fps', '16');
+          formData.append(
+            'file',
+            new Blob([videoData], { type: 'video/mp4' }),
+            'video.mp4'
+          );
+          const createJobResponse = await fetch(
+            'https://video2gif-580559758743.us-central1.run.app/jobs',
+            {
+              method: 'POST',
+              headers: { 'X-API-KEY': apiKey },
+              body: formData,
+            }
+          );
+          if (!createJobResponse.ok) {
+            throw new Error(`Failed to create GIF job: ${createJobResponse.statusText}`);
+          }
+          const { job_id: jobId } = await createJobResponse.json();
+          // Poll for GIF conversion job status
+          let jobStatus = '';
+          do {
+            await new Promise((res) => setTimeout(res, 2000));
+            const statusResponse = await fetch(
+              `https://video2gif-580559758743.us-central1.run.app/jobs/${jobId}`,
+              { headers: { 'X-API-KEY': apiKey } }
+            );
+            if (!statusResponse.ok) {
+              throw new Error(`Failed to get job status: ${statusResponse.statusText}`);
+            }
+            const statusJson = await statusResponse.json();
+            jobStatus = statusJson.status;
+            if (jobStatus === 'failed') {
+              throw new Error('GIF conversion failed');
+            }
+          } while (jobStatus !== 'finished');
+          // Download the generated GIF
+          const gifResponse = await fetch(
+            `https://video2gif-580559758743.us-central1.run.app/jobs/${jobId}/gif`,
+            { headers: { 'X-API-KEY': apiKey } }
+          );
+          if (!gifResponse.ok) {
+            throw new Error(`Failed to download GIF: ${gifResponse.statusText}`);
+          }
+          const gifArrayBuffer = await gifResponse.arrayBuffer();
+          const gifBuffer = Buffer.from(gifArrayBuffer);
+          const gifFileName = `${video.userId}/${randomUUID()}.gif`;
+          const { error: gifsError } = await supabaseAdmin.storage
+            .from(GIFS_BUCKET)
+            .upload(gifFileName, gifBuffer, { contentType: 'image/gif' });
+          if (gifsError) {
+            throw new Error(`Supabase GIF upload error: ${gifsError.message}`);
+          }
+          const { data: gifUrlData } = await supabaseAdmin.storage
+            .from(GIFS_BUCKET)
+            .getPublicUrl(gifFileName);
+          if (!gifUrlData?.publicUrl) {
+            throw new Error('Could not get GIF public URL');
+          }
+          const updatedVideo = await prisma.video.update({
+            where: { id: videoId },
+            data: {
+              status: 'completed',
+              gifUrl: gifUrlData.publicUrl,
+            },
+          });
+          return NextResponse.json(updatedVideo);
+        } else if (status === 'failed') {
+          const updatedVideo = await prisma.video.update({
+            where: { id: videoId },
+            data: { status: 'failed' },
+          });
+          return NextResponse.json(updatedVideo);
+        } else {
+          return NextResponse.json(video);
+        }
+      } catch (error) {
+        console.error('Primary API status error:', error);
+        // Fallback to Replicate
+      }
     }
 
     // Check prediction status

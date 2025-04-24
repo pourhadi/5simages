@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "source .env && next dev",
     "db:migrate": "node prisma/deploy.js",
     "db:migrate:direct": "node prisma/direct-migrate.js",
     "db:migrate:create": "node prisma/create-migration.js",
