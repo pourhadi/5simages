@@ -1,6 +1,6 @@
-# FirstFrame.app
+# StillMotion.ai
 
-FirstFrame.app is a web application that transforms static images into engaging videos using AI technology.
+StillMotion.ai is a web application that transforms static images into engaging videos using AI technology.
 
 ## Getting Started
 

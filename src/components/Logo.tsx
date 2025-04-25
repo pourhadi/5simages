@@ -11,8 +11,8 @@ export default function Logo({ className = '' }: LogoProps) {
       <div className="flex items-center">
         {/* Text Section */}
         <div className="flex flex-col">
-          <span className="text-2xl font-bold leading-none text-white">First<span className="text-gradient">Frame</span></span>
-          <span className="text-sm text-[#F2EFE8]">firstframe.app</span>
+          <span className="text-2xl font-bold leading-none text-white">Still<span className="text-gradient">Motion</span></span>
+          <span className="text-sm text-[#F2EFE8]">stillmotion.ai</span>
         </div>
       </div>
     </div>

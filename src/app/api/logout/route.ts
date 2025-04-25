@@ -8,7 +8,7 @@ import { cookies, headers } from 'next/headers';
 export async function POST() {
   // Initialize Supabase client with awaited cookies and headers
   const cookieStore = await cookies();
-  const headerStore = headers();
+  const headerStore = await headers();
   const supabase = createRouteHandlerSupabaseClient({
     cookies: () => cookieStore,
     headers: () => headerStore,

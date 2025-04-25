@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
-import prisma from '@/lib/prisma';
+// import prisma from '@/lib/prisma'; // Database record will be created after email confirmation on first login
 
 /**
  * Register a new user: sign up in Supabase Auth, then mirror in Prisma.
@@ -9,7 +9,7 @@ import prisma from '@/lib/prisma';
 export async function POST(request: Request) {
   // Initialize Supabase client with awaited cookies and headers
   const cookieStore = await cookies();
-  const headerStore = headers();
+  const headerStore = await headers();
   const supabase = createRouteHandlerSupabaseClient({
     cookies: () => cookieStore,
     headers: () => headerStore,
@@ -34,16 +34,11 @@ export async function POST(request: Request) {
       return new NextResponse('Failed to sign up user', { status: 500 });
     }
 
-    // Mirror user in Prisma DB with same ID and initial credits
-    await prisma.user.create({
-      data: {
-        id: user.id,
-        email: user.email,
-        name,
-        credits: 5
-      }
-    });
-    return NextResponse.json({ id: user.id, email: user.email, name, credits: 5 });
+    // Registration successful: an email confirmation has been sent
+    return NextResponse.json(
+      { message: 'Signup successful! Please check your email to confirm your account.' },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('REGISTRATION_ERROR', error);
     return new NextResponse(

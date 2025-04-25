@@ -7,7 +7,7 @@ export async function GET() {
   try {
     // Initialize Supabase client with awaited cookies and headers
     const cookieStore = await cookies();
-    const headerStore = headers();
+    const headerStore = await headers();
     const supabase = createRouteHandlerSupabaseClient({
       cookies: () => cookieStore,
       headers: () => headerStore,

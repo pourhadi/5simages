@@ -9,10 +9,10 @@ import RefreshCredits from "@/components/RefreshCredits";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FirstFrame.app - Turn an image into a GIF with AI",
+  title: "StillMotion.ai - Turn an image into a GIF with AI",
   description: "Transform your static images into engaging GIFs with AI",
   icons: {
-    icon: [{ url: '/images/firstframe-logo.svg' }],
+    icon: [{ url: '/images/stillmotion-logo.svg' }],
   },
 };
 

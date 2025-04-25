@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
+import prisma from '@/lib/prisma';
 
 /**
  * Sign in a user via Supabase Auth and set session cookie.
@@ -8,7 +9,7 @@ import { cookies, headers } from 'next/headers';
 export async function POST(request: Request) {
   // Initialize Supabase client with awaited cookies and headers
   const cookieStore = await cookies();
-  const headerStore = headers();
+  const headerStore = await headers();
   const supabase = createRouteHandlerSupabaseClient({
     cookies: () => cookieStore,
     headers: () => headerStore,
@@ -25,8 +26,25 @@ export async function POST(request: Request) {
     if (error || !data.session) {
       return new NextResponse(error?.message || 'Failed to sign in', { status: 400 });
     }
-    // Manually set Supabase auth cookie with session tokens
+    // Session from Supabase after successful sign-in
     const session = data.session;
+    // Ensure user exists in our database (after email confirmation)
+    try {
+      const existingUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+      if (!existingUser) {
+        await prisma.user.create({
+          data: {
+            id: session.user.id,
+            email: session.user.email ?? '',
+            name: (session.user.user_metadata as any)?.name ?? '',
+            credits: 5
+          }
+        });
+      }
+    } catch (dbError) {
+      console.error('DB user creation error during login:', dbError);
+    }
+    // Manually set Supabase auth cookie with session tokens
     // Manually extract potential multi-factor info (if present) and build the cookie value
     const maybeFactors = (session.user as unknown as Record<string, unknown>).factors;
     const factors = Array.isArray(maybeFactors) ? maybeFactors : [];
