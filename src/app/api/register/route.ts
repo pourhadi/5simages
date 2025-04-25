@@ -20,12 +20,20 @@ export async function POST(request: Request) {
       return new NextResponse('Missing fields', { status: 400 });
     }
 
-    // Create user in Supabase Auth
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name } }
-    });
+    // Create user in Supabase Auth, send confirmation email with redirect
+    // Redirect URL for email confirmation page
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    const emailRedirectTo = siteUrl ? `${siteUrl.replace(/\/+$/, '')}/confirm` : undefined;
+    const { data, error: signUpError } = await supabase.auth.signUp(
+      {
+        email,
+        password,
+        options: {
+          data: { name },
+          ...(emailRedirectTo ? { emailRedirectTo } : {}),
+        },
+      }
+    );
     if (signUpError) {
       return new NextResponse(signUpError.message, { status: 400 });
     }

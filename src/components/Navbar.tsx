@@ -73,8 +73,12 @@ export default function Navbar() {
     };
   }, []);
   
-  // Don't show navbar on success/cancel pages
-  if (pathname?.includes('/credits/success') || pathname?.includes('/credits/cancel')) {
+  // Don't show navbar on certain pages
+  if (
+    pathname?.includes('/credits/success') ||
+    pathname?.includes('/credits/cancel') ||
+    pathname === '/confirm'
+  ) {
     return null;
   }
 

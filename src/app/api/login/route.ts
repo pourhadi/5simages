@@ -36,7 +36,10 @@ export async function POST(request: Request) {
           data: {
             id: session.user.id,
             email: session.user.email ?? '',
-            name: (session.user.user_metadata as any)?.name ?? '',
+            // Use name from Supabase user_metadata if present and a string
+            name: typeof session.user.user_metadata.name === 'string'
+              ? session.user.user_metadata.name
+              : '',
             credits: 5
           }
         });
@@ -45,8 +48,8 @@ export async function POST(request: Request) {
       console.error('DB user creation error during login:', dbError);
     }
     // Manually set Supabase auth cookie with session tokens
-    // Manually extract potential multi-factor info (if present) and build the cookie value
-    const maybeFactors = (session.user as unknown as Record<string, unknown>).factors;
+    // Extract potential multi-factor info (if present) and build the cookie value
+    const maybeFactors = session.user.factors;
     const factors = Array.isArray(maybeFactors) ? maybeFactors : [];
     const cookieValue = JSON.stringify([
       session.access_token,
