@@ -77,7 +77,7 @@ export async function POST(request: Request) {
         const form = new FormData();
         form.append('prompt', prompt);
         // Use provided duration or default to 5 seconds
-        form.append('duration', String(duration ?? 5));
+        // form.append('duration', String(duration ?? 5));
         form.append('image', new Blob([imgBuffer], { type: imgRes.headers.get('content-type') || 'application/octet-stream' }), 'input.png');
         // Call external generate endpoint
         const genRes = await fetch(`${PRIMARY_API_URL.replace(/\/+$/, '')}/generate`, {
