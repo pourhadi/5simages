@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   try {
     // Parse request body; optional duration in seconds
     const body = await request.json();
-    const { imageUrl, prompt, duration } = body;
+    const { imageUrl, prompt } = body;
 
     if (!imageUrl || !prompt) {
       return new NextResponse('Missing imageUrl or prompt', { status: 400 });
