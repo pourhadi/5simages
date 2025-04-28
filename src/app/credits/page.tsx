@@ -159,7 +159,7 @@ export default function CreditsPage() {
           <div className="text-sm text-gray-300">
             <h3 className="font-medium text-gray-200 mb-2">How credits work:</h3>
             <ul className="list-disc pl-5 space-y-1">
-              <li>1 credit = 1 video generation</li>
+              <li>3 credits = 1 GIF generation</li>
               <li>Credits never expire</li>
               <li>Payment is processed securely through Stripe</li>
               <li>We don&apos;t store your payment information</li>

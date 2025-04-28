@@ -23,9 +23,7 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
   
   // Define credit packages
   const creditPackages: CreditPackage[] = [
-    { id: 'credits_5', credits: 5, price: 499 }, // $4.99
-    { id: 'credits_20', credits: 20, price: 1499, popular: true }, // $14.99
-    { id: 'credits_50', credits: 50, price: 2999 } // $29.99
+    { id: 'credits_3', credits: 3, price: 75 }, // $0.75
   ];
   
   const handlePurchase = async () => {
@@ -74,7 +72,7 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
       </div>
       
       <p className="text-gray-300 mb-6">
-        Credits are used to generate videos from your images. Each video generation costs 1 credit.
+        Credits are used to generate videos from your images. Each video generation costs 3 credits.
         Select a package below to purchase credits.
       </p>
       

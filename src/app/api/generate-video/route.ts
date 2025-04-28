@@ -41,13 +41,13 @@ export async function POST(request: Request) {
         select: { credits: true },
       });
 
-      if (!user || user.credits <= 0) {
+      if (!user || user.credits < 3) {
         throw new Error('Insufficient credits');
       }
 
       await tx.user.update({
         where: { id: userId },
-        data: { credits: { decrement: 1 } },
+        data: { credits: { decrement: 3 } },
       });
 
       // Create initial video record

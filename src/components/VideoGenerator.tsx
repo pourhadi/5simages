@@ -72,9 +72,9 @@ export default function VideoGenerator() {
       return;
     }
     
-    // Check if user has enough credits
-    if (userCredits <= 0) {
-      toast.error('You need at least 1 credit to generate a video. Please purchase credits.');
+    // Check if user has enough credits (requires 3 credits per GIF)
+    if (userCredits < 3) {
+      toast.error('You need at least 3 credits to generate a GIF. Please purchase credits.');
       return;
     }
     
@@ -121,7 +121,7 @@ export default function VideoGenerator() {
       toast.dismiss('generate');
       
       if (axios.isAxiosError(error) && error.response?.status === 402) {
-        toast.error('Insufficient credits. Please purchase more credits to generate videos.');
+        toast.error('Insufficient credits. Please purchase more credits to generate GIFs.');
       } else {
         console.error('Error generating video:', error);
         toast.error('Failed to generate video. Please try again later.');
@@ -202,11 +202,11 @@ export default function VideoGenerator() {
       {/* Credit info and generate button */}
       <div className="flex justify-between items-center mt-4">
         <p className="text-sm text-gray-400">
-          Generating a GIF will use 1 credit.
+          Generating a GIF will use 3 credits.
         </p>
         <button
           onClick={generateVideo}
-          disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits <= 0}
+          disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits < 3}
           className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF9900] to-[#FF7733] hover:from-[#FF7733] hover:to-[#E05E20] text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
         >
           {isGenerating ? (
@@ -223,11 +223,11 @@ export default function VideoGenerator() {
         </button>
       </div>
       
-      {userCredits <= 0 && (
+      {userCredits < 3 && (
         <div className="mt-6 p-4 bg-yellow-900/50 text-yellow-200 rounded-xl text-sm border border-yellow-800">
           <p className="flex items-center gap-2">
             <Zap size={16} />
-            <span>You need credits to generate GIFs. Purchase credits from the gallery page.</span>
+            <span>You need at least 3 credits to generate a GIF. Purchase credits from the gallery page.</span>
           </p>
         </div>
       )}
