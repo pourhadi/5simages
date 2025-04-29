@@ -16,7 +16,13 @@ if (!process.env.REPLICATE_API_TOKEN) {
 const REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
 
 export async function POST(request: Request) {
-  const supabase = createRouteHandlerSupabaseClient({ cookies, headers });
+  // Initialize Supabase client with awaited cookies and headers
+  const cookieStore = await cookies();
+  const headerStore = await headers();
+  const supabase = createRouteHandlerSupabaseClient({
+    cookies: () => cookieStore,
+    headers: () => headerStore,
+  });
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session?.user?.id) {
@@ -63,9 +69,10 @@ export async function POST(request: Request) {
       return newVideo;
     });
 
-    // Attempt primary video generation via external API
-    const PRIMARY_API_URL = process.env.VIDEO_API_URL;
-    const PRIMARY_API_TOKEN = process.env.VIDEO_API_TOKEN;
+    // Attempt primary video generation via external API (support multiple env var names)
+    const PRIMARY_API_URL = process.env.VIDEO_API_URL ?? process.env.PRIMARY_API_URL;
+    const PRIMARY_API_TOKEN = process.env.VIDEO_API_TOKEN ?? process.env.PRIMARY_API_TOKEN;
+    console.log('Primary API config:', { url: PRIMARY_API_URL, hasToken: Boolean(PRIMARY_API_TOKEN) });
     let jobId: string | null = null;
     if (PRIMARY_API_URL && PRIMARY_API_TOKEN) {
       try {
