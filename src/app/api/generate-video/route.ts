@@ -3,6 +3,7 @@ import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { cookies, headers } from 'next/headers';
 import Replicate from 'replicate';
 import prisma from '@/lib/prisma';
+import { getSupabaseAdmin } from '@/lib/supabaseClient';
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN || '',
@@ -76,16 +77,42 @@ export async function POST(request: Request) {
     let jobId: string | null = null;
     if (PRIMARY_API_URL && PRIMARY_API_TOKEN) {
       try {
-        // Fetch the input image
-        const imgRes = await fetch(imageUrl);
-        if (!imgRes.ok) throw new Error(`Failed to fetch input image: ${imgRes.statusText}`);
-        const imgBuffer = await imgRes.arrayBuffer();
+        // Fetch the input image, supporting Supabase storage URLs via signed URL
+        let imgBuffer: ArrayBuffer;
+        let contentType = 'application/octet-stream';
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+        const storagePrefix = `${supabaseUrl}/storage/v1/object/public/`;
+        if (imageUrl.startsWith(storagePrefix)) {
+          // Use admin client to create a signed URL for private buckets
+          const supabaseAdmin = getSupabaseAdmin();
+          const rest = imageUrl.substring(storagePrefix.length);
+          const slashIndex = rest.indexOf('/');
+          if (slashIndex < 0) throw new Error(`Invalid Supabase storage URL: ${imageUrl}`);
+          const bucket = rest.substring(0, slashIndex);
+          const path = rest.substring(slashIndex + 1);
+          const { data: signedData, error: signedError } =
+            await supabaseAdmin.storage.from(bucket).createSignedUrl(path, 3600);
+          if (signedError || !signedData?.signedUrl) {
+            throw new Error(`Failed to create signed URL: ${signedError?.message}`);
+          }
+          const signedUrl = signedData.signedUrl;
+          const signedRes = await fetch(signedUrl);
+          if (!signedRes.ok) throw new Error(`Failed to fetch input image: ${signedRes.statusText}`);
+          contentType = signedRes.headers.get('content-type') || contentType;
+          imgBuffer = await signedRes.arrayBuffer();
+        } else {
+          // Regular URL fetch
+          const imgRes = await fetch(imageUrl);
+          if (!imgRes.ok) throw new Error(`Failed to fetch input image: ${imgRes.statusText}`);
+          contentType = imgRes.headers.get('content-type') || contentType;
+          imgBuffer = await imgRes.arrayBuffer();
+        }
         // Prepare form data
         const form = new FormData();
         form.append('prompt', prompt);
         // Use provided duration or default to 5 seconds
         // form.append('duration', String(duration ?? 5));
-        form.append('image', new Blob([imgBuffer], { type: imgRes.headers.get('content-type') || 'application/octet-stream' }), 'input.png');
+        form.append('image', new Blob([imgBuffer], { type: contentType }), 'input.png');
         // Call external generate endpoint
         const genRes = await fetch(`${PRIMARY_API_URL.replace(/\/+$/, '')}/generate`, {
           method: 'POST',
