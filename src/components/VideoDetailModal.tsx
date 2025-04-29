@@ -276,7 +276,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                       <div className="flex justify-between">
                         <span className="text-gray-400">Credits used</span>
                         <span className="text-white flex items-center gap-1">
-                          1 <Zap size={16} className="text-[#FF7733]" />
+                          3 <Zap size={16} className="text-[#3EFFE2]" />
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -293,7 +293,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                     <button
                       onClick={handleDownload}
                       disabled={isDownloading}
-                      className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-[#FF9900] to-[#FF7733] hover:from-[#FF7733] hover:to-[#E05E20] text-white transition-all duration-300"
+                      className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white transition-all duration-300"
                     >
                       <Download size={18} />
                       <span className="font-medium">Download</span>
@@ -313,7 +313,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                       <button
                         onClick={handleRegenerate}
                         disabled={isRegenerating}
-                        className={`col-span-2 flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-[#0070F3] to-[#005BB5] hover:from-[#005BB5] hover:to-[#004399] text-white transition-all duration-300 ${isRegenerating ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        className={`col-span-2 flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white transition-all duration-300 ${isRegenerating ? 'opacity-70 cursor-not-allowed' : ''}`}
                       >
                         <RefreshCw size={18} className={isRegenerating ? 'animate-spin' : ''} />
                         <span className="font-medium">{isRegenerating ? 'Starting...' : 'Re-Run Generation'}</span>

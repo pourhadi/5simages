@@ -26,20 +26,22 @@ export default function ConfirmPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0D0D0E] text-gray-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0D0D0E] p-4">
       {status === 'loading' && <p>Confirming your email...</p>}
       {status === 'success' && (
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">Email Confirmed</h1>
-          <p>{message}</p>
+        <div className="bg-[#1A1A1D] p-8 rounded-2xl shadow-lg text-center w-full max-w-md">
+          <h1 className="text-3xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+            Email Confirmed
+          </h1>
+          <p className="text-gray-300">{message}</p>
         </div>
       )}
       {status === 'error' && (
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2 text-red-400">Confirmation Error</h1>
-          <p>{message}</p>
+        <div className="bg-[#1A1A1D] p-8 rounded-2xl shadow-lg text-center w-full max-w-md">
+          <h1 className="text-3xl font-extrabold mb-2 text-red-400">Confirmation Error</h1>
+          <p className="text-gray-300">{message}</p>
           <button
-            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded"
+            className="mt-6 px-6 py-3 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white rounded-xl hover:opacity-90 transition"
             onClick={() => router.push('/login')}
           >
             Go to Login

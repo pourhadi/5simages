@@ -71,8 +71,8 @@ export default function CreditsPage() {
   // Show loading state while checking authentication
   if (authLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="animate-spin h-8 w-8 text-amber-500" />
+      <div className="flex justify-center items-center h-screen bg-[#0D0D0E]">
+        <Loader2 className="animate-spin h-8 w-8 text-[#3EFFE2]" />
       </div>
     );
   }
@@ -80,16 +80,18 @@ export default function CreditsPage() {
   // Show sign-in prompt for unauthenticated users
   if (authError) {
     return (
-      <div className="container mx-auto max-w-4xl px-4 py-8">
-        <div className="text-center bg-gray-800 rounded-lg shadow-md p-8 border border-gray-700">
-          <AlertCircle className="mx-auto text-amber-500 h-16 w-16 mb-4" />
-          <h1 className="text-2xl font-bold mb-4 text-white">Sign In Required</h1>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#0D0D0E] p-4">
+        <div className="bg-[#1A1A1D] rounded-2xl shadow-lg p-8 border border-gray-800 text-center w-full max-w-md">
+          <AlertCircle className="mx-auto text-[#3EFFE2] h-16 w-16 mb-4" />
+          <h1 className="text-3xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+            Sign In Required
+          </h1>
           <p className="text-gray-300 mb-6">
             You need to be signed in to purchase credits.
           </p>
           <Link
             href="/login"
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+            className="inline-block px-6 py-3 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
           >
             Sign In
           </Link>
@@ -99,13 +101,15 @@ export default function CreditsPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Purchase Credits</h1>
+  <div className="container mx-auto max-w-4xl px-4 py-8">
+    <h1 className="text-4xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+      Purchase Credits
+    </h1>
       
-      <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-700">
+      <div className="bg-[#1A1A1D] rounded-2xl shadow-xl overflow-hidden border border-gray-800">
         <div className="p-6">
           <div className="flex items-center mb-6">
-            <Zap className="h-8 w-8 text-amber-500 mr-3" />
+            <Zap className="h-8 w-8 text-[#3EFFE2] mr-3" />
             <div>
               <h2 className="text-xl font-semibold text-white">Buy Credits</h2>
               <p className="text-gray-300">Credits are used to generate GIFs</p>
@@ -114,14 +118,14 @@ export default function CreditsPage() {
 
           <div className="grid gap-4 md:grid-cols-3 mb-8">
             {CREDIT_PACKAGES.map((pkg) => (
-              <div 
+              <div
                 key={pkg.id}
-                className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                  selectedPackage === pkg.id 
-                    ? 'border-amber-500 bg-gray-700 shadow-md' 
-                    : 'border-gray-600 hover:border-gray-500 hover:shadow bg-gray-700/70'
-                }`}
                 onClick={() => setSelectedPackage(pkg.id)}
+                className={`cursor-pointer transition-all rounded-2xl p-4 border ${
+                  selectedPackage === pkg.id
+                    ? 'border-[#FF497D] bg-[#1A1A1D] shadow-xl'
+                    : 'border-gray-600 bg-[#1A1A1D]/70 hover:border-gray-500 hover:bg-[#1A1A1D] hover:shadow-lg'
+                }`}
               >
                 <div className="flex flex-col h-full">
                   <h3 className="font-semibold text-lg text-white">{pkg.name}</h3>
@@ -130,9 +134,9 @@ export default function CreditsPage() {
                     {pkg.credits} credits to generate GIFs
                   </p>
                   <div className="mt-auto">
-                    <div 
+                    <div
                       className={`h-5 w-5 rounded-full border-2 ml-auto ${
-                        selectedPackage === pkg.id ? 'border-amber-500 bg-amber-500' : 'border-gray-500'
+                        selectedPackage === pkg.id ? 'border-[#FF497D] bg-[#FF497D]' : 'border-gray-500'
                       }`}
                     />
                   </div>
@@ -149,7 +153,7 @@ export default function CreditsPage() {
             <button
               onClick={handlePurchase}
               disabled={isLoading}
-              className="px-6 py-3 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 rounded-xl text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <CreditCard className="h-5 w-5" />
               <span>{isLoading ? 'Processing...' : 'Purchase Now'}</span>

@@ -67,17 +67,19 @@ export default function LoginPage() {
 
 
   return (
-    <div className="flex justify-center px-4 py-10">
-      <div className="bg-gray-800 text-gray-100 p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-white">Login</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="flex items-center justify-center py-12 bg-[#0D0D0E] p-4">
+      <div className="bg-[#1A1A1D] text-gray-100 p-8 rounded-2xl shadow-lg w-full max-w-md">
+        <h2 className="text-3xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+          Login
+        </h2>
+        <form noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300">Email</label>
             <input
               id="email"
               type="email"
               {...register('email')}
-              className={`mt-1 block w-full px-3 py-2 bg-white text-gray-900 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            className={`mt-1 block w-full px-4 py-3 bg-[#0D0D0E] text-gray-100 border ${errors.email ? 'border-red-500' : 'border-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3EFFE2] focus:border-transparent placeholder-gray-500`}
               disabled={isLoading}
             />
             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
@@ -88,22 +90,23 @@ export default function LoginPage() {
               id="password"
               type="password"
               {...register('password')}
-              className={`mt-1 block w-full px-3 py-2 bg-white text-gray-900 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            className={`mt-1 block w-full px-4 py-3 bg-[#0D0D0E] text-gray-100 border ${errors.password ? 'border-red-500' : 'border-gray-600'} rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3EFFE2] focus:border-transparent placeholder-gray-500`}
               disabled={isLoading}
             />
             {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
           </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#FF7733] hover:bg-[#E05E20] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF7733] disabled:opacity-50"
-          >
-            {isLoading ? 'Logging in...' : 'Login'}
-          </button>
+        <button
+          type="submit"
+          onClick={handleSubmit(onSubmit)}
+          disabled={isLoading}
+          className="w-full flex justify-center py-3 px-6 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition disabled:opacity-50"
+        >
+          {isLoading ? 'Logging in...' : 'Login'}
+        </button>
         </form>
         <p className="mt-4 text-center text-sm text-gray-400">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="font-medium text-[#FF7733] hover:text-[#E05E20]">
+          <Link href="/register" className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition">
             Register
           </Link>
         </p>

@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   title: "StillMotion.ai - Turn an image into a GIF with AI",
   description: "Transform your static images into engaging GIFs with AI",
   icons: {
-    icon: [{ url: '/images/stillmotion-logo.svg' }],
+    icon: [{ url: '/logo.png', type: 'image/png' }],
+    shortcut: '/logo.png',
+    apple: '/logo.png',
   },
 };
 

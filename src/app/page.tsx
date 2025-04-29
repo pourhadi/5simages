@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import exampleGif1 from '../../gifs/1.gif';
 import exampleGif2 from '../../gifs/2.gif';
+import exampleGif3 from '../../gifs/flag.gif';
 import BuyCredits from '@/components/BuyCredits';
 import VideoGenerator from '@/components/VideoGenerator';
 import Gallery from '@/components/Gallery'; // Placeholder for Gallery component
@@ -23,7 +24,9 @@ export default function HomePage() {
     const credits = typeof user.credits === 'number' ? user.credits : 0;
     return (
       <div className="space-y-8">
-        <h1 className="text-4xl font-extrabold text-white">Welcome, {user.name || user.email}!</h1>
+        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+          Welcome, {user.name || user.email}!
+        </h1>
         {credits > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <VideoGenerator />
@@ -39,25 +42,35 @@ export default function HomePage() {
   }
   // If not authenticated (or loading), show welcome page
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen space-y-8 px-4 text-center">
-      <h1 className="text-4xl font-extrabold text-white">Welcome Back!</h1>
-      <p className="text-gray-300 max-w-xl">
-        Create stunning AI-generated video snippets from your images. Upload a photo, and let our AI animate it into a GIF!
+    <div className="flex flex-col items-center px-6 text-center py-12 space-y-6">
+      <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+        Welcome to StillMotion.ai
+      </h1>
+      <p className="mt-4 text-gray-400 max-w-2xl">
+        Bring your images to life. Upload a photo, and let our AI animate it into stunning GIFs.
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <Image src={exampleGif1} alt="Example GIF 1" width={300} height={300} className="rounded-lg shadow-lg" />
-        <Image src={exampleGif2} alt="Example GIF 2" width={300} height={300} className="rounded-lg shadow-lg" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        {[exampleGif1, exampleGif2, exampleGif3].map((gif, idx) => (
+          <Image
+            key={idx}
+            src={gif}
+            alt={`Example GIF ${idx + 1}`}
+            width={300}
+            height={300}
+            className="rounded-xl shadow-2xl"
+          />
+        ))}
       </div>
-      <div className="space-x-4">
+      <div className="flex space-x-4 mt-10">
         <button
           onClick={() => router.push('/login')}
-          className="mt-6 bg-[#FF7733] hover:bg-[#E05E20] text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors"
+          className="px-6 py-3 rounded-lg bg-gradient-to-r from-[#3EFFE2] to-[#1E3AFF] text-gray-900 font-semibold hover:opacity-90 transition"
         >
           Log In
         </button>
         <button
           onClick={() => router.push('/register')}
-          className="mt-6 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors"
+          className="px-6 py-3 rounded-lg bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white font-semibold hover:opacity-90 transition"
         >
           Sign Up
         </button>

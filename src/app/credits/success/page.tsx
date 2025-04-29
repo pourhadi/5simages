@@ -60,14 +60,16 @@ function SuccessContent() {
   }, [sessionId, router, mutate]);
   
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <div className="min-h-screen flex items-center justify-center bg-[#0D0D0E] p-4">
+      <div className="w-full max-w-md p-8 space-y-8 bg-[#1A1A1D] rounded-2xl shadow-xl">
         {/* Loading State */}
         {state === 'loading' && (
           <div className="flex flex-col items-center space-y-4">
-            <RefreshCw className="w-16 h-16 text-blue-500 animate-spin" />
-            <h2 className="text-2xl font-bold text-gray-900">Confirming your purchase</h2>
-            <p className="text-gray-600 text-center">
+            <RefreshCw className="w-16 h-16 text-[#3EFFE2] animate-spin" />
+            <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+              Confirming your purchase
+            </h2>
+            <p className="text-gray-300 text-center">
               Please wait while we confirm your payment...
             </p>
           </div>
@@ -76,29 +78,31 @@ function SuccessContent() {
         {/* Success State */}
         {state === 'success' && (
           <div className="flex flex-col items-center space-y-4">
-            <CheckCircle className="w-16 h-16 text-green-500" />
-            <h2 className="text-2xl font-bold text-gray-900">Payment Successful!</h2>
+            <CheckCircle className="w-16 h-16 text-[#FF497D]" />
+            <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+              Payment Successful!
+            </h2>
             {creditCount !== null && (
-              <p className="text-gray-600 text-center">
+              <p className="text-gray-300 text-center">
                 {creditCount} credits have been added to your account.
               </p>
             )}
             <div className="pt-4 space-y-3">
               <Link
                 href="/gallery"
-                className="block w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-md shadow transition duration-150"
+                className="block w-full py-3 px-6 rounded-xl text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-center font-medium hover:opacity-90 transition"
               >
                 Go to your gallery
               </Link>
               <Link
                 href="/credits"
-                className="block w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white text-center rounded-md shadow transition duration-150"
+                className="block w-full py-3 px-6 rounded-xl text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-center font-medium hover:opacity-90 transition"
               >
                 Check my balance
               </Link>
               <Link
                 href="/"
-                className="block w-full py-2 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 text-center rounded-md shadow-sm transition duration-150"
+                className="block w-full py-3 px-6 border border-gray-600 text-gray-300 text-center rounded-xl hover:bg-[#1A1A1D] transition"
               >
                 Return to home
               </Link>
@@ -109,22 +113,24 @@ function SuccessContent() {
         {/* Error State */}
         {state === 'error' && (
           <div className="flex flex-col items-center space-y-4">
-            <AlertCircle className="w-16 h-16 text-red-500" />
-            <h2 className="text-2xl font-bold text-gray-900">Payment Verification Failed</h2>
-            {error && <p className="text-red-600 text-center">{error}</p>}
-            <p className="text-gray-600 text-center">
+            <AlertCircle className="w-16 h-16 text-[#FF497D]" />
+            <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+              Payment Verification Failed
+            </h2>
+            {error && <p className="text-red-400 text-center">{error}</p>}
+            <p className="text-gray-300 text-center">
               If you believe this is an error, please contact support.
             </p>
             <div className="pt-4 space-y-3">
               <Link
                 href="/credits"
-                className="block w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-md shadow transition duration-150"
+                className="block w-full py-3 px-6 rounded-xl text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-center font-medium hover:opacity-90 transition"
               >
                 Try again
               </Link>
               <Link
                 href="/"
-                className="block w-full py-2 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 text-center rounded-md shadow-sm transition duration-150"
+                className="block w-full py-3 px-6 border border-gray-600 text-gray-300 text-center rounded-xl hover:bg-[#1A1A1D] transition"
               >
                 Return to home
               </Link>
@@ -139,16 +145,20 @@ function SuccessContent() {
 // Main page component with Suspense boundary
 export default function SuccessPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-          <div className="flex flex-col items-center space-y-4">
-            <RefreshCw className="w-16 h-16 text-blue-500 animate-spin" />
-            <h2 className="text-2xl font-bold text-gray-900">Loading...</h2>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#0D0D0E] p-4">
+          <div className="w-full max-w-md p-8 space-y-4 bg-[#1A1A1D] rounded-2xl shadow-xl">
+            <div className="flex flex-col items-center space-y-4">
+              <RefreshCw className="w-16 h-16 text-[#3EFFE2] animate-spin" />
+              <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+                Loading...
+              </h2>
+            </div>
           </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <SuccessContent />
     </Suspense>
   );

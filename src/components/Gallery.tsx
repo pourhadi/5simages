@@ -197,10 +197,10 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
     <>
       <div className="space-y-6">
         {/* Credit status and purchase UI */}
-        <div id="credits-section" className="bg-[#1A1A1D] shadow-xl rounded-2xl p-6">
+        <div id="credits-section" className="bg-[#1A1A1D] rounded-2xl p-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <Zap size={20} className="text-[#FF7733]" />
+              <Zap size={20} className="text-[#3EFFE2]" />
               {userDataError ? (
                 <span className="text-red-400 text-sm">Error loading credits</span>
               ) : (
@@ -209,7 +209,7 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
             </div>
             <button
               onClick={() => setShowCreditPurchase(!showCreditPurchase)}
-              className="bg-[#FF7733] hover:bg-[#E05E20] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
             >
               {showCreditPurchase ? 'Hide' : 'Buy Credits'}
             </button>
@@ -226,7 +226,7 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
         </div>
         
         {/* Gallery container */}
-        <div className="bg-[#1A1A1D] shadow-xl rounded-2xl p-8">
+        <div className="bg-[#1A1A1D] rounded-2xl p-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-white">Your GIF Gallery</h2>
             {/* Refresh button can still manually trigger revalidation if needed */}
@@ -253,7 +253,7 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
                 <div
                   key={video.id}
                   onClick={() => openVideoDetail(video)}
-                  className="relative group cursor-pointer overflow-hidden rounded-2xl bg-[#1A1A1D] shadow-md hover:shadow-xl transition-shadow duration-300"
+                  className="relative group cursor-pointer overflow-hidden rounded-2xl bg-[#1A1A1D]"
                 >
                   {/* Display based on status */} 
                   {video.status === 'completed' && video.imageUrl ? (
@@ -277,18 +277,18 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
                           <Maximize2 className="text-white" size={24} />
                         </div>
                       </div>
-                  ) : video.status === 'processing' ? (
-                    <div className="aspect-video flex flex-col items-center justify-center text-gray-500 bg-gray-100">
-                        <RefreshCw size={24} className="animate-spin mb-2" />
-                        <span>Processing...</span>
+          ) : video.status === 'processing' ? (
+                    <div className="aspect-video flex flex-col items-center justify-center text-gray-400 bg-[#1A1A1D] rounded-2xl">
+                        <RefreshCw size={24} className="animate-spin text-[#3EFFE2] mb-2" />
+                        <span className="text-gray-400">Processing...</span>
                         {video.imageUrl && (
                             <Image src={video.imageUrl} alt="Input Image" width={64} height={64} className="mt-2 rounded opacity-50"/>
                         )}
                     </div>
                   ) : (
-                    <div className="aspect-video flex flex-col items-center justify-center text-red-500 bg-red-50">
-                       <AlertTriangle size={24} className="mb-2"/>
-                       <span>Failed</span>
+                    <div className="aspect-video flex flex-col items-center justify-center text-red-400 bg-[#1A1A1D] rounded-2xl">
+                       <AlertTriangle size={24} className="text-red-400 mb-2"/>
+                       <span className="text-red-400">Failed</span>
                        {video.imageUrl && (
                             <Image src={video.imageUrl} alt="Input Image" width={64} height={64} className="mt-2 rounded opacity-50"/>
                         )}
@@ -319,7 +319,7 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
             <div className="mt-6 flex justify-center">
               <button
                 onClick={() => router.push('/gallery')}
-                className="bg-[#FF7733] hover:bg-[#E05E20] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
               >
                 View all GIFs
               </button>

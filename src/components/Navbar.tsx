@@ -83,7 +83,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-gray-800 shadow-lg">
+    <nav className="bg-[#111111] border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo and main nav */}
@@ -130,12 +130,12 @@ export default function Navbar() {
           <div className="hidden md:flex md:items-center">
             {user && (
               <div className="flex items-center space-x-4">
-                <Link 
-                  href="/credits" 
+                <Link
+                  href="/credits"
                   className="flex items-center gap-1 bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full transition-colors group"
                   onClick={() => mutate()}
                 >
-                  <Zap size={16} className="text-[#FF7733]" />
+                  <Zap size={16} className="text-[#3EFFE2]" />
                   <span className="text-sm font-medium text-white">
                     {user.credits || 0} credits
                   </span>
@@ -197,22 +197,22 @@ export default function Navbar() {
               </div>
             )}
             
-            {!user && !isLoading && (
-              <div className="flex items-center space-x-2">
-                <Link
-                  href="/login"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/register"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-white bg-[#FF7733] hover:bg-[#E05E20]"
-                >
-                  Sign Up
-                </Link>
-              </div>
-            )}
+          {!user && !isLoading && (
+            <div className="flex items-center space-x-2">
+              <Link
+                href="/login"
+                className="px-3 py-2 rounded-md text-sm font-medium text-gray-400 hover:text-[#FF497D] transition"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/register"
+                className="px-3 py-2 rounded-md text-sm font-medium bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white hover:opacity-90 transition"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
           </div>
         </div>
       </div>
@@ -261,7 +261,7 @@ export default function Navbar() {
                   </div>
                 </div>
                 <div className="ml-auto bg-gray-700 rounded-full px-3 py-1 flex items-center">
-                  <Zap size={14} className="text-[#FF7733] mr-1" />
+                  <Zap size={14} className="text-[#3EFFE2] mr-1" />
                   <span className="text-sm font-medium text-white">{user.credits || 0}</span>
                 </div>
               </div>
@@ -305,7 +305,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/register"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-white bg-[#FF7733] hover:bg-[#E05E20]"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
                   onClick={closeMenu}
                 >
                   Sign Up

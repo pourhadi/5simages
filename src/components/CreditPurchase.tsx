@@ -23,7 +23,9 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
   
   // Define credit packages
   const creditPackages: CreditPackage[] = [
-    { id: 'credits_3', credits: 3, price: 75 }, // $0.75
+    { id: 'credits_3', credits: 3, price: 100 }, // $0.75
+    { id: 'credits_15', credits: 15, price: 375 }, // $0.75
+    { id: 'credits_30', credits: 30, price: 690 }, // $0.75
   ];
   
   const handlePurchase = async () => {
@@ -62,40 +64,42 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
   };
   
   return (
-    <div className="bg-gray-800 shadow-md rounded-lg p-6 border border-gray-700">
+    <div className="bg-[#1A1A1D] shadow-xl rounded-2xl p-6 border border-gray-800">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-white">Purchase Credits</h2>
-        <div className="flex items-center gap-2 bg-gray-700 px-3 py-1 rounded-full">
-          <Zap size={16} className="text-[#FF7733]" />
+        <h2 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+          Purchase Credits
+        </h2>
+        <div className="flex items-center gap-2 bg-[#0D0D0E] px-3 py-1 rounded-full">
+          <Zap size={16} className="text-[#3EFFE2]" />
           <span className="font-medium text-white">{userCredits} credits</span>
         </div>
       </div>
       
       <p className="text-gray-300 mb-6">
-        Credits are used to generate videos from your images. Each video generation costs 3 credits.
+        Credits are used to generate GIFs from your images. Each GIF generation costs 3 credits.
         Select a package below to purchase credits.
       </p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         {creditPackages.map((pkg) => (
-          <div 
+          <div
             key={pkg.id}
-            className={`border rounded-lg p-4 relative cursor-pointer transition-all ${
-              selectedPackage === pkg.id 
-                ? 'border-[#FF7733] ring-2 ring-[#FF7733]/30 bg-gray-700' 
-                : 'border-gray-600 hover:border-gray-500 hover:bg-gray-700/70 bg-gray-700/50'
-            }`}
             onClick={() => setSelectedPackage(pkg.id)}
+            className={`cursor-pointer transition-all rounded-2xl p-4 border ${
+              selectedPackage === pkg.id
+                ? 'border-[#FF497D] bg-[#1A1A1D] shadow-xl'
+                : 'border-gray-600 bg-[#1A1A1D]/70 hover:border-gray-500 hover:bg-[#1A1A1D] hover:shadow-lg'
+            }`}
           >
             {pkg.popular && (
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#FF7733] text-white text-xs px-2 py-1 rounded-full">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#FF497D] text-white text-xs px-2 py-1 rounded-full">
                 Popular
               </div>
             )}
             
             {selectedPackage === pkg.id && (
               <div className="absolute top-2 right-2">
-                <Check size={18} className="text-[#FF7733]" />
+                <Check size={18} className="text-[#FF497D]" />
               </div>
             )}
             
@@ -104,24 +108,24 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
                 <h3 className="font-medium text-white text-lg">{pkg.credits} Credits</h3>
                 <p className="text-sm text-gray-400">{formatPrice(pkg.price)}</p>
               </div>
-              <Package size={24} className={selectedPackage === pkg.id ? "text-[#FF7733]" : "text-gray-400"} />
+              <Package size={24} className={selectedPackage === pkg.id ? "text-[#FF497D]" : "text-gray-400"} />
             </div>
             
             <div className="text-xs text-gray-500 mt-2">
               {formatPrice(pkg.price / pkg.credits)} per credit
             </div>
             
-            <div className="mt-3 text-xs text-gray-300 bg-gray-800/50 p-2 rounded">
-              Generate {pkg.credits} videos from your images
+            <div className="mt-3 text-xs text-gray-300 bg-[#1A1A1D]/50 p-2 rounded">
+              Generate {pkg.credits / 3} GIFs from your images
             </div>
           </div>
         ))}
       </div>
       
       <button
-        className="flex items-center justify-center gap-2 w-full bg-[#FF7733] hover:bg-[#E05E20] text-white font-medium py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         onClick={handlePurchase}
         disabled={isLoading || !selectedPackage}
+        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <>
