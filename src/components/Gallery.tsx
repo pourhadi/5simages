@@ -278,12 +278,17 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
                         </div>
                       </div>
           ) : video.status === 'processing' ? (
-                    <div className="aspect-video flex flex-col items-center justify-center text-gray-400 bg-[#1A1A1D] rounded-2xl">
-                        <RefreshCw size={24} className="animate-spin text-[#3EFFE2] mb-2" />
-                        <span className="text-gray-400">Processing...</span>
-                        {video.imageUrl && (
-                            <Image src={video.imageUrl} alt="Input Image" width={64} height={64} className="mt-2 rounded opacity-50"/>
+            <div className="relative group aspect-video w-full">
+                                      {video.imageUrl && (
+                            <Image src={video.imageUrl} alt="Input Image" fill className="object-cover opacity-50"/>
                         )}
+                        <div
+                                                  className="absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-300 bg-black/30"
+                                                  >
+                    {/* <div className="aspect-video flex flex-col items-center justify-center text-gray-400 bg-[#1A1A1D] rounded-2xl"> */}
+                        <RefreshCw size={24} className="animate-spin text-[#3EFFE2] mb-2" />
+                        <span className="text-sm text-gray-400">Processing...</span>
+                    </div>
                     </div>
                   ) : (
                     <div className="aspect-video flex flex-col items-center justify-center text-red-400 bg-[#1A1A1D] rounded-2xl">
