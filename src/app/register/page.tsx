@@ -56,7 +56,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center py-12 bg-[#0D0D0E] p-4">
+    <div className="flex items-center justify-center py-12 p-4">
       <div className="bg-[#1A1A1D] text-gray-100 p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h2 className="text-3xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
           Register

@@ -296,9 +296,11 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
                   )}
 
                   {/* Info Overlay */}
+                  {!showViewAll && (
                       <div className="p-3 absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <p className="text-sm text-white truncate font-semibold" title={video.prompt}>{video.prompt}</p>
                       </div>
+                  )}
 
                   {/* Delete Button (appears on hover) */} 
                   <button 
