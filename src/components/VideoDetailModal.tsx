@@ -96,6 +96,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
     if (!video || !onRegenerate) return;
     
     try {
+      console.log(video.imageUrl)
       setIsRegenerating(true);
       await onRegenerate(video.prompt, video.imageUrl);
       toast.success('Generation started');

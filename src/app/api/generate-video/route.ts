@@ -70,6 +70,25 @@ export async function POST(request: Request) {
       return newVideo;
     });
 
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+    const storagePrefix = `${supabaseUrl}/storage/v1/object/public/`;
+    let signedUrl: string | null = null;
+    if (imageUrl.startsWith(storagePrefix)) {
+      // Use admin client to create a signed URL for private buckets
+      const supabaseAdmin = getSupabaseAdmin();
+      const rest = imageUrl.substring(storagePrefix.length);
+      const slashIndex = rest.indexOf('/');
+      if (slashIndex < 0) throw new Error(`Invalid Supabase storage URL: ${imageUrl}`);
+      const bucket = rest.substring(0, slashIndex);
+      const path = rest.substring(slashIndex + 1);
+      const { data: signedData, error: signedError } =
+        await supabaseAdmin.storage.from(bucket).createSignedUrl(path, 3600);
+      if (signedError || !signedData?.signedUrl) {
+        throw new Error(`Failed to create signed URL: ${signedError?.message}`);
+      }
+      signedUrl = signedData.signedUrl;
+    }
+
     // Attempt primary video generation via external API (support multiple env var names)
     const PRIMARY_API_URL = process.env.VIDEO_API_URL ?? process.env.PRIMARY_API_URL;
     const PRIMARY_API_TOKEN = process.env.VIDEO_API_TOKEN ?? process.env.PRIMARY_API_TOKEN;
@@ -80,22 +99,8 @@ export async function POST(request: Request) {
         // Fetch the input image, supporting Supabase storage URLs via signed URL
         let imgBuffer: ArrayBuffer;
         let contentType = 'application/octet-stream';
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
-        const storagePrefix = `${supabaseUrl}/storage/v1/object/public/`;
-        if (imageUrl.startsWith(storagePrefix)) {
+        if (signedUrl != null) {
           // Use admin client to create a signed URL for private buckets
-          const supabaseAdmin = getSupabaseAdmin();
-          const rest = imageUrl.substring(storagePrefix.length);
-          const slashIndex = rest.indexOf('/');
-          if (slashIndex < 0) throw new Error(`Invalid Supabase storage URL: ${imageUrl}`);
-          const bucket = rest.substring(0, slashIndex);
-          const path = rest.substring(slashIndex + 1);
-          const { data: signedData, error: signedError } =
-            await supabaseAdmin.storage.from(bucket).createSignedUrl(path, 3600);
-          if (signedError || !signedData?.signedUrl) {
-            throw new Error(`Failed to create signed URL: ${signedError?.message}`);
-          }
-          const signedUrl = signedData.signedUrl;
           const signedRes = await fetch(signedUrl);
           if (!signedRes.ok) throw new Error(`Failed to fetch input image: ${signedRes.statusText}`);
           contentType = signedRes.headers.get('content-type') || contentType;
@@ -143,7 +148,7 @@ export async function POST(request: Request) {
     // Use version field for Replicate API (required by HTTP API)
     const prediction = await replicate.predictions.create({
       version: REPLICATE_MODEL_VERSION,
-      input: { image: imageUrl, prompt: prompt },
+      input: { image: signedUrl ?? imageUrl, prompt: prompt },
     });
     if (!prediction?.id) {
       throw new Error("Failed to create Replicate prediction.");
