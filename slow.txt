@@ -1,0 +1,15 @@
+const input = {
+  prompt: "A close-up of a woman's dress fabric fluttering in the gentle ocean breeze, shimmering in the sunlight. Soft, natural light reflecting off the fabric",
+  duration: 4,
+  aspect_ratio: "16:9",
+  frame_image_url: "https://www.stillmotion.ai/_next/static/media/2.6c4d13c1.gif",
+  use_prompt_enhancer: true
+};
+
+const output = await replicate.run("haiper-ai/haiper-video-2", { input });
+
+// To access the file URL:
+console.log(output.url()); //=> "http://example.com"
+
+// To write the file to disk:
+fs.writeFile("my-image.png", output);

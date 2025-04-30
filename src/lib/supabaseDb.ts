@@ -66,6 +66,7 @@ interface VideoData {
   replicatePredictionId?: string;
   createdAt?: string;
   updatedAt?: string;
+  type: string;
 }
 
 /**

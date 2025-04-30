@@ -70,7 +70,8 @@ export async function GET(request: Request) {
     // Attempt primary API status check
     const PRIMARY_API_URL = process.env.VIDEO_API_URL;
     const PRIMARY_API_TOKEN = process.env.VIDEO_API_TOKEN;
-    if (PRIMARY_API_URL && PRIMARY_API_TOKEN) {
+    // Only use primary API for fast generation; slow uses Replicate only
+    if (video.type !== 'slow' && PRIMARY_API_URL && PRIMARY_API_TOKEN) {
       try {
         // Call primary API status endpoint
         const statusRes = await fetch(

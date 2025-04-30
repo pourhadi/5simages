@@ -72,6 +72,7 @@ model Video {
   videoUrl  String?  // URL of the generated video from Replicate
   gifUrl    String?  // URL of the generated GIF
   status    String   @default("processing") // processing, completed, failed
+  type      String   // type of generation, either "fast" or "slow"
   replicatePredictionId String?  @unique // Store the Replicate prediction ID
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

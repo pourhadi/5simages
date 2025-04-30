@@ -14,6 +14,8 @@ if (!process.env.REPLICATE_API_TOKEN) {
 }
 
 const REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
+// Model version for Slow and Good generation via Replicate
+const SLOW_REPLICATE_MODEL_VERSION = process.env.SLOW_REPLICATE_MODEL_VERSION ?? "haiper-ai/haiper-video-2";
 
 export async function POST(request: Request) {
   // Initialize Supabase client with awaited cookies and headers
@@ -34,12 +36,14 @@ export async function POST(request: Request) {
   try {
     // Parse request body; optional duration in seconds
     const body = await request.json();
-    const { imageUrl, prompt } = body;
+    const { imageUrl, prompt, generationType = 'fast' } = body;
 
     if (!imageUrl || !prompt) {
       return new NextResponse('Missing imageUrl or prompt', { status: 400 });
     }
 
+    // Determine credit cost based on generation type
+    const cost = generationType === 'slow' ? 1 : 3;
     // Check credits and create video record in a transaction
     const videoRecord = await prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({
@@ -47,13 +51,13 @@ export async function POST(request: Request) {
         select: { credits: true },
       });
 
-      if (!user || user.credits < 3) {
+      if (!user || user.credits < cost) {
         throw new Error('Insufficient credits');
       }
 
       await tx.user.update({
         where: { id: userId },
-        data: { credits: { decrement: 3 } },
+        data: { credits: { decrement: cost } },
       });
 
       // Create initial video record
@@ -63,6 +67,7 @@ export async function POST(request: Request) {
           imageUrl: imageUrl,
           prompt: prompt,
           status: 'processing',
+          type: generationType,
         },
       });
       
@@ -88,6 +93,32 @@ export async function POST(request: Request) {
     //   signedUrl = signedData.signedUrl;
     // }
 
+    // If using Slow and Good option, skip primary API and use slow Replicate model
+    if (generationType === 'slow') {
+      // Start an asynchronous prediction with the slow model
+      const prediction = await replicate.predictions.create({
+        version: SLOW_REPLICATE_MODEL_VERSION,
+        input: {
+          prompt: prompt,
+          duration: 4,
+          aspect_ratio: "16:9",
+          frame_image_url: signedUrl ?? imageUrl,
+          use_prompt_enhancer: true,
+        },
+      });
+      if (!prediction?.id) {
+        throw new Error("Failed to create Replicate prediction.");
+      }
+      // Update video record with the prediction ID
+      await prisma.video.update({
+        where: { id: videoRecord.id },
+        data: { replicatePredictionId: prediction.id },
+      });
+      return NextResponse.json({
+        message: 'Video generation initiated',
+        videoId: videoRecord.id,
+      }, { status: 202 });
+    }
     // Attempt primary video generation via external API (support multiple env var names)
     const PRIMARY_API_URL = process.env.VIDEO_API_URL ?? process.env.PRIMARY_API_URL;
     const PRIMARY_API_TOKEN = process.env.VIDEO_API_TOKEN ?? process.env.PRIMARY_API_TOKEN;

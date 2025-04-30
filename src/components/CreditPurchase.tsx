@@ -76,7 +76,7 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
       </div>
       
       <p className="text-gray-300 mb-6">
-        Credits are used to generate GIFs from your images. Each GIF generation costs 3 credits.
+        Credits are used to generate GIFs from your images. 
         Select a package below to purchase credits.
       </p>
       
@@ -116,7 +116,7 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
             </div>
             
             <div className="mt-3 text-xs text-gray-300 bg-[#1A1A1D]/50 p-2 rounded">
-              Generate {pkg.credits / 3} GIFs from your images
+              Generate {pkg.credits / 3} Great GIFs, or {pkg.credits} Good GIFs
             </div>
           </div>
         ))}
