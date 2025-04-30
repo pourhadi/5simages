@@ -11,11 +11,13 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "StillMotion.ai - Turn an image into a GIF with AI",
   description: "Transform your static images into engaging GIFs with AI",
-  icons: {
-    icon: [{ url: '/logo.png', type: 'image/png' }],
-    shortcut: '/logo.png',
-    apple: '/logo.png',
-  },
+  // icons: {
+  //   icon: [{ url: '/logo.png', type: 'image/png' }],
+  //   shortcut: '/logo.png',
+  //   apple: '/logo.png',
+  // },
+  icons: "/favicon.ico",
+  manifest: "/site.webmanifest"
 };
 
 export default function RootLayout({
