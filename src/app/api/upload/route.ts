@@ -10,7 +10,13 @@ const BUCKET_NAME = process.env.NEXT_PUBLIC_SUPABASE_IMAGES_BUCKET_NAME || 'imag
 export async function POST(request: Request) {
   try {
     // Authenticate user via Supabase
-    const supabaseAuth = createRouteHandlerSupabaseClient({ cookies, headers });
+    // Await cookies and headers to avoid sync dynamic API usage
+    const cookieStore = await cookies();
+    const headerStore = await headers();
+    const supabaseAuth = createRouteHandlerSupabaseClient({
+      cookies: () => cookieStore,
+      headers: () => headerStore,
+    });
     const { data: { session } } = await supabaseAuth.auth.getSession();
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

@@ -140,8 +140,9 @@ export async function POST(request: Request) {
     }
     // Fallback to Replicate API
     // Start an asynchronous prediction
+    // Use version field for Replicate API (required by HTTP API)
     const prediction = await replicate.predictions.create({
-      model: REPLICATE_MODEL_VERSION,
+      version: REPLICATE_MODEL_VERSION,
       input: { image: imageUrl, prompt: prompt },
     });
     if (!prediction?.id) {
