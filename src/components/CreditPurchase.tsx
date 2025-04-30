@@ -115,9 +115,9 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
               {formatPrice(pkg.price / pkg.credits)} per credit
             </div>
             
-            <div className="mt-3 text-xs text-gray-300 bg-[#1A1A1D]/50 p-2 rounded">
-              Generate {pkg.credits / 3} Great GIFs, or {pkg.credits} Good GIFs
-            </div>
+            {/* <div className="mt-3 text-xs text-gray-300 bg-[#1A1A1D]/50 p-2 rounded">
+              Generate {pkg.credits / 2} Great GIFs, or {pkg.credits} Good GIFs
+            </div> */}
           </div>
         ))}
       </div>
@@ -140,6 +140,18 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
         )}
       </button>
       
+      <div className="text-sm text-gray-300 mt-4">
+            <h3 className="font-medium text-gray-200 mb-2">How credits work:</h3>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Fast and Great GIF generation costs 2 credits</li>
+              <li>Slow and Good GIF generation costs 1 credit</li>
+              <li>Credits never expire</li>
+              <li>Payment is processed securely through Stripe</li>
+              <li>We don&apos;t store your payment information</li>
+            </ul>
+          </div>
+
+
       <p className="text-xs text-gray-400 text-center mt-4">
         Secure payment processing with Stripe. You will be redirected to complete your purchase.
       </p>

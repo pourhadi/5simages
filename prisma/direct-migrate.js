@@ -27,7 +27,7 @@ const migrations = [
     "hashedPassword" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "credits" INTEGER NOT NULL DEFAULT 5,
+    "credits" INTEGER NOT NULL DEFAULT 3,
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
   );
   CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email");

@@ -125,14 +125,14 @@ export const authOptions: AuthOptions = {
     },
   },
   events: {
-    // Ensure all new users get 5 free credits when created
+    // Ensure all new users get 3 free credits when created
     createUser: async ({ user }) => {
       // This is only triggered for OAuth users - Credentials users are handled in the register API
       await prisma.user.update({
         where: { id: user.id },
-        data: { credits: 5 }
+        data: { credits: 3 }
       });
-      console.log(`Added 5 free credits to new user: ${user.email}`);
+      console.log(`Added 3 free credits to new user: ${user.email}`);
     }
   },
   pages: {

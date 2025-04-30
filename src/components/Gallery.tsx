@@ -158,8 +158,8 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
   // Handle video regeneration
   const handleRegenerate = async (prompt: string, imageUrl: string) => {
     // Check if user has enough credits
-    if (userCredits <= 2) {
-      toast.error('You need at least 3 credits to generate a video. Please purchase credits.');
+    if (userCredits < 2) {
+      toast.error('You need at least 2 credits to generate a video. Please purchase credits.');
       return;
     }
     

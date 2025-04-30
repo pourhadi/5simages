@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     }
 
     // Determine credit cost based on generation type
-    const cost = generationType === 'slow' ? 1 : 3;
+    const cost = generationType === 'slow' ? 1 : 2;
     // Check credits and create video record in a transaction
     const videoRecord = await prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({

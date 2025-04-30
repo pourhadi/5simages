@@ -163,7 +163,8 @@ export default function CreditsPage() {
           <div className="text-sm text-gray-300">
             <h3 className="font-medium text-gray-200 mb-2">How credits work:</h3>
             <ul className="list-disc pl-5 space-y-1">
-              <li>3 credits = 1 Fast/Great GIF generation or 3 Slow/Good GIF generations</li>
+              <li>Fast and Great GIF generation costs 2 credits</li>
+              <li>Slow and Good GIF generation costs 1 credit</li>
               <li>Credits never expire</li>
               <li>Payment is processed securely through Stripe</li>
               <li>We don&apos;t store your payment information</li>

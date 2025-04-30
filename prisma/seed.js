@@ -5,17 +5,17 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Starting database seed...');
   
-  // Update existing users with 0 credits to have 5 credits
+  // Update existing users with 0 credits to have 3 credits
   const updatedUsers = await prisma.user.updateMany({
     where: {
       credits: 0
     },
     data: {
-      credits: 5
+      credits: 3
     }
   });
   
-  console.log(`Updated ${updatedUsers.count} existing users to have 5 credits`);
+  console.log(`Updated ${updatedUsers.count} existing users to have 3 credits`);
   
   console.log('Seed completed successfully ✅');
 }

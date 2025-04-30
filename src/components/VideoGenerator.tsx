@@ -18,7 +18,7 @@ export default function VideoGenerator() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  // Generation type: 'fast' for primary+fallback (3 credits), 'slow' for slow replicate-only (1 credit)
+  // Generation type: 'fast' for primary+fallback (2 credits), 'slow' for slow replicate-only (1 credit)
   const [generationType, setGenerationType] = useState<'fast' | 'slow'>('fast');
   
   // Get credits from both session and API to ensure consistency
@@ -75,7 +75,7 @@ export default function VideoGenerator() {
     }
     
     // Check if user has enough credits based on generation type
-    const cost = generationType === 'slow' ? 1 : 3;
+    const cost = generationType === 'slow' ? 1 : 2;
     if (userCredits < cost) {
       toast.error(`You need at least ${cost} credits to generate a GIF. Please purchase credits.`);
       return;
@@ -220,7 +220,7 @@ export default function VideoGenerator() {
         >
           <div className="flex justify-between w-full items-center">
             <span className="font-semibold">Fast and Great</span>
-            <span className="text-sm">3 credits</span>
+            <span className="text-sm">2 credits</span>
           </div>
           <span className={`text-sm ${generationType === 'fast' ? 'text-white/80' : 'text-gray-400'}`}>
             Typically takes 2-3 minutes. Great animations.
@@ -250,11 +250,11 @@ export default function VideoGenerator() {
       {/* Credit info and generate button */}
       <div className="flex justify-between items-center mt-4">
         <p className="text-sm text-gray-400">
-          Generating a GIF will use {generationType === 'slow' ? 1 : 3} credits.
+          Generating a GIF will use {generationType === 'slow' ? 1 : 2} credits.
         </p>
         <button
           onClick={generateVideo}
-          disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits < (generationType === 'slow' ? 1 : 3)}
+          disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits < (generationType === 'slow' ? 1 : 2)}
           className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           {isGenerating ? (
@@ -271,11 +271,11 @@ export default function VideoGenerator() {
         </button>
       </div>
       
-      {userCredits < (generationType === 'slow' ? 1 : 3) && (
+      {userCredits < (generationType === 'slow' ? 1 : 2) && (
         <div className="mt-6 p-4 bg-[#1A1A1D] text-[#FF497D] rounded-xl text-sm border border-[#FF497D]">
           <p className="flex items-center gap-2">
             <Zap size={16} className="text-[#FF497D]" />
-            <span>You need at least {generationType === 'slow' ? 1 : 3} credits to generate a GIF. Purchase credits from the gallery page.</span>
+            <span>You need at least {generationType === 'slow' ? 1 : 2} credits to generate a GIF. Purchase credits from the gallery page.</span>
           </p>
         </div>
       )}
