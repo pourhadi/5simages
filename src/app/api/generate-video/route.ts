@@ -3,7 +3,6 @@ import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { cookies, headers } from 'next/headers';
 import Replicate from 'replicate';
 import prisma from '@/lib/prisma';
-import { getSupabaseAdmin } from '@/lib/supabaseClient';
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN || '',
