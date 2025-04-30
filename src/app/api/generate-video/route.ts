@@ -70,24 +70,24 @@ export async function POST(request: Request) {
       return newVideo;
     });
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
-    const storagePrefix = `${supabaseUrl}/storage/v1/object/public/`;
-    let signedUrl: string | null = null;
-    if (imageUrl.startsWith(storagePrefix)) {
-      // Use admin client to create a signed URL for private buckets
-      const supabaseAdmin = getSupabaseAdmin();
-      const rest = imageUrl.substring(storagePrefix.length);
-      const slashIndex = rest.indexOf('/');
-      if (slashIndex < 0) throw new Error(`Invalid Supabase storage URL: ${imageUrl}`);
-      const bucket = rest.substring(0, slashIndex);
-      const path = rest.substring(slashIndex + 1);
-      const { data: signedData, error: signedError } =
-        await supabaseAdmin.storage.from(bucket).createSignedUrl(path, 3600);
-      if (signedError || !signedData?.signedUrl) {
-        throw new Error(`Failed to create signed URL: ${signedError?.message}`);
-      }
-      signedUrl = signedData.signedUrl;
-    }
+    // const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+    // const storagePrefix = `${supabaseUrl}/storage/v1/object/public/`;
+    const signedUrl: string | null = null;
+    // if (imageUrl.startsWith(storagePrefix)) {
+    //   // Use admin client to create a signed URL for private buckets
+    //   const supabaseAdmin = getSupabaseAdmin();
+    //   const rest = imageUrl.substring(storagePrefix.length);
+    //   const slashIndex = rest.indexOf('/');
+    //   if (slashIndex < 0) throw new Error(`Invalid Supabase storage URL: ${imageUrl}`);
+    //   const bucket = rest.substring(0, slashIndex);
+    //   const path = rest.substring(slashIndex + 1);
+    //   const { data: signedData, error: signedError } =
+    //     await supabaseAdmin.storage.from(bucket).createSignedUrl(path, 3600);
+    //   if (signedError || !signedData?.signedUrl) {
+    //     throw new Error(`Failed to create signed URL: ${signedError?.message}`);
+    //   }
+    //   signedUrl = signedData.signedUrl;
+    // }
 
     // Attempt primary video generation via external API (support multiple env var names)
     const PRIMARY_API_URL = process.env.VIDEO_API_URL ?? process.env.PRIMARY_API_URL;
