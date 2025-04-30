@@ -42,12 +42,12 @@ export default function HomePage() {
   }
   // If not authenticated (or loading), show welcome page
   return (
-    <div className="flex flex-col items-center px-6 text-center py-12 space-y-6">
+    <div className="flex flex-col items-center px-6 text-center py-12 space-y-1">
       <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
         Welcome to StillMotion.ai
       </h1>
       <p className="mt-4 text-gray-400 max-w-2xl">
-        Bring your images to life. Upload a photo, and let our AI animate it into stunning GIFs.
+        Bring your images to life. Upload a photo and let our AI animate it into a stunning GIF.
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {[exampleGif1, exampleGif2, exampleGif3].map((gif, idx) => (
@@ -64,9 +64,10 @@ export default function HomePage() {
       <div className="flex space-x-4 mt-10">
         <button
           onClick={() => router.push('/login')}
-          className="px-6 py-3 rounded-lg bg-gradient-to-r from-[#3EFFE2] to-[#1E3AFF] text-gray-900 font-semibold hover:opacity-90 transition"
+          className="px-3 py-2 rounded-md text-sm font-medium text-gray-400 hover:text-[#FF497D] transition"
+          // className="px-6 py-3 rounded-lg bg-gradient-to-r from-[#3EFFE2] to-[#1E3AFF] text-gray-900 font-semibold hover:opacity-90 transition"
         >
-          Log In
+          Sign In
         </button>
         <button
           onClick={() => router.push('/register')}
