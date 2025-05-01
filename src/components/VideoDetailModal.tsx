@@ -277,7 +277,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                       <div className="flex justify-between">
                         <span className="text-gray-400">Credits used</span>
                         <span className="text-white flex items-center gap-1">
-                          { video.type == 'fast' ? (1) : (2) }
+                          { video.type == 'fast' ? (2) : (1) }
                            {/*3 <Zap size={16} className="text-[#3EFFE2]" />*/}
                         </span>
                       </div>
