@@ -163,8 +163,8 @@ export default function CreditsPage() {
           <div className="text-sm text-gray-300">
             <h3 className="font-medium text-gray-200 mb-2">How credits work:</h3>
             <ul className="list-disc pl-5 space-y-1">
-              <li><span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast and Great</span> GIF generation costs 2 credits</li>
-              <li><span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow and Good</span> GIF generation costs 1 credit</li>
+              <li><span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast / Great</span> GIF generation costs 2 credits</li>
+              <li><span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow / Good</span> GIF generation costs 1 credit</li>
               <li>Credits never expire</li>
               <li>Payment is processed securely through Stripe</li>
               <li>We don&apos;t store your payment information</li>

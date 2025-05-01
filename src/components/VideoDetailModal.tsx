@@ -124,7 +124,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
       onClick={onClose}
     >
       <div
-        className="w-[95%] max-w-7xl max-h-[calc(100vh-4rem)] my-8 bg-[#1A1A1D] rounded-2xl overflow-auto border border-[#2A2A2D] shadow-2xl flex flex-col"
+        className="w-[95%] max-w-7xl my-8 bg-[#1A1A1D] rounded-2xl overflow-auto border border-[#2A2A2D] shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top navigation bar */}
@@ -277,12 +277,9 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                       <div className="flex justify-between">
                         <span className="text-gray-400">Credits used</span>
                         <span className="text-white flex items-center gap-1">
-                          3 <Zap size={16} className="text-[#3EFFE2]" />
+                          { video.type == 'fast' ? (1) : (2) }
+                           {/*3 <Zap size={16} className="text-[#3EFFE2]" />*/}
                         </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">ID</span>
-                        <span className="text-gray-300 text-xs">{video.id.substring(0, 8)}...</span>
                       </div>
                     </div>
                   </div>

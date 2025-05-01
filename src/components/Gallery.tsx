@@ -197,7 +197,7 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
     <>
       <div className="space-y-6">
         {/* Credit status and purchase UI */}
-        <div id="credits-section" className="bg-[#1A1A1D] rounded-2xl p-6">
+        <div id="credits-section" className="bg-container rounded-container p-6">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Zap size={20} className="text-[#3EFFE2]" />
@@ -226,7 +226,7 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
         </div>
         
         {/* Gallery container */}
-        <div className="bg-[#1A1A1D] rounded-2xl p-8">
+        <div className="bg-container rounded-container p-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-white">Your GIF Gallery</h2>
             {/* Refresh button can still manually trigger revalidation if needed */}

@@ -24,9 +24,9 @@ export default function HomePage() {
     const credits = typeof user.credits === 'number' ? user.credits : 0;
     return (
       <div className="space-y-8">
-        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
-          Welcome, {user.name || user.email}!
-        </h1>
+        {/*<h1 className="text-4xl font-extrabold sm:text-center text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">*/}
+        {/*  Welcome, {user.name || user.email}!*/}
+        {/*</h1>*/}
         {credits > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <VideoGenerator />

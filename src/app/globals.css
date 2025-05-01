@@ -10,6 +10,12 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-container: #1A1A1D;
+  /*--color-container: none;*/
+
+  /*--radius-container: 0;*/
+  --radius-container: var(--radius-2xl);
 }
 
 

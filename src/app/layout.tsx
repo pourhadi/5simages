@@ -32,7 +32,10 @@ export default function RootLayout({
   return (
     <html lang="en">
     <head>
-      <meta name="theme-color" content="#0D0D0E" media="(prefers-color-scheme: dark)"/>
+        <title>StillMotion.ai</title>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="theme-color" content="#0D0D0E" media="(prefers-color-scheme: dark)"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
     </head>
     <body className={`${inter.className} bg-[#0D0D0E] text-gray-100`}>
     <AuthProvider>

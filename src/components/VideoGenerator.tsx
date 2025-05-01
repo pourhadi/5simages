@@ -136,7 +136,8 @@ export default function VideoGenerator() {
   };
 
   return (
-    <div className="bg-[#1A1A1D] shadow-xl rounded-2xl p-8">
+    // <div className="bg-[#1A1A1D] shadow-xl rounded-2xl p-8">
+    <div className="bg-container shadow-xl rounded-container p-8">
       {/* Header with title and credit info */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-white">Generate GIF</h2>
@@ -215,12 +216,12 @@ export default function VideoGenerator() {
           className={`cursor-pointer bg-[#0D0D0E] transition-all rounded-2xl p-4 flex flex-col items-start gap-2 border ${
             generationType === 'fast'
               ? 'border-[#FF497D] shadow-xl'
-              : 'border-gray-600 hover:border-gray-500 hover:bg-[#1A1A1D] hover:shadow-lg opacity-80'
+              : 'border-gray-600 hover:border-gray-500 hover:bg-[#1A1A1D] hover:shadow-lg opacity-60'
           }`}
         >
           <div className="flex justify-between w-full items-center">
-            <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast and Great</span>
-            <span className="text-sm">2 credits</span>
+            <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast / Great</span>
+            <span className="text-sm text-[#3EFFE2]">2 credits</span>
           </div>
           <span className={`text-sm ${generationType === 'fast' ? 'text-white/80' : 'text-gray-400'}`}>
             Typically takes 2-3 minutes. Great animations.
@@ -233,12 +234,12 @@ export default function VideoGenerator() {
           className={`cursor-pointer bg-[#0D0D0E] transition-all rounded-2xl p-4 flex flex-col items-start gap-2 border ${
             generationType === 'slow'
               ? 'border-[#FF497D] shadow-xl'
-              : 'border-gray-600 hover:border-gray-500 hover:bg-[#1A1A1D] hover:shadow-lg opacity-80'
+              : 'border-gray-600 hover:border-gray-500 hover:bg-[#1A1A1D] hover:shadow-lg opacity-60'
           } disabled:opacity-50`}
         >
           <div className="flex justify-between w-full items-center">
-            <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow and Good</span>
-            <span className="text-sm">1 credit</span>
+            <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow / Good</span>
+            <span className="text-sm text-[#3EFFE2]">1 credit</span>
           </div>
           <span className={`text-sm ${generationType === 'slow' ? 'text-white/80' : 'text-gray-400'}`}>
             Typically takes 8-12 minutes. Good animations.
@@ -249,14 +250,14 @@ export default function VideoGenerator() {
       
       {/* Credit info and generate button */}
       <div className="flex justify-between items-center mt-4">
-        <p className="text-sm text-gray-400">
-          Generating a GIF will use {generationType === 'slow' ? 1 : 2} credits.
-        </p>
+        {/*<p className="text-sm text-gray-400">*/}
+        {/*  Generating a GIF will use {generationType === 'slow' ? 1 : 2} credits.*/}
+        {/*</p>*/}
         <button
           onClick={generateVideo}
           disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits < (generationType === 'slow' ? 1 : 2)}
           // className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
-          className="flex items-center justify-center gap-2 text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600  px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
+          className="flex w-full items-center justify-center gap-2 text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600  px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           {isGenerating ? (
             <>
