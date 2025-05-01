@@ -20,19 +20,17 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  manifest: "/site.webmanifest",
+  manifest: "/manifest.json",
   appleWebApp: { capable: true, title: "StillMotion.ai", statusBarStyle: "black-translucent" }
 };
 
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
-    themeColor: [
-        { media: "(prefers-color-scheme: dark)", color: "#0D0D0E" },
-        // { media: "(prefers-color-scheme: light)", color: "#ffffff" }
-    ],
+    themeColor: "#0D0D0E",
     colorScheme: "dark"
 }
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -43,7 +41,6 @@ export default function RootLayout({
     <head>
         <title>StillMotion.ai</title>
         <meta name="apple-mobile-web-app-capable" content="yes"/>
-        <meta name="theme-color" content="#0D0D0E" media="(prefers-color-scheme: dark)"/>
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
     </head>
     <body className={`${inter.className} bg-[#0D0D0E] text-gray-100`}>
