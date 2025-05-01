@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Video } from '@prisma/client';
 import Image from 'next/image';
-import { X, Download, Share, Clock, Copy, Check, Zap, Trash2, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Download, Share, Clock, Copy, Check, Trash2, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface VideoDetailModalProps {
