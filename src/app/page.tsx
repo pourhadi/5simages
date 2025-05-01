@@ -23,7 +23,7 @@ export default function HomePage() {
   if (user) {
     const credits = typeof user.credits === 'number' ? user.credits : 0;
     return (
-      <div className="space-y-8">
+      <div className="space-y-8 py-8 md:py-0">
         {/*<h1 className="text-4xl font-extrabold sm:text-center text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">*/}
         {/*  Welcome, {user.name || user.email}!*/}
         {/*</h1>*/}

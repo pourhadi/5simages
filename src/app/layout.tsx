@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type {Metadata, Viewport} from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
@@ -24,6 +24,15 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: "StillMotion.ai", statusBarStyle: "black-translucent" }
 };
 
+export const viewport: Viewport = {
+    width: "device-width",
+    initialScale: 1,
+    themeColor: [
+        { media: "(prefers-color-scheme: dark)", color: "#0D0D0E" },
+        // { media: "(prefers-color-scheme: light)", color: "#ffffff" }
+    ],
+    colorScheme: "dark"
+}
 export default function RootLayout({
   children,
 }: Readonly<{
