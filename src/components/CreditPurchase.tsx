@@ -23,9 +23,9 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
   
   // Define credit packages
   const creditPackages: CreditPackage[] = [
-    { id: 'credits_3', credits: 3, price: 100 }, // $0.75
-    { id: 'credits_15', credits: 15, price: 375 }, // $0.75
-    { id: 'credits_30', credits: 30, price: 690 }, // $0.75
+    { id: 'credits_2', credits: 2, price: 100 }, // $0.75
+    { id: 'credits_10', credits: 10, price: 450 }, // $0.75
+    { id: 'credits_30', credits: 30, price: 1200 }, // $0.75
   ];
   
   const handlePurchase = async () => {

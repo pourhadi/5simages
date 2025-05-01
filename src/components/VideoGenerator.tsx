@@ -212,11 +212,11 @@ export default function VideoGenerator() {
           type="button"
           onClick={() => setGenerationType('fast')}
           disabled={isGenerating}
-          className={`p-4 rounded-xl flex flex-col items-start gap-2 transition ${
+          className={`cursor-pointer bg-[#0D0D0E] transition-all rounded-2xl p-4 flex flex-col items-start gap-2 border ${
             generationType === 'fast'
-              ? 'bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white'
-              : 'bg-[#0D0D0E] text-gray-300'
-          } disabled:opacity-50`}
+              ? 'border-[#FF497D] shadow-xl'
+              : 'border-gray-600 hover:border-gray-500 hover:bg-[#1A1A1D] hover:shadow-lg opacity-80'
+          }`}
         >
           <div className="flex justify-between w-full items-center">
             <span className="font-semibold">Fast and Great</span>
@@ -230,10 +230,10 @@ export default function VideoGenerator() {
           type="button"
           onClick={() => setGenerationType('slow')}
           disabled={isGenerating}
-          className={`p-4 rounded-xl flex flex-col items-start gap-2 transition ${
+          className={`cursor-pointer bg-[#0D0D0E] transition-all rounded-2xl p-4 flex flex-col items-start gap-2 border ${
             generationType === 'slow'
-              ? 'bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white'
-              : 'bg-[#0D0D0E] text-gray-300'
+              ? 'border-[#FF497D] shadow-xl'
+              : 'border-gray-600 hover:border-gray-500 hover:bg-[#1A1A1D] hover:shadow-lg opacity-80'
           } disabled:opacity-50`}
         >
           <div className="flex justify-between w-full items-center">
