@@ -326,7 +326,8 @@ export default function Gallery({ limitItems, showViewAll }: GalleryProps) {
             <div className="mt-6 flex justify-center">
               <button
                 onClick={() => router.push('/gallery')}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
+                // className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 transition"
               >
                 View all GIFs
               </button>

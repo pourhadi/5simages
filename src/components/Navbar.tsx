@@ -83,7 +83,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-[#111111] border-b border-gray-800">
+    <nav className="bg-[#111111] border-b border-gray-800 py-2">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo and main nav */}
@@ -97,16 +97,16 @@ export default function Navbar() {
               <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
                 <Link
                   href="/"
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
-                    pathname === '/' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  className={`px-3 py-2 rounded-md font-medium text-md ${
+                    pathname === '/' ? 'text-white bg-gray-800' : 'text-gray-300 hover:bg-gray-900 hover:text-white'
                   }`}
                 >
                   Create
                 </Link>
                 <Link
                   href="/gallery"
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
-                    pathname === '/gallery' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  className={`px-3 py-2 rounded-md text-md font-medium ${
+                    pathname === '/gallery' ? 'text-white bg-gray-800' : 'text-gray-300 hover:bg-gray-900 hover:text-white'
                   }`}
                 >
                   Gallery
@@ -132,7 +132,7 @@ export default function Navbar() {
               <div className="flex items-center space-x-4">
                 <Link
                   href="/credits"
-                  className="flex items-center gap-1 bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full transition-colors group"
+                  className="flex items-center gap-1 bg-black hover:bg-gray-800 px-3 h-10 rounded-full transition-colors group"
                   onClick={() => mutate()}
                 >
                   <Zap size={16} className="text-[#3EFFE2]" />
@@ -153,26 +153,26 @@ export default function Navbar() {
                       onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     >
                       <span className="sr-only">Open user menu</span>
-                      <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-white uppercase font-bold">
+                      <div className="h-10 w-10 rounded-full bg-black hover:bg-gray-800 flex items-center justify-center text-white uppercase font-bold">
                         {user.name?.charAt(0) || user.email?.charAt(0) || '?'}
                       </div>
                     </button>
                   </div>
                   {isUserMenuOpen && (
                     <div 
-                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                       onMouseEnter={openUserMenu}
                       onMouseLeave={closeUserMenuWithDelay}
                     >
-                      <div className="px-4 py-2 text-xs text-gray-500">
+                      <div className="px-4 py-2 text-xs text-gray-200">
                         Signed in as
                       </div>
-                      <div className="px-4 py-2 text-sm font-medium text-gray-700 truncate border-b">
+                      <div className="px-4 py-2 text-sm font-medium text-gray-400 truncate border-b border-gray-700">
                         {user.email}
                       </div>
                       <Link
                         href="/credits"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-900"
                         onClick={() => mutate()}
                       >
                         Buy Credits
@@ -187,7 +187,7 @@ export default function Navbar() {
                             router.push('/login');
                           }
                         }}
-                        className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="w-full text-left block px-4 py-2 text-sm text-gray-300 hover:bg-gray-900"
                       >
                         Sign out
                       </button>

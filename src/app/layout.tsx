@@ -36,7 +36,7 @@ export default function RootLayout({
             },
           }} />
           <Navbar />
-          <main className="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+          <main className="max-w-7xl mx-auto py-12 sm:px-6 lg:px-8">
             {children}
           </main>
           {process.env.NODE_ENV === 'development' && <RefreshCredits />}

@@ -15,7 +15,7 @@ export default function Logo({ className = '' }: LogoProps) {
         <span className="text-2xl font-extrabold text-white">
           Still<span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Motion</span>
         </span>
-        <span className="text-sm text-[#3EFFE2]">stillmotion.ai</span>
+        {/*<span className="text-sm text-[#3EFFE2]">stillmotion.ai</span>*/}
       </div>
     </div>
   );

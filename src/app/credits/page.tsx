@@ -145,7 +145,7 @@ export default function CreditsPage() {
             ))}
           </div>
 
-          <div className="flex justify-between items-center p-4 bg-gray-700 rounded-lg mb-6">
+          <div className="flex justify-between items-center p-4 bg-[#0D0D0E]  rounded-lg mb-6">
             <div>
               <p className="text-gray-300 font-medium">Current balance</p>
             <p className="text-2xl font-bold text-white">{user?.credits || 0} credits</p>
@@ -163,8 +163,8 @@ export default function CreditsPage() {
           <div className="text-sm text-gray-300">
             <h3 className="font-medium text-gray-200 mb-2">How credits work:</h3>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Fast and Great GIF generation costs 2 credits</li>
-              <li>Slow and Good GIF generation costs 1 credit</li>
+              <li><span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast and Great</span> GIF generation costs 2 credits</li>
+              <li><span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow and Good</span> GIF generation costs 1 credit</li>
               <li>Credits never expire</li>
               <li>Payment is processed securely through Stripe</li>
               <li>We don&apos;t store your payment information</li>

@@ -219,7 +219,7 @@ export default function VideoGenerator() {
           }`}
         >
           <div className="flex justify-between w-full items-center">
-            <span className="font-semibold">Fast and Great</span>
+            <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast and Great</span>
             <span className="text-sm">2 credits</span>
           </div>
           <span className={`text-sm ${generationType === 'fast' ? 'text-white/80' : 'text-gray-400'}`}>
@@ -237,7 +237,7 @@ export default function VideoGenerator() {
           } disabled:opacity-50`}
         >
           <div className="flex justify-between w-full items-center">
-            <span className="font-semibold">Slow and Good</span>
+            <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow and Good</span>
             <span className="text-sm">1 credit</span>
           </div>
           <span className={`text-sm ${generationType === 'slow' ? 'text-white/80' : 'text-gray-400'}`}>
@@ -255,7 +255,8 @@ export default function VideoGenerator() {
         <button
           onClick={generateVideo}
           disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits < (generationType === 'slow' ? 1 : 2)}
-          className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
+          // className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
+          className="flex items-center justify-center gap-2 text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600  px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           {isGenerating ? (
             <>
