@@ -31,8 +31,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-[#0D0D0E] text-gray-100`}>
-        <AuthProvider>
+    <head>
+      <meta name="theme-color" content="#0D0D0E" media="(prefers-color-scheme: dark)"/>
+    </head>
+    <body className={`${inter.className} bg-[#0D0D0E] text-gray-100`}>
+    <AuthProvider>
           <Toaster position="bottom-right" toastOptions={{ 
             style: {
               background: '#1e293b',
