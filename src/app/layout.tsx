@@ -16,8 +16,12 @@ export const metadata: Metadata = {
   //   shortcut: '/logo.png',
   //   apple: '/logo.png',
   // },
-  icons: "/favicon.ico",
-  manifest: "/site.webmanifest"
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
+  appleWebApp: { capable: true, title: "StillMotion.ai", statusBarStyle: "black-translucent" }
 };
 
 export default function RootLayout({
@@ -36,7 +40,7 @@ export default function RootLayout({
             },
           }} />
           <Navbar />
-          <main className="max-w-7xl mx-auto py-12 sm:px-6 lg:px-8">
+          <main className="max-w-7xl mx-auto sm:py-6 lg:py-12 sm:px-6 lg:px-8">
             {children}
           </main>
           {process.env.NODE_ENV === 'development' && <RefreshCredits />}
