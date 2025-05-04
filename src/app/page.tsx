@@ -61,6 +61,58 @@ export default function HomePage() {
           />
         ))}
       </div>
+      
+      {/* Free credits note */}
+      <aside className="mt-8 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] p-px rounded-lg max-w-2xl mx-auto">
+        <div className="bg-[#1A1A1D] p-6 rounded-lg">
+          <p className="text-center text-white font-semibold">
+              New users get <span class="text-[#3EFFE2]">3 free credits</span>: generate one <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast / Great</span> GIF (2 credits) and one <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow / Good</span> GIF (1 credit), or three <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow / Good</span> GIFs.
+          </p>
+        </div>
+      </aside>
+      {/* How It Works section */}
+      <div className="mt-10 max-w-4xl mx-auto text-left">
+        <h2 className="text-2xl font-semibold mb-6">How It Works</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex items-start space-x-4 bg-[#1A1A1D] p-4 rounded-lg">
+            <span className="text-3xl">💳</span>
+            <div>
+              <p className="font-medium text-white">Pay credits to generate a GIF</p>
+              <p className="text-gray-400 text-sm">Select an image, add a prompt, and animate it.</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-4 bg-[#1A1A1D] p-4 rounded-lg">
+            <span className="text-3xl">⚡️</span>
+            <div>
+              <p className="font-medium text-white"><span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast / Great</span> mode</p>
+              <p className="text-gray-400 text-sm">Quick results with high quality (2 credits per GIF).</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-4 bg-[#1A1A1D] p-4 rounded-lg">
+            <span className="text-3xl">🐢</span>
+            <div>
+              <p className="font-medium text-white"><span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow / Good</span> mode</p>
+              <p className="text-gray-400 text-sm">Slower generation with good quality (1 credit per GIF).</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-4 bg-[#1A1A1D] p-4 rounded-lg">
+            <span className="text-3xl">🪙</span>
+            <div>
+              <p className="font-medium text-white">Credits & Pricing</p>
+              <p className="text-gray-400 text-sm">Fast / Great: 2 credits per GIF; Slow / Good: 1 credit per GIF.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <aside className="mt-8 bg-gray-800 p-6 rounded-lg max-w-2xl text-left">
+        <h3 className="text-xl font-semibold mb-2">Why is it so expensive?</h3>
+        <p className="text-gray-400">
+          We use state-of-the-art video generation AI models that require incredibly powerful GPUs.
+          Running these models for each GIF is computationally intensive and costly. Your
+          credits help us cover the expenses of these resources.
+        </p>
+      </aside>
       <div className="flex space-x-4 mt-10">
         <button
           onClick={() => router.push('/login')}
