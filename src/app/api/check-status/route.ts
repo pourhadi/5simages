@@ -170,6 +170,16 @@ export async function GET(request: Request) {
             where: { id: videoId },
             data: { status: 'failed' },
           });
+          // Refund credits on failure
+          try {
+            const refundAmount = video.type === 'slow' ? 1 : 2;
+            await prisma.user.update({
+              where: { id: userId },
+              data: { credits: { increment: refundAmount } },
+            });
+          } catch (refundError) {
+            console.error("ERROR_REFUNDING_CREDITS", refundError);
+          }
           return NextResponse.json(updatedVideo);
         } else {
           return NextResponse.json(video);
@@ -194,6 +204,16 @@ export async function GET(request: Request) {
           where: { id: videoId },
           data: { status: 'failed' },
         });
+        // Refund credits on failure
+        try {
+          const refundAmount = video.type === 'slow' ? 1 : 2;
+          await prisma.user.update({
+            where: { id: userId },
+            data: { credits: { increment: refundAmount } },
+          });
+        } catch (refundError) {
+          console.error("ERROR_REFUNDING_CREDITS", refundError);
+        }
         return NextResponse.json({
           ...video,
           status: 'failed',
@@ -209,6 +229,16 @@ export async function GET(request: Request) {
           where: { id: videoId },
           data: { status: 'failed' },
         });
+        // Refund credits on failure
+        try {
+          const refundAmount = video.type === 'slow' ? 1 : 2;
+          await prisma.user.update({
+            where: { id: userId },
+            data: { credits: { increment: refundAmount } },
+          });
+        } catch (refundError) {
+          console.error("ERROR_REFUNDING_CREDITS", refundError);
+        }
         return NextResponse.json({
           ...video,
           status: 'failed',
@@ -301,6 +331,16 @@ export async function GET(request: Request) {
           where: { id: videoId },
           data: { status: 'failed' },
         });
+        // Refund credits on failure
+        try {
+          const refundAmount = video.type === 'slow' ? 1 : 2;
+          await prisma.user.update({
+            where: { id: userId },
+            data: { credits: { increment: refundAmount } },
+          });
+        } catch (refundError) {
+          console.error("ERROR_REFUNDING_CREDITS", refundError);
+        }
         return NextResponse.json({
           ...video,
           status: 'failed',
@@ -313,6 +353,16 @@ export async function GET(request: Request) {
         where: { id: videoId },
         data: { status: 'failed' },
       });
+      // Refund credits on failure
+      try {
+        const refundAmount = video.type === 'slow' ? 1 : 2;
+        await prisma.user.update({
+          where: { id: userId },
+          data: { credits: { increment: refundAmount } },
+        });
+      } catch (refundError) {
+        console.error("ERROR_REFUNDING_CREDITS", refundError);
+      }
       return NextResponse.json(updatedVideo);
     } else {
       // Still processing

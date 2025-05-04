@@ -32,6 +32,9 @@ export async function POST(request: Request) {
   }
 
   const userId = session.user.id;
+  // Track credit cost and video record for potential refund on failure
+  let cost = 0;
+  let videoRecordId: string | undefined;
 
   try {
     // Parse request body; optional duration in seconds
@@ -43,7 +46,7 @@ export async function POST(request: Request) {
     }
 
     // Determine credit cost based on generation type
-    const cost = generationType === 'slow' ? 1 : 2;
+    cost = generationType === 'slow' ? 1 : 2;
     // Check credits and create video record in a transaction
     const videoRecord = await prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({
@@ -73,6 +76,8 @@ export async function POST(request: Request) {
       
       return newVideo;
     });
+    // Remember record ID for refund on error
+    videoRecordId = videoRecord.id;
 
     // const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
     // const storagePrefix = `${supabaseUrl}/storage/v1/object/public/`;
@@ -196,13 +201,27 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error("ERROR_INITIATING_VIDEO_GENERATION", error);
-    
     let errorMessage = 'Video generation failed';
     if (error instanceof Error) {
       if (error.message === 'Insufficient credits') {
         return new NextResponse(error.message, { status: 402 }); // Payment Required
       }
       errorMessage = error.message;
+    }
+    // Refund credits if record was created and cost was deducted
+    if (videoRecordId && cost > 0) {
+      try {
+        await prisma.user.update({
+          where: { id: userId },
+          data: { credits: { increment: cost } },
+        });
+        await prisma.video.update({
+          where: { id: videoRecordId },
+          data: { status: 'failed' },
+        });
+      } catch (refundError) {
+        console.error("ERROR_REFUNDING_CREDITS", refundError);
+      }
     }
     return new NextResponse(errorMessage, { status: 500 });
   }
