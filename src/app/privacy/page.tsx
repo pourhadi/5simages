@@ -8,7 +8,7 @@ export default function PrivacyPage() {
     <section className="max-w-3xl mx-auto py-12 px-4">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
       <p className="mb-4">
-        StillMotion.ai ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and disclose your information.
+        StillMotion.ai (&#34;we&#34;, &#34;us&#34;, or &#34;our&#34;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and disclose your information.
       </p>
       <h2 className="text-2xl font-semibold mb-2">1. Information We Collect</h2>
       <ul className="list-disc list-inside mb-4">

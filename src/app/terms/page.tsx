@@ -28,7 +28,7 @@ export default function TermsPage() {
       </p>
       <h2 className="text-2xl font-semibold mb-2">5. Disclaimer of Warranties</h2>
       <p className="mb-4">
-        The service is provided "as is" without warranty of any kind. We disclaim all warranties to the fullest extent permitted by law.
+        The service is provided &#34;as is&#34; without warranty of any kind. We disclaim all warranties to the fullest extent permitted by law.
       </p>
       <h2 className="text-2xl font-semibold mb-2">6. Limitation of Liability</h2>
       <p className="mb-4">
