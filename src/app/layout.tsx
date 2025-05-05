@@ -5,6 +5,7 @@ import AuthProvider from "@/context/AuthProvider";
 import { Toaster } from 'react-hot-toast';
 import Navbar from "@/components/Navbar";
 import RefreshCredits from "@/components/RefreshCredits";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -55,6 +56,7 @@ export default function RootLayout({
           <main className="max-w-7xl mx-auto sm:py-6 lg:py-12 sm:px-6 lg:px-8">
             {children}
           </main>
+          <Footer />
           {process.env.NODE_ENV === 'development' && <RefreshCredits />}
         </AuthProvider>
       </body>
