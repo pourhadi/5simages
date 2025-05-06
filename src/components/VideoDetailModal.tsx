@@ -285,7 +285,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                   </div>
                   
                   {/* Action Buttons */}
-                <div className="gap-4">
+                <div className="space-y-4">
                     {video.videoUrl && video.gifUrl && (
                       <>
                     <button
