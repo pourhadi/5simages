@@ -21,6 +21,8 @@ export default function VideoGenerator() {
   // Generation type: 'fast' for primary+fallback (2 credits), 'slow' for slow replicate-only (1 credit)
   const [generationType, setGenerationType] = useState<'fast' | 'slow'>('fast');
   
+  // Cost in credits for current generation type
+  const cost = generationType === 'slow' ? 1 : 2;
   // Get credits from both session and API to ensure consistency
   const { data: session } = useSession();
   const { data: userData, mutate: mutateUser } = useSWR('/api/user', axiosFetcher);
@@ -255,7 +257,7 @@ export default function VideoGenerator() {
         {/*</p>*/}
         <button
           onClick={generateVideo}
-          disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits < (generationType === 'slow' ? 1 : 2)}
+          disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits < cost}
           // className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
           className="flex w-full items-center justify-center gap-2 text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600  px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
@@ -273,7 +275,7 @@ export default function VideoGenerator() {
         </button>
       </div>
       
-      {userCredits < (generationType === 'slow' ? 1 : 2) && (
+      {selectedImage && prompt.trim() && userCredits < cost && (
         <div className="mt-6 p-4 bg-[#1A1A1D] text-[#FF497D] rounded-xl text-sm border border-[#FF497D]">
           <p className="flex items-center gap-2">
             <Zap size={16} className="text-[#FF497D]" />
