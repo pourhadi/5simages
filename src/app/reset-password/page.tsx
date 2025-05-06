@@ -26,16 +26,18 @@ export default function ResetPasswordPage() {
   const [supabase] = useState(() => createBrowserSupabaseClient());
   const [isLoading, setIsLoading] = useState(false);
 
-  // On mount, extract tokens and set session
+  // On mount, extract tokens from URL hash and set session
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    if (typeof window === 'undefined') return;
+    const hash = window.location.hash.substring(1); // strip leading '#'
+    if (!hash) return;
+    const params = new URLSearchParams(hash);
     const access_token = params.get('access_token');
     const refresh_token = params.get('refresh_token');
     if (!access_token) {
-      toast.error('Invalid or expired reset link');
+      // No recovery token present; skip automatic session setup
       return;
     }
-    // Set session using tokens
     supabase.auth
       .setSession({ access_token, refresh_token: refresh_token || '' })
       .catch((err) => {
