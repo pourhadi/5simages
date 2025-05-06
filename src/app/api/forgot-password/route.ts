@@ -17,13 +17,22 @@ export async function POST(request: Request) {
     if (!email) {
       return new NextResponse('Email is required', { status: 400 });
     }
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-    const redirectTo = siteUrl
-      ? `${siteUrl.replace(/\/+$/, '')}/reset-password`
-      : undefined;
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo,
-    });
+    // Determine target URL for resetting password in the email
+    let redirectTo: string | undefined;
+    if (process.env.NEXT_PUBLIC_SITE_URL) {
+      redirectTo = process.env.NEXT_PUBLIC_SITE_URL.replace(/\/+$/, '') + '/reset-password';
+    } else if (process.env.VERCEL_URL) {
+      redirectTo = `https://${process.env.VERCEL_URL.replace(/\/+$/, '')}/reset-password`;
+    }
+    // Send reset email; include redirectTo only when defined to ensure a proper link
+    let resetResult;
+    if (redirectTo) {
+      resetResult = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    } else {
+      console.warn('FORGOT_PASSWORD: No NEXT_PUBLIC_SITE_URL or VERCEL_URL set; using default redirect');
+      resetResult = await supabase.auth.resetPasswordForEmail(email);
+    }
+    const { error } = resetResult;
     if (error) {
       return new NextResponse(error.message, { status: 400 });
     }

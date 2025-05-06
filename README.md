@@ -41,4 +41,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Environment Variables
 
-- NEXT_PUBLIC_SITE_URL: Base URL of your app (e.g., https://stillmotion.ai) used for email confirmation redirects.
+- NEXT_PUBLIC_SITE_URL: Base URL of your app (e.g., https://stillmotion.ai) used for email confirmation and password reset redirects.
+- NEXT_PUBLIC_SUPABASE_ANON_KEY: Your Supabase project’s public (anon) API key, required for client-side Supabase operations (e.g., resetting passwords).
+  
+Optional (for Vercel deployments):
+- VERCEL_URL: Automatically provided by Vercel for building redirect URLs in password reset emails.
