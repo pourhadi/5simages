@@ -95,6 +95,11 @@ export default function LoginPage() {
             />
             {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
           </div>
+          <p className="mt-2 text-right text-sm text-gray-400">
+            <Link href="/forgot-password" className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition">
+              Forgot your password?
+            </Link>
+          </p>
         <button
           type="submit"
           onClick={handleSubmit(onSubmit)}
