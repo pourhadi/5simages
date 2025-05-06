@@ -117,14 +117,14 @@ export default function HomePage() {
         </div>
       </div>
       
-      <aside className="mt-8 bg-gray-800 p-6 rounded-lg max-w-2xl text-left">
-        <h3 className="text-xl font-semibold mb-2">Why is it so expensive?</h3>
-        <p className="text-gray-400">
-          We use state-of-the-art video generation AI models that require incredibly powerful GPUs.
-          Running these models for each GIF is computationally intensive and costly. Your
-          credits help us cover the expenses of these resources.
-        </p>
-      </aside>
+      {/*<aside className="mt-8 bg-gray-800 p-6 rounded-lg max-w-2xl text-left">*/}
+      {/*  <h3 className="text-xl font-semibold mb-2">Why is it so expensive?</h3>*/}
+      {/*  <p className="text-gray-400">*/}
+      {/*    We use state-of-the-art video generation AI models that require incredibly powerful GPUs.*/}
+      {/*    Running these models for each GIF is computationally intensive and costly. Your*/}
+      {/*    credits help us cover the expenses of these resources.*/}
+      {/*  </p>*/}
+      {/*</aside>*/}
       <div className="flex space-x-4 mt-10">
         <button
           onClick={() => router.push('/login')}
