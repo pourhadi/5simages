@@ -85,14 +85,13 @@ export async function GET(request: Request) {
         const statusData = await statusRes.json();
         const status = statusData.status;
         if (status === 'done') {
+          // Construct the public/download URL for the generated video
+          const downloadUrl = `${PRIMARY_API_URL.replace(/\/+$/, '')}/download/${video.replicatePredictionId}`;
           // Download video from primary API
-          const downloadRes = await fetch(
-            `${PRIMARY_API_URL.replace(/\/+$/, '')}/download/${video.replicatePredictionId}`,
-            {
-              method: 'GET',
-              headers: { Authorization: `Bearer ${PRIMARY_API_TOKEN}` },
-            }
-          );
+          const downloadRes = await fetch(downloadUrl, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${PRIMARY_API_TOKEN}` },
+          });
           if (!downloadRes.ok) throw new Error(`Primary API download failed: ${downloadRes.statusText}`);
           const videoData = await downloadRes.arrayBuffer();
           // Upload video to external GIF conversion service
@@ -157,10 +156,12 @@ export async function GET(request: Request) {
           if (!gifUrlData?.publicUrl) {
             throw new Error('Could not get GIF public URL');
           }
+          // Update video record with videoUrl and gifUrl
           const updatedVideo = await prisma.video.update({
             where: { id: videoId },
             data: {
               status: 'completed',
+              videoUrl: downloadUrl,
               gifUrl: gifUrlData.publicUrl,
             },
           });
@@ -315,11 +316,12 @@ export async function GET(request: Request) {
         if (!gifUrlData?.publicUrl) {
           throw new Error('Could not get GIF public URL');
         }
-        // Update with success status and GIF URL
+        // Update video record with videoUrl and gifUrl
         const updatedVideo = await prisma.video.update({
           where: { id: videoId },
           data: {
             status: 'completed',
+            videoUrl: videoUrl,
             gifUrl: gifUrlData.publicUrl,
           },
         });

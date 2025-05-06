@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     const redirectTo = siteUrl
       ? `${siteUrl.replace(/\/+$/, '')}/reset-password`
       : undefined;
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo,
     });
     if (error) {
