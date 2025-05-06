@@ -49,13 +49,13 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
     toast.success('Prompt copied to clipboard');
   };
   
-  const handleDownload = async () => {
-    const downloadUrl = video.gifUrl || video.videoUrl;
+  const handleDownload = async (url: string) => {
+    const downloadUrl = url;
     if (!downloadUrl) return;
     
     try {
       setIsDownloading(true);
-      const ext = video.gifUrl ? 'gif' : 'mp4';
+      const ext = downloadUrl ? 'gif' : 'mp4';
       
       // Create a temporary link element
       const a = document.createElement('a');
@@ -79,13 +79,13 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
       const shareUrl = video.gifUrl || video.videoUrl;
       if (navigator.share && shareUrl) {
         await navigator.share({
-          title: 'Check out my AI-generated video',
+          title: 'Check out my AI-generated GIF',
           text: video.prompt,
           url: shareUrl
         });
       } else {
         navigator.clipboard.writeText(shareUrl || '');
-        toast.success('Video URL copied to clipboard');
+        toast.success('GIF URL copied to clipboard');
       }
     } catch (err) {
       console.error('Share error:', err);
@@ -286,16 +286,24 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                   
                   {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-4">
-                    {video.videoUrl && (
+                    {video.videoUrl && video.gifUrl && (
                       <>
                     <button
-                      onClick={handleDownload}
+                      onClick={async () => { await handleDownload(video.gifUrl!)}}
                       disabled={isDownloading}
                       className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white transition-all duration-300"
                     >
                       <Download size={18} />
-                      <span className="font-medium">Download</span>
+                      <span className="font-medium">Download GIF</span>
                     </button>
+                        <button
+                            onClick={async () => { await handleDownload(video.videoUrl!)}}
+                            disabled={isDownloading}
+                            className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white transition-all duration-300"
+                        >
+                          <Download size={18} />
+                          <span className="font-medium">Download Video</span>
+                        </button>
                     <button
                       onClick={handleShare}
                       className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[#2A2A2D] hover:bg-[#3A3A3D] text-white transition-colors"
