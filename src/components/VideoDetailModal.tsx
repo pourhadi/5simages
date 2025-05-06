@@ -285,13 +285,13 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                   </div>
                   
                   {/* Action Buttons */}
-                <div className="space-y-4">
+                <div className="space-y-4 items-stretch place-items-stretch grid-cols-1 grid-flow-row auto-rows-max justify-stretch">
                     {video.videoUrl && video.gifUrl && (
                       <>
                     <button
                       onClick={async () => { await handleDownload(video.gifUrl!)}}
                       disabled={isDownloading}
-                      className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white transition-all duration-300"
+                      className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[#2A2A2D] hover:bg-[#3A3A3D] text-white transition-all duration-300"
                     >
                       <Download size={18} />
                       <span className="font-medium">Download GIF</span>
@@ -299,7 +299,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                         <button
                             onClick={async () => { await handleDownload(video.videoUrl!)}}
                             disabled={isDownloading}
-                            className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white transition-all duration-300"
+                            className="flex items-center justify-center gap-2 p-3 rounded-xl bg-[#2A2A2D] hover:bg-[#3A3A3D] text-white transition-all duration-300"
                         >
                           <Download size={18} />
                           <span className="font-medium">Download Video</span>

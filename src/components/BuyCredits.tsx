@@ -21,7 +21,7 @@ export default function BuyCredits() {
       </p>
       <button
         onClick={handleBuyCredits}
-        className="w-full max-w-xs mx-auto py-3 px-6 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
+        className="w-full max-w-xs mx-auto py-3 px-6 rounded-xl text-sm font-medium text-white bg-[#2A2A2D] hover:bg-[#3A3A3D] transition"
       >
         Buy Credits
       </button>

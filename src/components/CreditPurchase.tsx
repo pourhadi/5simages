@@ -125,7 +125,7 @@ export default function CreditPurchase({ userCredits }: CreditPurchaseProps) {
       <button
         onClick={handlePurchase}
         disabled={isLoading || !selectedPackage}
-        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-medium text-white bg-gradient-to-r bg-[#2A2A2D] hover:bg-[#3A3A3D] transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <>

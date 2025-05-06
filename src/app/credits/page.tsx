@@ -153,7 +153,7 @@ export default function CreditsPage() {
             <button
               onClick={handlePurchase}
               disabled={isLoading}
-              className="px-6 py-3 rounded-xl text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 rounded-xl text-white bg-[#2A2A2D] hover:bg-[#3A3A3D] transition flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <CreditCard className="h-5 w-5" />
               <span>{isLoading ? 'Processing...' : 'Purchase Now'}</span>

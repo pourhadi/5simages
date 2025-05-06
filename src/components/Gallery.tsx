@@ -210,7 +210,7 @@ export default function Gallery({limitItems, showViewAll}: GalleryProps) {
                         </div>
                         <button
                             onClick={() => setShowCreditPurchase(!showCreditPurchase)}
-                            className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
+                            className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#2A2A2D] hover:bg-[#3A3A3D] transition"
                         >
                             {showCreditPurchase ? 'Hide' : 'Buy Credits'}
                         </button>

@@ -259,7 +259,7 @@ export default function VideoGenerator() {
           onClick={generateVideo}
           disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits < cost}
           // className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
-          className="flex w-full items-center justify-center gap-2 text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600  px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
+          className="flex w-full items-center justify-center gap-2 text-white hover:text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:from-[#FF497D]/50 hover:via-[#A53FFF]/50  hover:to-[#1E3AFF]/50 px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           {isGenerating ? (
             <>
