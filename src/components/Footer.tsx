@@ -11,6 +11,9 @@ export default function Footer() {
           <Link href="/privacy" className="hover:text-white">
             Privacy Policy
           </Link>
+          <Link href="/support" className="hover:text-white">
+            Support
+          </Link>
         </div>
         <div className="mt-2 sm:mt-0">
           © {new Date().getFullYear()} StillMotion.ai
