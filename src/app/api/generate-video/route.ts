@@ -16,6 +16,11 @@ if (!process.env.REPLICATE_API_TOKEN) {
 const REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
 // Model version for Slow and Good generation via Replicate
 const SLOW_REPLICATE_MODEL_VERSION = process.env.SLOW_REPLICATE_MODEL_VERSION ?? "haiper-ai/haiper-video-2";
+// Model version and prompt prefix for optional prompt enhancement via llava-13b
+const LLAVA_ENHANCER_MODEL_VERSION = process.env.LLAVA_ENHANCER_MODEL_VERSION ?? "yorickvp/llava-13b:80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb";
+// Prefix to include before user instructions when asking llava-13b to enhance the prompt
+const LLAVA_ENHANCER_PREFIX =
+  "describe how best to animate this image into a short 5-second scene based on these instructions:";
 
 export async function POST(request: Request) {
   // Initialize Supabase client with awaited cookies and headers
@@ -39,7 +44,7 @@ export async function POST(request: Request) {
   try {
     // Parse request body; optional duration in seconds
     const body = await request.json();
-    const { imageUrl, prompt, generationType = 'fast' } = body;
+    const { imageUrl, prompt, generationType = 'fast', enhancePrompt = false } = body;
 
     if (!imageUrl || !prompt) {
       return new NextResponse('Missing imageUrl or prompt', { status: 400 });
@@ -78,10 +83,45 @@ export async function POST(request: Request) {
     });
     // Remember record ID for refund on error
     videoRecordId = videoRecord.id;
-
-    // const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
-    // const storagePrefix = `${supabaseUrl}/storage/v1/object/public/`;
+    // Prepare signedUrl placeholder (for prompt enhancement and generation)
     const signedUrl: string | null = null;
+
+    // Prepare prompt: optionally enhance via llava-13b
+    let effectivePrompt = prompt;
+    if (enhancePrompt) {
+      try {
+        // Call llava-13b for prompt enhancement, wait up to 60s for output
+        // Build the prompt for enhancement by including user instructions
+        const llavaInputPrompt = `${LLAVA_ENHANCER_PREFIX} ${prompt}`;
+        const llavaPrediction = await replicate.predictions.create({
+          version: LLAVA_ENHANCER_MODEL_VERSION,
+          input: {
+            image: signedUrl ?? imageUrl,
+            prompt: llavaInputPrompt,
+          },
+          wait: 60,
+        });
+        // Extract output text
+        const llavaRaw = Array.isArray(llavaPrediction.output)
+          ? llavaPrediction.output.join(' ')
+          : llavaPrediction.output;
+        const llavaOutput = (llavaRaw ?? '').toString().trim();
+        if (llavaOutput) {
+          effectivePrompt = `${llavaOutput} ${prompt}`;
+        }
+      } catch (enhanceError) {
+        console.error('LLAVA_ENHANCEMENT_ERROR', enhanceError);
+        // Fallback to original prompt on error
+      }
+    }
+    // If prompt was enhanced, update the database record with the full prompt
+    if (enhancePrompt && effectivePrompt !== prompt) {
+      await prisma.video.update({
+        where: { id: videoRecord.id },
+        data: { prompt: effectivePrompt },
+      });
+    }
+
     // if (imageUrl.startsWith(storagePrefix)) {
     //   // Use admin client to create a signed URL for private buckets
     //   const supabaseAdmin = getSupabaseAdmin();
@@ -104,11 +144,11 @@ export async function POST(request: Request) {
       const prediction = await replicate.predictions.create({
         version: SLOW_REPLICATE_MODEL_VERSION,
         input: {
-          prompt: prompt,
+          prompt: effectivePrompt,
           duration: 4,
           aspect_ratio: "16:9",
           frame_image_url: signedUrl ?? imageUrl,
-          use_prompt_enhancer: true,
+          use_prompt_enhancer: enhancePrompt,
         },
       });
       if (!prediction?.id) {
@@ -149,7 +189,7 @@ export async function POST(request: Request) {
         }
         // Prepare form data
         const form = new FormData();
-        form.append('prompt', prompt);
+        form.append('prompt', effectivePrompt);
         // Use provided duration or default to 5 seconds
         // form.append('duration', String(duration ?? 5));
         form.append('image', new Blob([imgBuffer], { type: contentType }), 'input.png');
@@ -183,7 +223,7 @@ export async function POST(request: Request) {
     // Use version field for Replicate API (required by HTTP API)
     const prediction = await replicate.predictions.create({
       version: REPLICATE_MODEL_VERSION,
-      input: { image: signedUrl ?? imageUrl, prompt: prompt },
+      input: { image: signedUrl ?? imageUrl, prompt: effectivePrompt },
     });
     if (!prediction?.id) {
       throw new Error("Failed to create Replicate prediction.");

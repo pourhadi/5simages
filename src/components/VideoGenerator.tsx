@@ -20,6 +20,10 @@ export default function VideoGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   // Generation type: 'fast' for primary+fallback (2 credits), 'slow' for slow replicate-only (1 credit)
   const [generationType, setGenerationType] = useState<'fast' | 'slow'>('fast');
+  // Toggle for optional prompt enhancement via llava-13b
+  const [enhancePrompt, setEnhancePrompt] = useState(false);
+  // Tooltip visibility for prompt enhancement info
+  const [showEnhanceTooltip, setShowEnhanceTooltip] = useState(false);
   
   // Cost in credits for current generation type
   const cost = generationType === 'slow' ? 1 : 2;
@@ -108,6 +112,7 @@ export default function VideoGenerator() {
         imageUrl,
         prompt,
         generationType,
+        enhancePrompt,
       });
       
       // Update credits display after successful generation
@@ -204,6 +209,32 @@ export default function VideoGenerator() {
           onChange={(e) => setPrompt(e.target.value)}
           disabled={isGenerating}
         ></textarea>
+      </div>
+      {/* Prompt enhancement toggle */}
+      <div className="flex items-center mb-6">
+        <input
+          type="checkbox"
+          id="enhancePrompt"
+          checked={enhancePrompt}
+          onChange={() => setEnhancePrompt(!enhancePrompt)}
+          disabled={isGenerating}
+          className="h-4 w-4 text-[#3EFFE2] focus:ring-[#3EFFE2] bg-[#0D0D0E] border-gray-600 rounded"
+        />
+        <label htmlFor="enhancePrompt" className="ml-2 text-white text-sm flex items-center">
+          Enhance prompt via llava-13b
+          <span
+            onMouseEnter={() => setShowEnhanceTooltip(true)}
+            onMouseLeave={() => setShowEnhanceTooltip(false)}
+            className="ml-1 text-[#3EFFE2] underline text-sm cursor-help relative"
+          >
+            (?)
+            {showEnhanceTooltip && (
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-2 bg-gray-800 text-white text-xs rounded shadow-lg">
+                Automatically generate an enhanced description of the image’s key attributes for animation, then prepend it to your prompt to help produce better GIFs.
+              </div>
+            )}
+          </span>
+        </label>
       </div>
       {/* Generation type selection */}
       <div className="mb-6">
