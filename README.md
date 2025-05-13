@@ -49,3 +49,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   
 Optional (for Vercel deployments):
 - VERCEL_URL: Automatically provided by Vercel for building redirect URLs in password reset emails.
+  
+Additional (background processing):
+- PROCESS_SECRET: A secure string used by the backend to authorize internal process-video API calls.
+- GIF_CONVERTER_URL: Base URL of your video-to-gif conversion service (e.g., https://video2gif.example.com).
+- GIF_CONVERTER_API_KEY: API key to authenticate requests to the conversion service.
