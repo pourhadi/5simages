@@ -20,7 +20,7 @@ const SLOW_REPLICATE_MODEL_VERSION = process.env.SLOW_REPLICATE_MODEL_VERSION ??
 const LLAVA_ENHANCER_MODEL_VERSION = process.env.LLAVA_ENHANCER_MODEL_VERSION ?? "yorickvp/llava-13b:80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb";
 // Prefix to include before user instructions when asking llava-13b to enhance the prompt
 const LLAVA_ENHANCER_PREFIX =
-  "describe how best to animate this image into a short 5-second scene based on these instructions:";
+  "describe how best to animate this image into a short 5-second GIF based on these instructions, using this image as the first frame of the animation; be descriptive about the image and the specifics of the motions necessary to create the animation:";
 
 export async function POST(request: Request) {
   // Initialize Supabase client with awaited cookies and headers
