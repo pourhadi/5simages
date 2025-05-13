@@ -2,11 +2,5 @@
   "buildCommand": "DATABASE_URL=\"postgresql://\" prisma generate && next build",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": ".next",
-  "crons": [
-    {
-      "path": "/api/cron/process-videos",
-      "schedule": "*/10 * * * * *"
-    }
-  ]
+  "outputDirectory": ".next"
 } 
