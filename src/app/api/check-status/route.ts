@@ -53,6 +53,8 @@ export async function GET(request: Request) {
     if (video.userId !== userId) {
       return new NextResponse('Forbidden', { status: 403 });
     }
+    // Return current video record (status, videoUrl, gifUrl)
+    return NextResponse.json(video);
 
     // If the video is already completed or failed, just return it
     if (video.status === 'completed' || video.status === 'failed') {
