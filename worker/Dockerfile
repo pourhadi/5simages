@@ -4,13 +4,13 @@ FROM node:18-slim
 WORKDIR /app
 
 # Install dependencies and generate Prisma client
-COPY package.json ./package.json
-COPY ../prisma ./prisma
+COPY worker/package.json ./package.json
+COPY prisma ./prisma
 RUN npm install
 RUN npx prisma generate
 
 # Copy worker code
-COPY index.js ./index.js
+COPY worker/index.js ./index.js
 
 # Start the worker
 CMD ["node", "index.js"]
