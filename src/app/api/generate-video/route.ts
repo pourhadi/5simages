@@ -114,6 +114,10 @@ export async function POST(request: Request) {
         // Fallback to original prompt on error
       }
     }
+    // Determine base URL for triggering background processing
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : `http://localhost:${process.env.PORT || 3000}`;
     // If prompt was enhanced, update the database record with the full prompt
     if (enhancePrompt && effectivePrompt !== prompt) {
       await prisma.video.update({
@@ -159,6 +163,11 @@ export async function POST(request: Request) {
         where: { id: videoRecord.id },
         data: { replicatePredictionId: prediction.id },
       });
+      // Trigger background processing of this video
+      fetch(`${baseUrl}/api/process-video/${videoRecord.id}`, {
+        method: 'POST',
+        headers: { 'x-process-secret': process.env.PROCESS_SECRET || '' },
+      }).catch(console.error);
       return NextResponse.json({
         message: 'Video generation initiated',
         videoId: videoRecord.id,
@@ -213,6 +222,11 @@ export async function POST(request: Request) {
         where: { id: videoRecord.id },
         data: { replicatePredictionId: jobId },
       });
+      // Trigger background processing of this video
+      fetch(`${baseUrl}/api/process-video/${videoRecord.id}`, {
+        method: 'POST',
+        headers: { 'x-process-secret': process.env.PROCESS_SECRET || '' },
+      }).catch(console.error);
       return NextResponse.json({
         message: 'Video generation initiated',
         videoId: videoRecord.id,
@@ -233,6 +247,11 @@ export async function POST(request: Request) {
       where: { id: videoRecord.id },
       data: { replicatePredictionId: prediction.id },
     });
+    // Trigger background processing of this video
+    fetch(`${baseUrl}/api/process-video/${videoRecord.id}`, {
+      method: 'POST',
+      headers: { 'x-process-secret': process.env.PROCESS_SECRET || '' },
+    }).catch(console.error);
     // Return the videoId for polling
     return NextResponse.json({
       message: 'Video generation initiated',
