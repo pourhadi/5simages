@@ -3,9 +3,10 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "outputDirectory": ".next",
-  "functions": {
-    "api/process-video/**/*.ts": {
-      "maxDuration": 900
+  "crons": [
+    {
+      "path": "/api/cron/process-videos",
+      "schedule": "*/10 * * * * *"
     }
-  }
+  ]
 } 
