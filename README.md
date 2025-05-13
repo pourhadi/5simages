@@ -1,3 +1,6 @@
+  - Set CRON_SECRET to a secure random string for protecting the cron endpoint
+  - Set GIF_CONVERTER_URL to your video-to-gif conversion service base URL
+  - Set GIF_CONVERTER_API_KEY for authenticating with the conversion service
 # StillMotion.ai
 
 StillMotion.ai is a web application that transforms static images into engaging videos using AI technology.
