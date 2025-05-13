@@ -5,7 +5,7 @@
   "outputDirectory": ".next",
   "functions": {
     "api/process-video/**/*.ts": {
-      "maxDuration": 900
+      "maxDuration": 800
     }
   }
 } 
