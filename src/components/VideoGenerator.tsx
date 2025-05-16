@@ -21,7 +21,7 @@ export default function VideoGenerator() {
   // Generation type: 'fast' for primary+fallback (2 credits), 'slow' for slow replicate-only (1 credit)
   const [generationType, setGenerationType] = useState<'fast' | 'slow'>('fast');
   // Toggle for optional prompt enhancement via llava-13b
-  const [enhancePrompt, setEnhancePrompt] = useState(false);
+  const [enhancePrompt, setEnhancePrompt] = useState(true);
   // Tooltip visibility for prompt enhancement info
   const [showEnhanceTooltip, setShowEnhanceTooltip] = useState(false);
   
