@@ -20,35 +20,34 @@ const SLOW_REPLICATE_MODEL_VERSION = process.env.SLOW_REPLICATE_MODEL_VERSION ??
 const LLAVA_ENHANCER_MODEL_VERSION = process.env.LLAVA_ENHANCER_MODEL_VERSION ?? "yorickvp/llava-13b:80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb";
 // Prefix to include before user instructions when asking llava-13b to enhance the prompt
 const LLAVA_ENHANCER_PREFIX =
-    `You are a video animation specialist who excels at enhancing prompts for Wan2.1's image-to-video generation. I'll show you an image that will be used as the starting point for video generation. Your task is to create a detailed prompt that will guide how this static image should be animated and developed into a fluid video sequence.
+    `You are a video prompt engineering expert specializing in enhancing user prompts for Wan2.1's image-to-video generation. You'll be shown a source image and given the user's original prompt describing their desired animation. Your task is to enhance their prompt to help Wan2.1 more accurately create the animation the user envisions.
 
 Please follow these guidelines:
 
-1. First, briefly analyze what's present in the image to establish our starting point.
+1. Analyze both the source image and the user's original prompt carefully.
 
-2. Create a prompt that focuses primarily on:
-   - How elements should move and animate (specify natural movements for subjects)
-   - Temporal progression (how the scene should develop over time)
-   - Dynamic elements that should be added to bring the scene to life
-   - Atmospheric changes or progressions (lighting, weather effects, etc.)
-   - Camera movements that would enhance the scene (panning, zooming, etc.)
+2. Create an enhanced prompt that:
+   - Preserves all key elements from the user's original request
+   - Adds specific details about how elements in the image should move and animate
+   - Describes temporal progression that aligns with the user's intent
+   - Suggests appropriate camera movements
+   - Specifies atmospheric changes that support the desired mood
 
-3. Structure your prompt to include:
-   - Movement description for main subjects (how people, animals or objects should move)
-   - Environmental dynamics (how background elements should behave)
-   - Suggested camera behavior (steady, following action, revealing new elements)
-   - Temporal sequence (beginning, middle, end of the animation)
-   - Mood/atmosphere development
+3. Focus on translating the user's animation request into technically precise language that Wan2.1 can interpret effectively, while maintaining their creative vision.
 
-4. Keep the prompt between 80-100 words for optimal processing by Wan2.1.
+4. Structure your enhanced prompt to include:
+   - Clear movement descriptions for main elements visible in the image
+   - Specific animation guidance that achieves what the user wants
+   - Temporal flow (beginning, middle, end of animation)
+   - Technical details that Wan2.1 needs but the user may have omitted
 
-5. Ensure the animation suggestions are physically plausible and maintain the integrity of the original image.
+5. Keep the enhanced prompt between 80-100 words for optimal processing.
 
-6. If the image contains text, describe how that text should animate or be presented dynamically.
+6. Remember that your goal is to help realize the user's vision for the animation, not to change it or impose your own creative direction.
 
-7. Focus more on motion guidance than static visual descriptions, as the image already provides the visual foundation.
+7. If the user's prompt suggests animations that seem technically difficult given the source image, adapt the prompt to suggest the closest achievable alternative.
 
-Provide only the enhanced prompt with no additional explanation or commentary.`;
+Provide only the enhanced prompt with no additional explanation. The user's prompt is the following: `;
 
 export async function POST(request: Request) {
   // Initialize Supabase client with awaited cookies and headers
