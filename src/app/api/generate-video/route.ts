@@ -20,7 +20,35 @@ const SLOW_REPLICATE_MODEL_VERSION = process.env.SLOW_REPLICATE_MODEL_VERSION ??
 const LLAVA_ENHANCER_MODEL_VERSION = process.env.LLAVA_ENHANCER_MODEL_VERSION ?? "yorickvp/llava-13b:80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb";
 // Prefix to include before user instructions when asking llava-13b to enhance the prompt
 const LLAVA_ENHANCER_PREFIX =
-  "describe how best to animate this image into a short 5-second GIF based on these instructions, using this image as the first frame of the animation; be descriptive about the image and the specifics of the motions necessary to create the animation:";
+    `You are a video animation specialist who excels at enhancing prompts for Wan2.1's image-to-video generation. I'll show you an image that will be used as the starting point for video generation. Your task is to create a detailed prompt that will guide how this static image should be animated and developed into a fluid video sequence.
+
+Please follow these guidelines:
+
+1. First, briefly analyze what's present in the image to establish our starting point.
+
+2. Create a prompt that focuses primarily on:
+   - How elements should move and animate (specify natural movements for subjects)
+   - Temporal progression (how the scene should develop over time)
+   - Dynamic elements that should be added to bring the scene to life
+   - Atmospheric changes or progressions (lighting, weather effects, etc.)
+   - Camera movements that would enhance the scene (panning, zooming, etc.)
+
+3. Structure your prompt to include:
+   - Movement description for main subjects (how people, animals or objects should move)
+   - Environmental dynamics (how background elements should behave)
+   - Suggested camera behavior (steady, following action, revealing new elements)
+   - Temporal sequence (beginning, middle, end of the animation)
+   - Mood/atmosphere development
+
+4. Keep the prompt between 80-100 words for optimal processing by Wan2.1.
+
+5. Ensure the animation suggestions are physically plausible and maintain the integrity of the original image.
+
+6. If the image contains text, describe how that text should animate or be presented dynamically.
+
+7. Focus more on motion guidance than static visual descriptions, as the image already provides the visual foundation.
+
+Provide only the enhanced prompt with no additional explanation or commentary.`;
 
 export async function POST(request: Request) {
   // Initialize Supabase client with awaited cookies and headers

@@ -221,7 +221,7 @@ export default function VideoGenerator() {
           className="h-4 w-4 text-[#3EFFE2] focus:ring-[#3EFFE2] bg-[#0D0D0E] border-gray-600 rounded"
         />
         <label htmlFor="enhancePrompt" className="ml-2 text-white text-sm flex items-center">
-          Enhance prompt via llava-13b
+          Enhance prompt
           <span
             onMouseEnter={() => setShowEnhanceTooltip(true)}
             onMouseLeave={() => setShowEnhanceTooltip(false)}
