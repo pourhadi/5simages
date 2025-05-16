@@ -78,7 +78,7 @@ export default function HomePage() {
       <aside className="mt-8 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] p-px rounded-lg max-w-2xl mx-auto">
         <div className="bg-[#1A1A1D] p-6 rounded-lg">
           <p className="text-center text-white font-semibold">
-              New users get <span className="text-[#3EFFE2]">3 free credits</span>: generate one <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast / Great</span> GIF (2 credits) and one <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow / Good</span> GIF (1 credit), or three <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow / Good</span> GIFs.
+              New users get <span className="text-[#3EFFE2]">5 free credits</span>: generate two <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Fast / Great</span> GIF (2 credits / GIF) and one <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow / Good</span> GIF (1 credit / GIF), or five <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">Slow / Good</span> GIFs.
           </p>
         </div>
       </aside>

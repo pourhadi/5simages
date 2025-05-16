@@ -132,7 +132,7 @@ export const authOptions: AuthOptions = {
         where: { id: user.id },
         data: { credits: 5 }
       });
-      console.log(`Added 3 free credits to new user: ${user.email}`);
+      console.log(`Added 5 free credits to new user: ${user.email}`);
     }
   },
   pages: {
