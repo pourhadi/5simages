@@ -11,7 +11,7 @@ async function main() {
       credits: 0
     },
     data: {
-      credits: 3
+      credits: 5
     }
   });
   

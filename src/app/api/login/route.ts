@@ -40,7 +40,7 @@ export async function POST(request: Request) {
             name: typeof session.user.user_metadata.name === 'string'
               ? session.user.user_metadata.name
               : '',
-            credits: 3
+            credits: 5
           }
         });
       }

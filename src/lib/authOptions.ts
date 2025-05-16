@@ -130,7 +130,7 @@ export const authOptions: AuthOptions = {
       // This is only triggered for OAuth users - Credentials users are handled in the register API
       await prisma.user.update({
         where: { id: user.id },
-        data: { credits: 3 }
+        data: { credits: 5 }
       });
       console.log(`Added 3 free credits to new user: ${user.email}`);
     }
