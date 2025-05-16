@@ -20,9 +20,10 @@ const axiosFetcher = (url: string) => axios.get(url).then(res => res.data);
 interface GalleryProps {
     limitItems?: number;
     showViewAll?: boolean;
+    onRegenerate?: (prompt: string, imageUrl: string) => Promise<void>;
 }
 
-export default function Gallery({limitItems, showViewAll}: GalleryProps) {
+export default function Gallery({ limitItems, showViewAll, onRegenerate }: GalleryProps) {
     const searchParams = useSearchParams();
     const showCreditsParam = searchParams.get('showCredits');
     const router = useRouter();
@@ -157,37 +158,35 @@ export default function Gallery({limitItems, showViewAll}: GalleryProps) {
     };
 
     // Handle video regeneration
-    const handleRegenerate = async (prompt: string, imageUrl: string) => {
-        // Check if user has enough credits
+    const handleRegenerateInternal = async (prompt: string, imageUrl: string) => {
         if (userCredits < 2) {
             toast.error('You need at least 2 credits to generate a video. Please purchase credits.');
             return;
         }
 
-        toast.loading('Starting regeneration...', {id: 'regenerate'});
-
+        toast.loading('Starting regeneration...', { id: 'regenerate' });
         try {
-            // Generate the video with our backend API using the existing prompt and image
-            await axios.post('/api/generate-video', {
-                imageUrl,
-                prompt
-            });
-
-            // Reload videos after initiating regeneration
+            await axios.post('/api/generate-video', { imageUrl, prompt });
             mutate();
-
             toast.dismiss('regenerate');
             toast.success('Video regeneration started! Check your gallery in a minute.');
         } catch (error) {
             toast.dismiss('regenerate');
-
             if (axios.isAxiosError(error) && error.response?.status === 402) {
                 toast.error('Insufficient credits. Please purchase more credits to generate videos.');
             } else {
                 console.error('Error regenerating video:', error);
                 toast.error('Failed to regenerate video. Please try again later.');
-                throw error; // Rethrow to be handled by the modal
+                throw error;
             }
+        }
+    };
+
+    const handleRegenerate = async (prompt: string, imageUrl: string) => {
+        if (onRegenerate) {
+            await onRegenerate(prompt, imageUrl);
+        } else {
+            await handleRegenerateInternal(prompt, imageUrl);
         }
     };
 

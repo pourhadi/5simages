@@ -2,7 +2,7 @@
 
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import exampleGif1 from '../../gifs/1.gif';
 import exampleGif2 from '../../gifs/2.gif';
@@ -30,6 +30,10 @@ export default function HomePage() {
       return res.json();
     });
   const { data: user } = useSWR('/api/user', fetcher);
+  const [regenerationPrefill, setRegenerationPrefill] = useState<{ prompt: string; imageUrl: string } | null>(null);
+  const handlePopulateForm = async (prompt: string, imageUrl: string) => {
+    setRegenerationPrefill({ prompt, imageUrl });
+  };
 
   // If user is authenticated, show their dashboard
   if (user) {
@@ -41,8 +45,15 @@ export default function HomePage() {
         {/*</h1>*/}
         {credits > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <VideoGenerator />
-            <Gallery limitItems={9} showViewAll />
+            <VideoGenerator
+              prefill={regenerationPrefill}
+              onPrefillConsumed={() => setRegenerationPrefill(null)}
+            />
+            <Gallery
+              limitItems={9}
+              showViewAll
+              onRegenerate={handlePopulateForm}
+            />
           </div>
         ) : (
           <div className="max-w-md mx-auto">

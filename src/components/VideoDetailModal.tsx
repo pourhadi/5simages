@@ -20,6 +20,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
   const [copied, setCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [isGifLoaded, setIsGifLoaded] = useState(false);
   
   // Prevent scrolling on the background when modal is open
   useEffect(() => {
@@ -38,6 +39,10 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
       return () => clearTimeout(timer);
     }
   }, [copied]);
+
+  useEffect(() => {
+    setIsGifLoaded(false);
+  }, [video?.gifUrl]);
   
   if (!isOpen || !video) {
     return null;
@@ -94,16 +99,15 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
   
   const handleRegenerate = async () => {
     if (!video || !onRegenerate) return;
-    
+
     try {
-      console.log(video.imageUrl)
       setIsRegenerating(true);
       await onRegenerate(video.prompt, video.imageUrl);
-      toast.success('Generation started');
-      onClose(); // Close the modal after starting regeneration
+      toast.success('Form populated for regeneration');
+      onClose();
     } catch (err) {
       console.error('Regeneration error:', err);
-      toast.error('Failed to start regeneration');
+      toast.error('Failed to populate regeneration form');
     } finally {
       setIsRegenerating(false);
     }
@@ -181,15 +185,29 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
         {/* Main content area - two-column layout on larger screens */}
         <div className="flex flex-col lg:flex-row flex-1 overflow-visible lg:overflow-hidden">
           {/* Left column - Video */}
-          <div className="w-full lg:w-1/2 flex-shrink-0 flex items-center justify-center p-6 bg-black/60 overflow-hidden">
+          <div className="w-full lg:w-1/2 flex-shrink-0 flex items-start justify-center p-6 bg-black/60 overflow-hidden">
             {video.gifUrl ? (
-              <div className="relative w-full h-[55vh] flex items-center justify-center">
-                        <Image
-                          src={video.gifUrl!}
-                          alt={video.prompt}
-                          fill
-                          className="object-contain shadow-2xl rounded-2xl"
-                        />
+              <div className="relative w-full h-[55vh] flex items-start justify-center">
+                {/* Loading spinner */}
+                {!isGifLoaded && (
+                  <div className="absolute inset-0 flex justify-center items-start pt-0">
+                    <Image
+                      src="/loading.gif"
+                      alt="Loading GIF"
+                      width={120}
+                      height={120}
+                      className="opacity-60"
+                    />
+                  </div>
+                )}
+
+                {/* Real GIF */}
+                <img
+                  src={video.gifUrl!}
+                  alt={video.prompt}
+                  onLoad={() => setIsGifLoaded(true)}
+                  className={`absolute inset-0 w-full h-full object-contain object-top shadow-2xl rounded-2xl ${isGifLoaded ? '' : 'hidden'}`}
+                />
               </div>
                 ) : video.videoUrl ? (
               <div className="relative w-full h-full flex items-center justify-center">

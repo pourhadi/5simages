@@ -13,7 +13,12 @@ import { useRouter } from 'next/navigation';
 // Define a fetcher function for SWR
 const axiosFetcher = (url: string) => axios.get(url).then(res => res.data);
 
-export default function VideoGenerator() {
+interface VideoGeneratorProps {
+  prefill?: { prompt: string; imageUrl: string } | null;
+  onPrefillConsumed?: () => void;
+}
+
+export default function VideoGenerator({ prefill = null, onPrefillConsumed }: VideoGeneratorProps) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
@@ -24,7 +29,16 @@ export default function VideoGenerator() {
   const [enhancePrompt, setEnhancePrompt] = useState(true);
   // Tooltip visibility for prompt enhancement info
   const [showEnhanceTooltip, setShowEnhanceTooltip] = useState(false);
-  
+
+  useEffect(() => {
+    if (prefill) {
+      setPrompt(prefill.prompt);
+      setSelectedImage(null);
+      setImagePreview(prefill.imageUrl);
+      onPrefillConsumed?.();
+    }
+  }, [prefill, onPrefillConsumed]);
+
   // Cost in credits for current generation type
   const cost = generationType === 'slow' ? 1 : 2;
   // Get credits from both session and API to ensure consistency
@@ -75,62 +89,56 @@ export default function VideoGenerator() {
   };
 
   const generateVideo = async () => {
-    if (!selectedImage || !prompt.trim()) {
+    if ((!selectedImage && !imagePreview) || !prompt.trim()) {
       toast.error('Please select an image and enter a prompt');
       return;
     }
-    
-    // Check if user has enough credits based on generation type
+
     const cost = generationType === 'slow' ? 1 : 2;
     if (userCredits < cost) {
       toast.error(`You need at least ${cost} credits to generate a GIF. Please purchase credits.`);
       return;
     }
-    
+
     setIsGenerating(true);
-    toast.loading('Uploading image... This may take a minute for larger files.', { id: 'upload' });
-    
+
+    let imageUrlToUse: string;
     try {
-      // Create a FormData object to upload the image to Supabase
-      const formData = new FormData();
-      formData.append('file', selectedImage);
-      
-      // Upload image to storage with increased timeout (60 seconds)
-      const uploadResponse = await axios.post('/api/upload', formData, {
-        timeout: 60000, // 60 seconds timeout
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      const imageUrl = uploadResponse.data.url;
-      
-      toast.dismiss('upload');
+      if (selectedImage) {
+        toast.loading('Uploading image... This may take a minute for larger files.', { id: 'upload' });
+        const formData = new FormData();
+        formData.append('file', selectedImage);
+
+        const uploadResponse = await axios.post('/api/upload', formData, {
+          timeout: 60000,
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        imageUrlToUse = uploadResponse.data.url;
+        toast.dismiss('upload');
+      } else {
+        imageUrlToUse = imagePreview!;
+      }
+
       toast.loading('Generating your video... This may take a minute or two.', { id: 'generate' });
-      
-      // Generate the video with our backend API
       await axios.post('/api/generate-video', {
-        imageUrl,
+        imageUrl: imageUrlToUse,
         prompt,
         generationType,
         enhancePrompt,
       });
-      
-      // Update credits display after successful generation
+
       mutateUser();
-      
-      // Force router refresh to update all components with new credit value
       router.refresh();
-      
+
       toast.dismiss('generate');
       toast.success('Video generation started! Check your gallery in a minute.');
-      
-      // Clear the form after successful submission
+
       handleRemoveImage();
       setPrompt('');
     } catch (error) {
       toast.dismiss('upload');
       toast.dismiss('generate');
-      
+
       if (axios.isAxiosError(error) && error.response?.status === 402) {
         toast.error('Insufficient credits. Please purchase more credits to generate GIFs.');
       } else {
@@ -288,7 +296,7 @@ export default function VideoGenerator() {
         {/*</p>*/}
         <button
           onClick={generateVideo}
-          disabled={!selectedImage || !prompt.trim() || isGenerating || userCredits < cost}
+          disabled={(!selectedImage && !imagePreview) || !prompt.trim() || isGenerating || userCredits < cost}
           // className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 text-white px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
           className="flex w-full items-center justify-center gap-2 text-white hover:text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:from-[#FF497D]/50 hover:via-[#A53FFF]/50  hover:to-[#1E3AFF]/50 px-6 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
@@ -306,7 +314,7 @@ export default function VideoGenerator() {
         </button>
       </div>
       
-      {selectedImage && prompt.trim() && userCredits < cost && (
+      {(selectedImage || imagePreview) && prompt.trim() && userCredits < cost && (
         <div className="mt-6 p-4 bg-[#1A1A1D] text-[#FF497D] rounded-xl text-sm border border-[#FF497D]">
           <p className="flex items-center gap-2">
             <Zap size={16} className="text-[#FF497D]" />
