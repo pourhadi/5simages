@@ -69,6 +69,7 @@ export const authOptions: AuthOptions = {
         
         // Use token credits instead of querying the database on every session request
         session.user.credits = token.credits as number;
+        session.user.isAdmin = Boolean(token.isAdmin);
       }
       return session;
     },
@@ -86,6 +87,9 @@ export const authOptions: AuthOptions = {
           });
           token.credits = user.credits as number;
         }
+        if ('isAdmin' in user) {
+          token.isAdmin = user.isAdmin as boolean;
+        }
         return token;
       }
       
@@ -102,7 +106,7 @@ export const authOptions: AuthOptions = {
             // Fetch the latest user data to get updated credits
             const latestUser = await prisma.user.findUnique({
               where: { id: token.sub as string },
-              select: { credits: true }
+              select: { credits: true, isAdmin: true }
             });
             
             if (latestUser && latestUser.credits !== token.credits) {
@@ -112,6 +116,7 @@ export const authOptions: AuthOptions = {
                 newCredits: latestUser.credits
               });
               token.credits = latestUser.credits;
+              token.isAdmin = latestUser.isAdmin;
             }
           } else {
             console.log('JWT callback: Skipping database fetch for token update');
