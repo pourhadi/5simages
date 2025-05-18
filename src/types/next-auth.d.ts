@@ -11,6 +11,8 @@ declare module "next-auth" {
       id: string;
       /** The user's credits. */
       credits: number;
+      /** Whether the user is an admin. */
+      isAdmin: boolean;
     } & DefaultSession["user"];
   }
 
@@ -21,6 +23,8 @@ declare module "next-auth" {
   interface User extends DefaultUser {
     /** The user's credits. */
     credits: number;
+    /** Whether the user is an admin. */
+    isAdmin: boolean;
   }
 }
 
@@ -31,5 +35,7 @@ declare module "next-auth/jwt" {
     sub: string;
     /** User credits */
     credits: number;
+    /** Admin flag */
+    isAdmin: boolean;
   }
-} 
+}
