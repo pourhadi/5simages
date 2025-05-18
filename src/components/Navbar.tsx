@@ -111,6 +111,16 @@ export default function Navbar() {
                 >
                   Gallery
                 </Link>
+                {user.isAdmin && (
+                  <Link
+                    href="/admin"
+                    className={`px-3 py-2 rounded-md text-md font-medium ${
+                      pathname === '/admin' ? 'text-white bg-gray-800' : 'text-gray-300 hover:bg-gray-900 hover:text-white'
+                    }`}
+                  >
+                    Admin
+                  </Link>
+                )}
               </div>
             )}
           </div>
@@ -240,6 +250,17 @@ export default function Navbar() {
               >
                 Gallery
               </Link>
+              {user.isAdmin && (
+                <Link
+                  href="/admin"
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    pathname === '/admin' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  }`}
+                  onClick={closeMenu}
+                >
+                  Admin
+                </Link>
+              )}
             </div>
           )}
           
