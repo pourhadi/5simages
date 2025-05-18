@@ -9,25 +9,25 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
   relationMode = "foreignKeys"
 }
 
 model User {
-  id            String          @id @default(cuid())
-  name          String?
-  email         String?         @unique
-  emailVerified DateTime?
-  image         String?
+  id             String    @id @default(cuid())
+  name           String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
   hashedPassword String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  credits       Int             @default(3)
-  isAdmin       Boolean         @default(false)
-  accounts      Account[]
-  sessions      Session[]
-  videos        Video[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  credits        Int       @default(3)
+  isAdmin        Boolean?  @default(false)
+  accounts       Account[]
+  sessions       Session[]
+  videos         Video[]
 }
 
 model Account {
@@ -66,17 +66,17 @@ model VerificationToken {
 }
 
 model Video {
-  id        String   @id @default(cuid())
-  userId    String
-  imageUrl  String   // URL of the input image
-  prompt    String
-  videoUrl  String?  // URL of the generated video from Replicate
-  gifUrl    String?  // URL of the generated GIF
-  status    String   @default("processing") // processing, completed, failed
-  type      String   // type of generation, either "fast" or "slow"
+  id                    String   @id @default(cuid())
+  userId                String
+  imageUrl              String // URL of the input image
+  prompt                String
+  videoUrl              String? // URL of the generated video from Replicate
+  gifUrl                String? // URL of the generated GIF
+  status                String   @default("processing") // processing, completed, failed
+  type                  String // type of generation, either "fast" or "slow"
   replicatePredictionId String?  @unique // Store the Replicate prediction ID
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

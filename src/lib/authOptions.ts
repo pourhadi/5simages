@@ -40,11 +40,14 @@ export const authOptions: AuthOptions = {
 
         // Remove hashedPassword from the user object before returning
         const { hashedPassword, ...userWithoutPassword } = user;
-        
-        // Mark hashedPassword as intentionally unused
         void hashedPassword;
-
-        return userWithoutPassword;
+        // Ensure isAdmin is a boolean
+        const safeUser = {
+          ...userWithoutPassword,
+          isAdmin: Boolean(userWithoutPassword.isAdmin),
+        };
+        // Return as NextAuth User
+        return safeUser as any;
       },
     }),
     // You can add more OAuth providers here in the future
@@ -76,22 +79,16 @@ export const authOptions: AuthOptions = {
     // Include user.id and credits on JWT token
     async jwt({ token, user, trigger }) {
       // Initial sign in - set the token from the user object
-      if (user) {
-        token.sub = user.id;
-        // Add credits if available on the user object
-        if ('credits' in user) {
-          console.log('JWT callback: Setting initial credits from user object', {
-            userId: user.id,
-            credits: user.credits,
-            trigger
-          });
-          token.credits = user.credits as number;
+        if (user) {
+          token.sub = user.id;
+          if ('credits' in user) {
+            token.credits = user.credits as number;
+          }
+          if ('isAdmin' in user) {
+            token.isAdmin = Boolean((user as any).isAdmin);
+          }
+          return token;
         }
-        if ('isAdmin' in user) {
-          token.isAdmin = user.isAdmin as boolean;
-        }
-        return token;
-      }
       
       // Handle explicit update triggers - but only if we actually need to update something
       if (trigger === 'update') {
@@ -116,7 +113,7 @@ export const authOptions: AuthOptions = {
                 newCredits: latestUser.credits
               });
               token.credits = latestUser.credits;
-              token.isAdmin = latestUser.isAdmin;
+              token.isAdmin = Boolean(latestUser.isAdmin);
             }
           } else {
             console.log('JWT callback: Skipping database fetch for token update');

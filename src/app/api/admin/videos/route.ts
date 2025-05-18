@@ -21,7 +21,7 @@ export async function GET() {
       where: { email: session.user.email },
       select: { isAdmin: true },
     });
-    if (!requester?.isAdmin) {
+    if (requester?.isAdmin !== true) {
       return new NextResponse('Forbidden', { status: 403 });
     }
     const videos = await prisma.video.findMany({
