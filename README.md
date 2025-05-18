@@ -46,3 +46,34 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   
 Optional (for Vercel deployments):
 - VERCEL_URL: Automatically provided by Vercel for building redirect URLs in password reset emails.
+
+## Cloud Run GIF Processor
+
+The `worker` directory contains a small service that polls the database for
+videos with a `processing` status and finalizes them. It checks the external
+video APIs, converts completed videos to GIFs and uploads them to Supabase
+storage. The main application no longer performs these steps; it simply polls
+its `/api/check-status` endpoint which now returns the latest database record.
+Run this worker in Cloud Run or locally alongside the Next.js app.
+
+Run locally:
+
+```bash
+npx ts-node worker/index.ts
+```
+
+Build the container for Cloud Run:
+
+```bash
+gcloud builds submit --tag gcr.io/<PROJECT-ID>/gif-worker -f worker/Dockerfile
+```
+
+Environment variables used by the worker:
+
+- `REPLICATE_API_TOKEN`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `DATABASE_URL`
+- `VIDEO_API_URL` and `VIDEO_API_TOKEN` (optional)
+- `VIDEO2GIF_API_KEY`
+- `POLL_INTERVAL_MS` (optional, defaults to `5000`)
+- `SUPABASE_GIFS_BUCKET_NAME` (optional)
