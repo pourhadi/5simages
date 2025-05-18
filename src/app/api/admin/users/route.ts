@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
 import prisma from '@/lib/prisma';
+import type { Prisma } from '@prisma/client';
 
 export async function GET(request: Request) {
   try {
@@ -40,7 +41,7 @@ export async function GET(request: Request) {
         isAdmin: true,
         createdAt: true,
       },
-      orderBy: { [sortField]: order } as any,
+      orderBy: { [sortField]: order } as Prisma.UserOrderByWithRelationInput,
     });
     return NextResponse.json(users);
   } catch (error) {

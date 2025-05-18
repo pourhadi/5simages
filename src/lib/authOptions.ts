@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { AuthOptions } from "next-auth";
+import type { AuthOptions, User as NextAuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 
@@ -47,7 +47,7 @@ export const authOptions: AuthOptions = {
           isAdmin: Boolean(userWithoutPassword.isAdmin),
         };
         // Return as NextAuth User
-        return safeUser as any;
+        return safeUser as NextAuthUser;
       },
     }),
     // You can add more OAuth providers here in the future
@@ -85,7 +85,7 @@ export const authOptions: AuthOptions = {
             token.credits = user.credits as number;
           }
           if ('isAdmin' in user) {
-            token.isAdmin = Boolean((user as any).isAdmin);
+            token.isAdmin = Boolean((user as NextAuthUser).isAdmin);
           }
           return token;
         }

@@ -168,16 +168,17 @@ export async function POST(request: Request) {
     // If using Slow and Good option, skip primary API and use slow Replicate model
     if (generationType === 'slow') {
       // Start an asynchronous prediction with the slow model
-      const prediction = await replicate.predictions.create({
-        version: SLOW_REPLICATE_MODEL_VERSION,
-        input: {
-          prompt: effectivePrompt,
-          duration: 4,
-          aspect_ratio: "16:9",
-          frame_image_url: signedUrl ?? imageUrl,
-          use_prompt_enhancer: enhancePrompt,
-        },
-      });
+        const prediction = await replicate.predictions.create({
+          version: SLOW_REPLICATE_MODEL_VERSION,
+          input: {
+            prompt: effectivePrompt,
+            duration: 4,
+            aspect_ratio: "16:9",
+            frame_image_url: signedUrl ?? imageUrl,
+            use_prompt_enhancer: enhancePrompt,
+            sample_steps: 40,
+          },
+        });
       if (!prediction?.id) {
         throw new Error("Failed to create Replicate prediction.");
       }
@@ -250,7 +251,7 @@ export async function POST(request: Request) {
     // Use version field for Replicate API (required by HTTP API)
     const prediction = await replicate.predictions.create({
       version: REPLICATE_MODEL_VERSION,
-      input: { image: signedUrl ?? imageUrl, prompt: effectivePrompt },
+      input: { image: signedUrl ?? imageUrl, prompt: effectivePrompt, sample_steps: 40 },
     });
     if (!prediction?.id) {
       throw new Error("Failed to create Replicate prediction.");
