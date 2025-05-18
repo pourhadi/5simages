@@ -28,7 +28,8 @@ export async function GET() {
         name: true,
         email: true,
         credits: true,
-        image: true
+        image: true,
+        isAdmin: true
       }
     });
     
@@ -39,7 +40,8 @@ export async function GET() {
     // Set default credits if null
     const userData = {
       ...user,
-      credits: user.credits || 0
+      credits: user.credits || 0,
+      isAdmin: user.isAdmin ?? false
     };
     
     return NextResponse.json(userData);
