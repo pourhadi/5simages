@@ -250,7 +250,7 @@ export async function POST(request: Request) {
     // Use version field for Replicate API (required by HTTP API)
     const prediction = await replicate.predictions.create({
       version: REPLICATE_MODEL_VERSION,
-      input: { image: signedUrl ?? imageUrl, prompt: effectivePrompt },
+      input: { image: signedUrl ?? imageUrl, prompt: effectivePrompt, sample_steps: 40 },
     });
     if (!prediction?.id) {
       throw new Error("Failed to create Replicate prediction.");
