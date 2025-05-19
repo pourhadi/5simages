@@ -71,7 +71,7 @@ export async function POST(request: Request) {
   try {
     // Parse request body; optional duration in seconds
     const body = await request.json();
-    const { imageUrl, prompt, generationType = 'fast', enhancePrompt = false } = body;
+    const { imageUrl, prompt, generationType = 'fast', enhancePrompt = false, sampleSteps = 30, sampleGuideScale = 5 } = body;
 
     if (!imageUrl || !prompt) {
       return new NextResponse('Missing imageUrl or prompt', { status: 400 });
@@ -251,7 +251,12 @@ export async function POST(request: Request) {
     // Use version field for Replicate API (required by HTTP API)
     const prediction = await replicate.predictions.create({
       version: REPLICATE_MODEL_VERSION,
-      input: { image: signedUrl ?? imageUrl, prompt: effectivePrompt, sample_steps: 40 },
+      input: {
+        image: signedUrl ?? imageUrl,
+        prompt: effectivePrompt,
+        sample_steps: sampleSteps,
+        sample_guidance_scale: sampleGuideScale,
+      },
     });
     if (!prediction?.id) {
       throw new Error("Failed to create Replicate prediction.");
