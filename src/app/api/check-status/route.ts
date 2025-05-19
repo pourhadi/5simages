@@ -5,6 +5,7 @@ import Replicate from 'replicate';
 
 import prisma from '@/lib/prisma';
 import { getSupabaseAdmin } from '@/lib/supabaseClient';
+import { sendEmail } from '@/lib/email';
 import { randomUUID } from 'crypto';
 
 const replicate = new Replicate({
@@ -165,6 +166,19 @@ export async function GET(request: Request) {
               gifUrl: gifUrlData.publicUrl,
             },
           });
+          if (updatedVideo.emailWhenComplete) {
+            const user = await prisma.user.findUnique({
+              where: { id: updatedVideo.userId },
+              select: { email: true },
+            });
+            if (user?.email) {
+              await sendEmail({
+                to: user.email,
+                subject: 'Your GIF is ready',
+                text: 'Your GIF generation has completed. View it at https://www.stillmotion.ai',
+              });
+            }
+          }
           return NextResponse.json(updatedVideo);
         } else if (status === 'failed') {
           const updatedVideo = await prisma.video.update({
@@ -325,6 +339,19 @@ export async function GET(request: Request) {
             gifUrl: gifUrlData.publicUrl,
           },
         });
+        if (updatedVideo.emailWhenComplete) {
+          const user = await prisma.user.findUnique({
+            where: { id: updatedVideo.userId },
+            select: { email: true },
+          });
+          if (user?.email) {
+            await sendEmail({
+              to: user.email,
+              subject: 'Your GIF is ready',
+              text: 'Your GIF generation has completed. View it at https://www.stillmotion.ai',
+            });
+          }
+        }
         return NextResponse.json(updatedVideo);
         
       } catch (error) {
