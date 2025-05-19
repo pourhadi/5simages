@@ -29,6 +29,10 @@ export default function VideoGenerator({ prefill = null, onPrefillConsumed }: Vi
   const [enhancePrompt, setEnhancePrompt] = useState(true);
   // Tooltip visibility for prompt enhancement info
   const [showEnhanceTooltip, setShowEnhanceTooltip] = useState(false);
+  // Advanced options for fast generation
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [sampleSteps, setSampleSteps] = useState(30);
+  const [sampleGuideScale, setSampleGuideScale] = useState(5);
 
   useEffect(() => {
     if (prefill) {
@@ -125,6 +129,10 @@ export default function VideoGenerator({ prefill = null, onPrefillConsumed }: Vi
         prompt,
         generationType,
         enhancePrompt,
+        ...(generationType === 'fast' && {
+          sampleSteps,
+          sampleGuideScale,
+        }),
       });
 
       mutateUser();
@@ -288,6 +296,56 @@ export default function VideoGenerator({ prefill = null, onPrefillConsumed }: Vi
         </button>
       </div>
       </div>
+      {generationType === 'fast' && (
+        <div className="mb-6">
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="text-sm font-medium text-[#FF497D] focus:outline-none"
+          >
+            {showAdvanced ? 'Hide Advanced' : 'Show Advanced'}
+          </button>
+          {showAdvanced && (
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Sample Steps: {sampleSteps}
+                </label>
+                <input
+                  type="range"
+                  min={1}
+                  max={40}
+                  value={sampleSteps}
+                  onChange={(e) => setSampleSteps(parseInt(e.target.value))}
+                  className="w-full"
+                  disabled={isGenerating}
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Number of generation steps. Fewer steps means faster generation, at the expense of output quality. 30 steps is sufficient for most prompts.
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Sample Guide Scale: {sampleGuideScale}
+                </label>
+                <input
+                  type="range"
+                  min={0}
+                  max={10}
+                  value={sampleGuideScale}
+                  step={0.1}
+                  onChange={(e) => setSampleGuideScale(parseFloat(e.target.value))}
+                  className="w-full"
+                  disabled={isGenerating}
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Higher guide scale makes prompt adherence better, but can reduce variation.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
       
       {/* Credit info and generate button */}
       <div className="flex justify-between items-center mt-4">
