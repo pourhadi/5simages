@@ -33,6 +33,7 @@ export default function VideoGenerator({ prefill = null, onPrefillConsumed }: Vi
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [sampleSteps, setSampleSteps] = useState(30);
   const [sampleGuideScale, setSampleGuideScale] = useState(5);
+  const [emailWhenComplete, setEmailWhenComplete] = useState(false);
 
   useEffect(() => {
     if (prefill) {
@@ -129,6 +130,7 @@ export default function VideoGenerator({ prefill = null, onPrefillConsumed }: Vi
         prompt,
         generationType,
         enhancePrompt,
+        emailWhenComplete,
         ...(generationType === 'fast' && {
           sampleSteps,
           sampleGuideScale,
@@ -346,7 +348,21 @@ export default function VideoGenerator({ prefill = null, onPrefillConsumed }: Vi
           )}
         </div>
       )}
-      
+
+      <div className="flex items-center mb-6">
+        <input
+          type="checkbox"
+          id="emailWhenComplete"
+          checked={emailWhenComplete}
+          onChange={() => setEmailWhenComplete(!emailWhenComplete)}
+          disabled={isGenerating}
+          className="h-4 w-4 text-[#3EFFE2] focus:ring-[#3EFFE2] bg-[#0D0D0E] border-gray-600 rounded"
+        />
+        <label htmlFor="emailWhenComplete" className="ml-2 text-white text-sm">
+          Email me when the GIF is ready
+        </label>
+      </div>
+
       {/* Credit info and generate button */}
       <div className="flex justify-between items-center mt-4">
         {/*<p className="text-sm text-gray-400">*/}
