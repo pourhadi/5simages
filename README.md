@@ -46,3 +46,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
   
 Optional (for Vercel deployments):
 - VERCEL_URL: Automatically provided by Vercel for building redirect URLs in password reset emails.
+
+## Authentication Notes
+
+This project uses Supabase Auth for user management. A `middleware.ts` file is
+included which calls `supabase.auth.getSession()` on every request. This ensures
+expired access tokens are automatically refreshed so users stay logged in while
+browsing the site.
