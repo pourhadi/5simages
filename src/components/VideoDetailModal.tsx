@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Video } from '@prisma/client';
 import Image from 'next/image';
 import { X, Download, Share, Clock, Copy, Check, Trash2, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -21,6 +21,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
   const [isDownloading, setIsDownloading] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [isGifLoaded, setIsGifLoaded] = useState(false);
+  const touchStartX = useRef<number | null>(null);
   
   // Prevent scrolling on the background when modal is open
   useEffect(() => {
@@ -121,6 +122,20 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
   const nextVideo = currentIndex < videos.length - 1 ? videos[currentIndex + 1] : null;
   const handlePrev = () => { if (prevVideo) onNavigate(prevVideo); };
   const handleNext = () => { if (nextVideo) onNavigate(nextVideo); };
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    const threshold = 50;
+    if (diff > threshold) {
+      handlePrev();
+    } else if (diff < -threshold) {
+      handleNext();
+    }
+    touchStartX.current = null;
+  };
   
   return (
     <div
@@ -185,7 +200,11 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
         {/* Main content area - two-column layout on larger screens */}
         <div className="flex flex-col lg:flex-row flex-1 overflow-visible lg:overflow-hidden">
           {/* Left column - Video */}
-          <div className="w-full lg:w-1/2 flex-shrink-0 flex items-start justify-center p-6 bg-black/60 overflow-hidden">
+          <div
+            className="w-full lg:w-1/2 flex-shrink-0 flex items-start justify-center p-6 bg-black/60 overflow-hidden"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             {video.gifUrl ? (
               <div className="relative w-full h-[55vh] flex items-start justify-center">
                 {/* Loading spinner */}
