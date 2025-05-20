@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Video } from '@prisma/client';
 import Image from 'next/image';
 import { X, Download, Share, Clock, Copy, Check, Trash2, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -21,6 +21,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
   const [isDownloading, setIsDownloading] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [isGifLoaded, setIsGifLoaded] = useState(false);
+  const touchStartX = useRef<number | null>(null);
   
   // Prevent scrolling on the background when modal is open
   useEffect(() => {
@@ -121,6 +122,21 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
   const nextVideo = currentIndex < videos.length - 1 ? videos[currentIndex + 1] : null;
   const handlePrev = () => { if (prevVideo) onNavigate(prevVideo); };
   const handleNext = () => { if (nextVideo) onNavigate(nextVideo); };
+  const positionText = currentIndex >= 0 ? `${currentIndex + 1}/${videos.length}` : '';
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    const threshold = 50;
+    if (diff > threshold) {
+      handlePrev();
+    } else if (diff < -threshold) {
+      handleNext();
+    }
+    touchStartX.current = null;
+  };
   
   return (
     <div
@@ -132,7 +148,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top navigation bar */}
-        <div className="w-full bg-[#0D0D0E] p-4 flex justify-between items-center border-b border-[#2A2A2D] flex-shrink-0">
+        <div className="w-full bg-[#0D0D0E] p-4 flex justify-between items-center border-b border-[#2A2A2D] flex-shrink-0 relative">
           <div className="flex items-center gap-4">
             <button
               onClick={handlePrev}
@@ -147,14 +163,18 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
             <button
               onClick={handleNext}
               disabled={!nextVideo}
-              className={
-                `p-1 rounded-full ${nextVideo ? 'text-white hover:text-gray-200' : 'text-gray-600 cursor-not-allowed'}`
-              }
+              className={`p-1 rounded-full ${nextVideo ? 'text-white hover:text-gray-200' : 'text-gray-600 cursor-not-allowed'}`}
             >
               <ChevronRight size={20} />
             </button>
+        </div>
+        {/* Position indicator in the center */}
+        {positionText && (
+          <div className="absolute left-1/2 -translate-x-1/2 text-sm text-gray-400 pointer-events-none">
+            {positionText}
           </div>
-          <div className="flex items-center gap-3">
+        )}
+        <div className="flex items-center gap-3">
             {video.status === 'processing' && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/20 text-blue-400 rounded-full text-xs">
                 <Clock size={14} className="animate-pulse" />
@@ -185,7 +205,11 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
         {/* Main content area - two-column layout on larger screens */}
         <div className="flex flex-col lg:flex-row flex-1 overflow-visible lg:overflow-hidden">
           {/* Left column - Video */}
-          <div className="w-full lg:w-1/2 flex-shrink-0 flex items-start justify-center p-6 bg-black/60 overflow-hidden">
+          <div
+            className="w-full lg:w-1/2 flex-shrink-0 flex items-start justify-center p-6 bg-black/60 overflow-hidden relative group"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             {video.gifUrl ? (
               <div className="relative w-full h-[55vh] flex items-start justify-center">
                 {/* Loading spinner */}
@@ -237,6 +261,17 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                   )}
                 </div>
               </div>
+            )}
+            {videos.length > 1 && (
+              <>
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-60 transition-opacity">
+                  <ChevronLeft size={36} className="text-white/40" />
+                  <ChevronRight size={36} className="text-white/40" />
+                </div>
+                <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 text-gray-300 text-xs opacity-0 group-hover:opacity-60 transition-opacity">
+                  Swipe to navigate
+                </div>
+              </>
             )}
           </div>
           
