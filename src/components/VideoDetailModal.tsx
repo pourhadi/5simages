@@ -185,7 +185,7 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
         {/* Main content area - two-column layout on larger screens */}
         <div className="flex flex-col lg:flex-row flex-1 overflow-visible lg:overflow-hidden">
           {/* Left column - Video */}
-          <div className="w-full lg:w-1/2 flex-shrink-0 flex items-start justify-center p-6 bg-black/60 overflow-hidden">
+          <div className="w-full lg:w-1/2 flex-shrink-0 flex items-start justify-center p-6 bg-black overflow-hidden">
             {video.gifUrl ? (
               <div className="relative w-full h-[55vh] flex items-start justify-center">
                 {/* Loading spinner */}
