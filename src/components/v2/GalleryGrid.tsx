@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Video } from '@prisma/client';
-import { Trash2, Clock, CheckCircle, XCircle, Eye, RefreshCw, Calendar, Zap } from 'lucide-react';
+import { Trash2, Clock, XCircle, Eye, RefreshCw, Calendar, Zap } from 'lucide-react';
 import Image from 'next/image';
 import axios from 'axios';
 import toast from 'react-hot-toast';
