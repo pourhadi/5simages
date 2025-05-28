@@ -16,6 +16,7 @@ export default function GalleryScreenV2() {
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const [showCreditsPurchase, setShowCreditsPurchase] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [thumbnailSize, setThumbnailSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'processing' | 'failed'>('all');
   const [regenerationPrefill, setRegenerationPrefill] = useState<{ prompt: string; imageUrl: string } | null>(null);
@@ -46,6 +47,37 @@ export default function GalleryScreenV2() {
   const handleRegeneratePopulate = (prompt: string, imageUrl: string) => {
     setRegenerationPrefill({ prompt, imageUrl });
     setIsGeneratorOpen(true);
+    
+    // Scroll to the top of the page where the generator will be
+    setTimeout(() => {
+      window.scrollTo({ 
+        top: 0, 
+        behavior: 'smooth' 
+      });
+    }, 100); // Small delay to ensure the generator is rendered
+  };
+
+  const handleDirectRegenerate = async (prompt: string, imageUrl: string, originalType: string) => {
+    try {
+      const response = await axios.post('/api/generate-video', {
+        imageUrl,
+        prompt,
+        generationType: originalType, // Use the original type (fast/slow)
+        enhancePrompt: false, // No prompt enhancement for direct regeneration
+      });
+
+      if (response.status === 200) {
+        mutateVideos(); // Refresh the videos list
+        toast.success('Direct regeneration started! Your new GIF will appear in the gallery soon.');
+      }
+    } catch (error: unknown) {
+      console.error('Direct regeneration failed:', error);
+      if (axios.isAxiosError(error) && error.response?.status === 402) {
+        toast.error('Insufficient credits for regeneration');
+      } else {
+        toast.error('Failed to start regeneration. Please try again.');
+      }
+    }
   };
 
   const handleCloseGenerator = () => {
@@ -161,28 +193,70 @@ export default function GalleryScreenV2() {
             </div>
           </div>
 
-          {/* View Mode Toggle */}
-          <div className="flex items-center gap-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-xl p-1">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-colors ${
-                viewMode === 'grid' 
-                  ? 'bg-[#FF497D] text-white' 
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <Grid3X3 size={18} />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-colors ${
-                viewMode === 'list' 
-                  ? 'bg-[#FF497D] text-white' 
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <List size={18} />
-            </button>
+          {/* View Controls */}
+          <div className="flex items-center gap-4">
+            {/* Thumbnail Size (only show for grid view) */}
+            {viewMode === 'grid' && (
+              <div className="flex items-center gap-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-xl p-1">
+                <button
+                  onClick={() => setThumbnailSize('small')}
+                  className={`px-3 py-2 rounded-lg text-xs transition-colors ${
+                    thumbnailSize === 'small'
+                      ? 'bg-[#FF497D] text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                  title="Small thumbnails (5 columns)"
+                >
+                  S
+                </button>
+                <button
+                  onClick={() => setThumbnailSize('medium')}
+                  className={`px-3 py-2 rounded-lg text-xs transition-colors ${
+                    thumbnailSize === 'medium'
+                      ? 'bg-[#FF497D] text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                  title="Medium thumbnails (4 columns)"
+                >
+                  M
+                </button>
+                <button
+                  onClick={() => setThumbnailSize('large')}
+                  className={`px-3 py-2 rounded-lg text-xs transition-colors ${
+                    thumbnailSize === 'large'
+                      ? 'bg-[#FF497D] text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                  title="Large thumbnails (3 columns)"
+                >
+                  L
+                </button>
+              </div>
+            )}
+
+            {/* View Mode Toggle */}
+            <div className="flex items-center gap-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-xl p-1">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded-lg transition-colors ${
+                  viewMode === 'grid' 
+                    ? 'bg-[#FF497D] text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <Grid3X3 size={18} />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-lg transition-colors ${
+                  viewMode === 'list' 
+                    ? 'bg-[#FF497D] text-white' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <List size={18} />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -191,8 +265,10 @@ export default function GalleryScreenV2() {
           <GalleryGridV2
             videos={filteredVideos}
             viewMode={viewMode}
+            thumbnailSize={thumbnailSize}
             isLoading={videosLoading}
-            onRegenerate={handleRegeneratePopulate}
+            onTweak={handleRegeneratePopulate}
+            onRegenerate={handleDirectRegenerate}
             onMutate={mutateVideos}
           />
         </div>

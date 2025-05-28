@@ -11,20 +11,26 @@ import GIFDetailModalV2 from './GIFDetailModal';
 interface GalleryGridV2Props {
   videos: Video[];
   viewMode: 'grid' | 'list';
+  thumbnailSize: 'small' | 'medium' | 'large';
   isLoading: boolean;
-  onRegenerate: (prompt: string, imageUrl: string) => void;
+  onTweak: (prompt: string, imageUrl: string) => void;
+  onRegenerate: (prompt: string, imageUrl: string, originalType: string) => void;
   onMutate: () => void;
 }
 
 export default function GalleryGridV2({ 
   videos, 
   viewMode, 
+  thumbnailSize,
   isLoading, 
+  onTweak,
   onRegenerate, 
   onMutate 
 }: GalleryGridV2Props) {
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
+  const [preloadedGifs, setPreloadedGifs] = useState<Record<string, boolean>>({});
 
   // Poll for videos still in processing state
   useEffect(() => {
@@ -84,6 +90,24 @@ export default function GalleryGridV2({
     setIsModalOpen(true);
   };
 
+  const handleMouseEnter = (video: Video) => {
+    if (video.status === 'completed' && video.gifUrl && !preloadedGifs[video.id]) {
+      // Preload the GIF
+      const img = new window.Image();
+      img.onload = () => {
+        setPreloadedGifs(prev => ({ ...prev, [video.id]: true }));
+        setHoveredVideo(video.id);
+      };
+      img.src = video.gifUrl;
+    } else if (video.gifUrl && preloadedGifs[video.id]) {
+      setHoveredVideo(video.id);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredVideo(null);
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'processing':
@@ -137,25 +161,82 @@ export default function GalleryGridV2({
     );
   }
 
+  // Get grid classes based on thumbnail size
+  const getGridClasses = () => {
+    const baseClasses = 'grid gap-6';
+    
+    switch (thumbnailSize) {
+      case 'small':
+        return `${baseClasses} grid-cols-3 sm:grid-cols-4 lg:grid-cols-5`;
+      case 'medium':
+        return `${baseClasses} grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`;
+      case 'large':
+        return `${baseClasses} grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`;
+      default:
+        return `${baseClasses} grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`;
+    }
+  };
+
+  // Should show captions based on size
+  const showCaptions = thumbnailSize !== 'small';
+
+  // Get fixed height classes based on thumbnail size
+  const getHeightClasses = () => {
+    switch (thumbnailSize) {
+      case 'small':
+        return 'h-32 sm:h-36 lg:h-40';
+      case 'medium':
+        return 'h-48 sm:h-52 lg:h-56';
+      case 'large':
+        return 'h-56 sm:h-60 lg:h-64';
+      default:
+        return 'h-48 sm:h-52 lg:h-56';
+    }
+  };
+
   return (
     <>
       {viewMode === 'grid' ? (
         /* Grid View */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className={getGridClasses()}>
           {videos.map((video) => (
             <div
               key={video.id}
-              className="group relative bg-[#1A1A1D] border border-[#2A2A2D] rounded-2xl overflow-hidden hover:border-[#FF497D]/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#FF497D]/10"
+              className={`group relative bg-[#1A1A1D] border border-[#2A2A2D] rounded-2xl overflow-hidden hover:border-[#FF497D]/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#FF497D]/10 flex flex-col ${getHeightClasses()}`}
+              onMouseEnter={() => handleMouseEnter(video)}
+              onMouseLeave={handleMouseLeave}
             >
               {/* Image/Video Display */}
-              <div className="relative aspect-video">
+              <div className={`relative flex-1 transition-all duration-300 ${
+                hoveredVideo === video.id && video.gifUrl && preloadedGifs[video.id] && showCaptions
+                  ? '' // Take full height when caption is hidden
+                  : showCaptions ? 'flex-shrink-0' : ''
+              }`}>
                 {video.status === 'completed' && video.imageUrl ? (
-                  <Image
-                    src={video.imageUrl}
-                    alt={video.prompt}
-                    fill
-                    className="object-cover"
-                  />
+                  <>
+                    {/* Static thumbnail - always present */}
+                    <Image
+                      src={video.imageUrl}
+                      alt={video.prompt}
+                      fill
+                      className={`object-cover transition-opacity duration-300 ${
+                        hoveredVideo === video.id && video.gifUrl && preloadedGifs[video.id] 
+                          ? 'opacity-0' 
+                          : 'opacity-100'
+                      }`}
+                    />
+                    
+                    {/* Animated GIF - shows on hover */}
+                    {video.gifUrl && hoveredVideo === video.id && preloadedGifs[video.id] && (
+                      <Image
+                        src={video.gifUrl}
+                        alt={video.prompt}
+                        fill
+                        className="object-contain transition-opacity duration-300 opacity-100 bg-black"
+                        unoptimized // Important for GIFs to animate
+                      />
+                    )}
+                  </>
                 ) : video.status === 'processing' ? (
                   <div className="w-full h-full bg-[#0D0D0E] flex items-center justify-center">
                     <Image 
@@ -215,24 +296,26 @@ export default function GalleryGridV2({
                 />
               </div>
 
-              {/* Content */}
-              <div className="p-4">
-                <p className="text-white font-medium text-sm line-clamp-2 mb-2">
-                  {video.prompt}
-                </p>
-                
-                <div className="flex items-center justify-between text-xs text-gray-400">
-                  <div className="flex items-center gap-1">
-                    <Calendar size={12} />
-                    <span>{new Date(video.createdAt).toLocaleDateString()}</span>
-                  </div>
+              {/* Content - Hide for small thumbnails and when hovering with GIF */}
+              {showCaptions && !(hoveredVideo === video.id && video.gifUrl && preloadedGifs[video.id]) && (
+                <div className="p-3 flex-shrink-0 min-h-[5rem] flex flex-col justify-between">
+                  <p className="text-white font-medium text-xs line-clamp-2 mb-1">
+                    {video.prompt}
+                  </p>
                   
-                  <div className="flex items-center gap-1">
-                    <Zap size={12} className="text-[#3EFFE2]" />
-                    <span>{video.type === 'fast' ? '2' : '1'}</span>
+                  <div className="flex items-center justify-between text-xs text-gray-400">
+                    <div className="flex items-center gap-1">
+                      <Calendar size={10} />
+                      <span className="text-xs">{new Date(video.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-1">
+                      <Zap size={10} className="text-[#3EFFE2]" />
+                      <span className="text-xs">{video.type === 'fast' ? '2' : '1'}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           ))}
         </div>
@@ -306,13 +389,23 @@ export default function GalleryGridV2({
                     </button>
                     
                     {video.status === 'completed' && (
-                      <button
-                        onClick={() => onRegenerate(video.prompt, video.imageUrl)}
-                        className="flex items-center gap-2 px-4 py-2 bg-[#FF497D]/10 hover:bg-[#FF497D]/20 text-[#FF497D] rounded-lg transition-colors text-sm"
-                      >
-                        <RefreshCw size={16} />
-                        <span>Re-generate</span>
-                      </button>
+                      <>
+                        <button
+                          onClick={() => onTweak(video.prompt, video.imageUrl)}
+                          className="flex items-center gap-2 px-4 py-2 bg-[#A53FFF]/10 hover:bg-[#A53FFF]/20 text-[#A53FFF] rounded-lg transition-colors text-sm"
+                        >
+                          <RefreshCw size={16} />
+                          <span>Tweak</span>
+                        </button>
+                        
+                        <button
+                          onClick={() => onRegenerate(video.prompt, video.imageUrl, video.type)}
+                          className="flex items-center gap-2 px-4 py-2 bg-[#FF497D]/10 hover:bg-[#FF497D]/20 text-[#FF497D] rounded-lg transition-colors text-sm"
+                        >
+                          <RefreshCw size={16} />
+                          <span>Regenerate</span>
+                        </button>
+                      </>
                     )}
                     
                     <button
@@ -340,6 +433,7 @@ export default function GalleryGridV2({
           setSelectedVideo(null);
         }}
         onDelete={handleDelete}
+        onTweak={onTweak}
         onRegenerate={onRegenerate}
         onNavigate={setSelectedVideo}
       />

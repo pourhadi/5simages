@@ -16,7 +16,8 @@ interface GIFDetailModalV2Props {
   isOpen: boolean;
   onClose: () => void;
   onDelete?: (videoId: string) => Promise<void>;
-  onRegenerate?: (prompt: string, imageUrl: string) => void;
+  onTweak?: (prompt: string, imageUrl: string) => void;
+  onRegenerate?: (prompt: string, imageUrl: string, originalType: string) => void;
   onNavigate: (video: Video) => void;
 }
 
@@ -26,23 +27,26 @@ export default function GIFDetailModalV2({
   isOpen,
   onClose,
   onDelete,
+  onTweak,
   onRegenerate,
   onNavigate
 }: GIFDetailModalV2Props) {
   const [copied, setCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isTweaking, setIsTweaking] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [isGifLoaded, setIsGifLoaded] = useState(false);
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen || isFullscreenOpen) {
       document.body.style.overflow = 'hidden';
     }
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [isOpen]);
+  }, [isOpen, isFullscreenOpen]);
 
   // Reset copied state
   useEffect(() => {
@@ -56,6 +60,20 @@ export default function GIFDetailModalV2({
   useEffect(() => {
     setIsGifLoaded(false);
   }, [video?.gifUrl]);
+
+  // Handle escape key for fullscreen
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreenOpen) {
+        setIsFullscreenOpen(false);
+      }
+    };
+
+    if (isFullscreenOpen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [isFullscreenOpen]);
 
   if (!isOpen || !video) {
     return null;
@@ -109,20 +127,46 @@ export default function GIFDetailModalV2({
     }
   };
 
-  const handleRegenerate = async () => {
+  const handleTweak = async () => {
+    if (!video || !onTweak) return;
+
+    try {
+      setIsTweaking(true);
+      onTweak(video.prompt, video.imageUrl);
+      toast.success('Form populated for tweaking');
+      onClose();
+    } catch (err) {
+      console.error('Tweak error:', err);
+      toast.error('Failed to populate tweak form');
+    } finally {
+      setIsTweaking(false);
+    }
+  };
+
+  const handleDirectRegenerate = async () => {
     if (!video || !onRegenerate) return;
 
     try {
       setIsRegenerating(true);
-      onRegenerate(video.prompt, video.imageUrl);
-      toast.success('Form populated for regeneration');
+      await onRegenerate(video.prompt, video.imageUrl, video.type);
+      toast.success('Direct regeneration started!');
       onClose();
     } catch (err) {
       console.error('Regeneration error:', err);
-      toast.error('Failed to populate regeneration form');
+      toast.error('Failed to start regeneration');
     } finally {
       setIsRegenerating(false);
     }
+  };
+
+  const handleGifClick = () => {
+    if (video.gifUrl || video.videoUrl) {
+      setIsFullscreenOpen(true);
+    }
+  };
+
+  const handleFullscreenClose = () => {
+    setIsFullscreenOpen(false);
   };
 
   const getStatusIcon = (status: string) => {
@@ -152,10 +196,11 @@ export default function GIFDetailModalV2({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-black/95"
-      onClick={onClose}
-    >
+    <>
+      <div
+        className="fixed inset-0 z-50 bg-black/95"
+        onClick={onClose}
+      >
       <div
         className="w-full h-full bg-[#0D0D0E] lg:overflow-hidden overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
@@ -208,6 +253,40 @@ export default function GIFDetailModalV2({
         <div className="lg:flex lg:h-[calc(100vh-88px)] lg:w-full">
           {/* Mobile: Single column scroll */}
           <div className="lg:hidden space-y-4 p-4">
+            {/* Horizontal Mini Gallery */}
+            <div className="mb-4">
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                {videos.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => onNavigate(v)}
+                    className={`flex-shrink-0 w-16 h-16 relative rounded-lg overflow-hidden border-2 transition-all ${
+                      v.id === video.id
+                        ? 'border-[#FF497D] ring-2 ring-[#FF497D]/20'
+                        : 'border-transparent hover:border-[#2A2A2D]'
+                    }`}
+                  >
+                    {v.imageUrl ? (
+                      <Image
+                        src={v.imageUrl}
+                        alt={v.prompt}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#0D0D0E] flex items-center justify-center">
+                        {getStatusIcon(v.status)}
+                      </div>
+                    )}
+                    {/* Current indicator */}
+                    {v.id === video.id && (
+                      <div className="absolute inset-0 bg-[#FF497D]/20" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
             {/* GIF Display */}
             <div className="flex items-center justify-center bg-black p-4 rounded-xl min-h-[40vh]">
               {video.gifUrl ? (
@@ -229,9 +308,10 @@ export default function GIFDetailModalV2({
                     width={600}
                     height={400}
                     onLoad={() => setIsGifLoaded(true)}
-                    className={`max-w-full max-h-[35vh] object-contain rounded-xl shadow-2xl ${
+                    onClick={handleGifClick}
+                    className={`max-w-full max-h-[35vh] object-contain rounded-xl shadow-2xl cursor-pointer hover:scale-105 transition-all duration-300 ${
                       isGifLoaded ? '' : 'opacity-0'
-                    } transition-opacity`}
+                    }`}
                   />
                 </div>
               ) : video.videoUrl ? (
@@ -239,7 +319,8 @@ export default function GIFDetailModalV2({
                   controls
                   autoPlay
                   loop
-                  className="max-w-full max-h-[35vh] object-contain rounded-xl shadow-2xl"
+                  onClick={handleGifClick}
+                  className="max-w-full max-h-[35vh] object-contain rounded-xl shadow-2xl cursor-pointer hover:scale-105 transition-all duration-300"
                   src={video.videoUrl}
                 />
               ) : (
@@ -353,16 +434,33 @@ export default function GIFDetailModalV2({
                     <span>Share</span>
                   </button>
 
-                  {/* Regenerate */}
-                  {onRegenerate && video.status === 'completed' && (
-                    <button
-                      onClick={handleRegenerate}
-                      disabled={isRegenerating}
-                      className="w-full flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-lg transition-opacity hover:opacity-90 text-sm col-span-2"
-                    >
-                      <RefreshCw size={16} className={isRegenerating ? 'animate-spin' : ''} />
-                      <span>{isRegenerating ? 'Starting...' : 'Re-generate'}</span>
-                    </button>
+                  {/* Tweak and Regenerate */}
+                  {video.status === 'completed' && (onTweak || onRegenerate) && (
+                    <div className="grid grid-cols-2 gap-2 col-span-2">
+                      {/* Tweak */}
+                      {onTweak && (
+                        <button
+                          onClick={handleTweak}
+                          disabled={isTweaking}
+                          className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-[#A53FFF] to-[#8B5CF6] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
+                        >
+                          <RefreshCw size={16} className={isTweaking ? 'animate-spin' : ''} />
+                          <span>{isTweaking ? 'Opening...' : 'Tweak'}</span>
+                        </button>
+                      )}
+                      
+                      {/* Direct Regenerate */}
+                      {onRegenerate && (
+                        <button
+                          onClick={handleDirectRegenerate}
+                          disabled={isRegenerating}
+                          className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
+                        >
+                          <RefreshCw size={16} className={isRegenerating ? 'animate-spin' : ''} />
+                          <span>{isRegenerating ? 'Generating...' : 'Regenerate'}</span>
+                        </button>
+                      )}
+                    </div>
                   )}
 
                   {/* Delete */}
@@ -403,9 +501,10 @@ export default function GIFDetailModalV2({
                     width={600}
                     height={400}
                     onLoad={() => setIsGifLoaded(true)}
-                    className={`max-w-full max-h-[calc(100vh-200px)] object-contain rounded-xl shadow-2xl ${
+                    onClick={handleGifClick}
+                    className={`max-w-full max-h-[calc(100vh-200px)] object-contain rounded-xl shadow-2xl cursor-pointer hover:scale-105 transition-all duration-300 ${
                       isGifLoaded ? '' : 'opacity-0'
-                    } transition-opacity`}
+                    }`}
                   />
                 </div>
               ) : video.videoUrl ? (
@@ -413,7 +512,8 @@ export default function GIFDetailModalV2({
                   controls
                   autoPlay
                   loop
-                  className="max-w-full max-h-[calc(100vh-200px)] object-contain rounded-xl shadow-2xl"
+                  onClick={handleGifClick}
+                  className="max-w-full max-h-[calc(100vh-200px)] object-contain rounded-xl shadow-2xl cursor-pointer hover:scale-105 transition-all duration-300"
                   src={video.videoUrl}
                 />
               ) : (
@@ -528,16 +628,33 @@ export default function GIFDetailModalV2({
                       <span>Share</span>
                     </button>
 
-                    {/* Regenerate */}
-                    {onRegenerate && video.status === 'completed' && (
-                      <button
-                        onClick={handleRegenerate}
-                        disabled={isRegenerating}
-                        className="w-full flex items-center gap-2 p-3 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
-                      >
-                        <RefreshCw size={16} className={isRegenerating ? 'animate-spin' : ''} />
-                        <span>{isRegenerating ? 'Starting...' : 'Re-generate'}</span>
-                      </button>
+                    {/* Tweak and Regenerate */}
+                    {video.status === 'completed' && (onTweak || onRegenerate) && (
+                      <>
+                        {/* Tweak */}
+                        {onTweak && (
+                          <button
+                            onClick={handleTweak}
+                            disabled={isTweaking}
+                            className="w-full flex items-center gap-2 p-3 bg-gradient-to-r from-[#A53FFF] to-[#8B5CF6] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
+                          >
+                            <RefreshCw size={16} className={isTweaking ? 'animate-spin' : ''} />
+                            <span>{isTweaking ? 'Opening...' : 'Tweak'}</span>
+                          </button>
+                        )}
+                        
+                        {/* Direct Regenerate */}
+                        {onRegenerate && (
+                          <button
+                            onClick={handleDirectRegenerate}
+                            disabled={isRegenerating}
+                            className="w-full flex items-center gap-2 p-3 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
+                          >
+                            <RefreshCw size={16} className={isRegenerating ? 'animate-spin' : ''} />
+                            <span>{isRegenerating ? 'Generating...' : 'Regenerate'}</span>
+                          </button>
+                        )}
+                      </>
                     )}
 
                     {/* Delete */}
@@ -602,6 +719,49 @@ export default function GIFDetailModalV2({
           </div>
         </div>
       </div>
-    </div>
+      </div>
+
+      {/* Fullscreen Media Overlay */}
+      {isFullscreenOpen && (video.gifUrl || video.videoUrl) && (
+        <div
+          className="fixed inset-0 z-[10000] bg-black/95 flex items-center justify-center"
+          onClick={handleFullscreenClose}
+        >
+          <div className="relative w-full h-full max-w-[90vw] max-h-[90vh] flex items-center justify-center p-4">
+            {/* Close button */}
+            <button
+              onClick={handleFullscreenClose}
+              className="absolute top-2 right-2 z-10 p-3 bg-black/70 hover:bg-black/90 text-white rounded-full transition-colors"
+            >
+              <X size={20} />
+            </button>
+            
+            {/* Fullscreen Media */}
+            {video.gifUrl ? (
+              <Image
+                src={video.gifUrl}
+                alt={video.prompt}
+                width={1200}
+                height={800}
+                className="w-full h-full object-contain"
+                unoptimized // Important for GIFs to animate
+                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking on GIF
+                style={{ maxWidth: '100%', maxHeight: '100%' }}
+              />
+            ) : video.videoUrl ? (
+              <video
+                controls
+                autoPlay
+                loop
+                className="w-full h-full object-contain"
+                src={video.videoUrl}
+                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking on video
+                style={{ maxWidth: '100%', maxHeight: '100%' }}
+              />
+            ) : null}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
