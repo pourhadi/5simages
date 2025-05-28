@@ -24,7 +24,7 @@ export default function VideoGenerator({ prefill = null, onPrefillConsumed }: Vi
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   // Generation type: 'fast' for primary+fallback (2 credits), 'slow' for slow replicate-only (1 credit)
-  const [generationType, setGenerationType] = useState<'fast' | 'slow'>('fast');
+  const [generationType, setGenerationType] = useState<'fast' | 'slow'>('slow');
   // Toggle for optional prompt enhancement via llava-13b
   const [enhancePrompt, setEnhancePrompt] = useState(true);
   // Tooltip visibility for prompt enhancement info
@@ -273,7 +273,7 @@ export default function VideoGenerator({ prefill = null, onPrefillConsumed }: Vi
             <span className="text-sm text-[#3EFFE2]">2 credits</span>
           </div>
           <span className={`text-sm ${generationType === 'fast' ? 'text-white/80' : 'text-gray-400'}`}>
-            Typically takes 2-3 minutes. Great animations.
+            Typically takes 1-3 minutes. Great animations.
           </span>
         </button>
         <button
@@ -291,7 +291,7 @@ export default function VideoGenerator({ prefill = null, onPrefillConsumed }: Vi
             <span className="text-sm text-[#3EFFE2]">1 credit</span>
           </div>
           <span className={`text-sm ${generationType === 'slow' ? 'text-white/80' : 'text-gray-400'}`}>
-            Typically takes 8-12 minutes. Good animations.
+            Typically takes 2-5 minutes. Good animations.
           </span>
         </button>
       </div>

@@ -21,7 +21,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generationType, setGenerationType] = useState<'fast' | 'slow'>('fast');
+  const [generationType, setGenerationType] = useState<'fast' | 'slow'>('slow');
   const [enhancePrompt, setEnhancePrompt] = useState(true);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [sampleSteps, setSampleSteps] = useState(30);
@@ -253,7 +253,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
               <span className="text-[#3EFFE2] font-medium">2 credits</span>
             </div>
             <p className="text-gray-400 text-sm">
-              High-quality results in 2-3 minutes. Best for most use cases.
+              High-quality results in 1-3 minutes. Best for most use cases.
             </p>
           </button>
 
@@ -275,7 +275,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
               <span className="text-[#3EFFE2] font-medium">1 credit</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Good quality results in 8-12 minutes. Budget-friendly option.
+              Good quality results in 2-5 minutes. Budget-friendly option.
             </p>
           </button>
         </div>

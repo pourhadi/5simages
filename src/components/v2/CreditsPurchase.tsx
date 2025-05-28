@@ -159,7 +159,7 @@ export default function CreditsPurchaseV2({ currentCredits }: CreditsPurchaseV2P
         <div className="space-y-1.5">
           {[
             'High-quality AI-generated GIFs',
-            'Fast processing (2-3 min) or Budget (8-12 min)',
+            'Fast processing (1-3 min) or Budget (2-5 min)',
             'Download in GIF and MP4 formats',
             'No subscription required',
             'Credits never expire'

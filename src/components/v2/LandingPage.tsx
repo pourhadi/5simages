@@ -157,7 +157,7 @@ export default function LandingPageV2() {
                 <span className="text-[#FF497D] font-medium">⚡ Fast & Great</span>
               </div>
               <div className="text-3xl font-bold text-white">2 Credits</div>
-              <p className="text-gray-400">High quality results in 2-3 minutes</p>
+              <p className="text-gray-400">High quality results in 1-3 minutes</p>
             </div>
           </div>
           
@@ -167,7 +167,7 @@ export default function LandingPageV2() {
                 <span className="text-[#1E3AFF] font-medium">🐢 Slow & Good</span>
               </div>
               <div className="text-3xl font-bold text-white">1 Credit</div>
-              <p className="text-gray-400">Good quality results in 8-12 minutes</p>
+              <p className="text-gray-400">Good quality results in 2-5 minutes</p>
             </div>
           </div>
         </div>
