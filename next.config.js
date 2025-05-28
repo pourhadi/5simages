@@ -25,10 +25,8 @@ const nextConfig = {
     domains: ['afzjzoefogvzdnqmnidz.supabase.co'],
   },
   // Ensure ffmpeg-static binary is packaged with serverless functions
-  experimental: {
-    outputFileTracingIncludes: {
-      [path.join(__dirname, 'node_modules', 'ffmpeg-static')]: ['ffmpeg']
-    }
+  outputFileTracingIncludes: {
+    [path.join(__dirname, 'node_modules', 'ffmpeg-static')]: ['ffmpeg']
   },
 };
 

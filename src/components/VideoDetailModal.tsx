@@ -202,11 +202,12 @@ export default function VideoDetailModal({ video, videos, isOpen, onClose, onDel
                 )}
 
                 {/* Real GIF */}
-                <img
+                <Image
                   src={video.gifUrl!}
                   alt={video.prompt}
+                  fill
                   onLoad={() => setIsGifLoaded(true)}
-                  className={`absolute inset-0 w-full h-full object-contain object-top shadow-2xl rounded-2xl ${isGifLoaded ? '' : 'hidden'}`}
+                  className={`object-contain object-top shadow-2xl rounded-2xl ${isGifLoaded ? '' : 'hidden'}`}
                 />
               </div>
                 ) : video.videoUrl ? (

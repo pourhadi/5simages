@@ -26,6 +26,7 @@ const registerSchema = z.object({
   path: ['confirmPassword'],
 });
 
+
 interface AuthPagesV2Props {
   mode: 'login' | 'register';
 }
@@ -143,7 +144,7 @@ export default function AuthPagesV2({ mode }: AuthPagesV2Props) {
                   <input
                     id="name"
                     type="text"
-                    {...register('name' as keyof RegisterFormValues)}
+                    {...register('name')}
                     className={`w-full pl-12 pr-4 py-3 bg-[#0D0D0E] border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF497D] focus:border-transparent text-white placeholder-gray-500 transition-all duration-200 ${
                       errors.name ? 'border-red-500' : 'border-gray-600'
                     }`}
@@ -221,7 +222,7 @@ export default function AuthPagesV2({ mode }: AuthPagesV2Props) {
                   <input
                     id="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
-                    {...register('confirmPassword' as keyof RegisterFormValues)}
+                    {...register('confirmPassword')}
                     className={`w-full pl-12 pr-12 py-3 bg-[#0D0D0E] border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF497D] focus:border-transparent text-white placeholder-gray-500 transition-all duration-200 ${
                       errors.confirmPassword ? 'border-red-500' : 'border-gray-600'
                     }`}

@@ -223,9 +223,11 @@ export default function GIFDetailModalV2({
                       />
                     </div>
                   )}
-                  <img
+                  <Image
                     src={video.gifUrl}
                     alt={video.prompt}
+                    width={600}
+                    height={400}
                     onLoad={() => setIsGifLoaded(true)}
                     className={`max-w-full max-h-[35vh] object-contain rounded-xl shadow-2xl ${
                       isGifLoaded ? '' : 'opacity-0'
@@ -395,9 +397,11 @@ export default function GIFDetailModalV2({
                       />
                     </div>
                   )}
-                  <img
+                  <Image
                     src={video.gifUrl}
                     alt={video.prompt}
+                    width={600}
+                    height={400}
                     onLoad={() => setIsGifLoaded(true)}
                     className={`max-w-full max-h-[calc(100vh-200px)] object-contain rounded-xl shadow-2xl ${
                       isGifLoaded ? '' : 'opacity-0'
