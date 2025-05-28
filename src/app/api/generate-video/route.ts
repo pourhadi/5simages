@@ -14,8 +14,8 @@ if (!process.env.REPLICATE_API_TOKEN) {
 }
 
 const REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
-// Model version for Slow and Good generation via Replicate
-const SLOW_REPLICATE_MODEL_VERSION = process.env.SLOW_REPLICATE_MODEL_VERSION ?? "haiper-ai/haiper-video-2";
+// Model version for Slow and Good generation via Replicate (Kling v1.6 Standard)
+const SLOW_REPLICATE_MODEL_VERSION = process.env.SLOW_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
 // Model version and prompt prefix for optional prompt enhancement via llava-13b
 const LLAVA_ENHANCER_MODEL_VERSION = process.env.LLAVA_ENHANCER_MODEL_VERSION ?? "yorickvp/llava-13b:80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb";
 // Prefix to include before user instructions when asking llava-13b to enhance the prompt
@@ -167,16 +167,15 @@ export async function POST(request: Request) {
 
     // If using Slow and Good option, skip primary API and use slow Replicate model
     if (generationType === 'slow') {
-      // Start an asynchronous prediction with the slow model
+      // Start an asynchronous prediction with the slow model (Kling v1.6 Standard)
         const prediction = await replicate.predictions.create({
           version: SLOW_REPLICATE_MODEL_VERSION,
           input: {
             prompt: effectivePrompt,
-            duration: 4,
+            duration: 5,
             aspect_ratio: "16:9",
-            frame_image_url: signedUrl ?? imageUrl,
-            use_prompt_enhancer: enhancePrompt,
-            sample_steps: 40,
+            start_image: signedUrl ?? imageUrl,
+            cfg_scale: 0.5,
           },
         });
       if (!prediction?.id) {

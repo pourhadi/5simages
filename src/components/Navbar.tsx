@@ -98,18 +98,10 @@ export default function Navbar() {
                 <Link
                   href="/"
                   className={`px-3 py-2 rounded-md font-medium text-md ${
-                    pathname === '/' ? 'text-white bg-gray-800' : 'text-gray-300 hover:bg-gray-900 hover:text-white'
+                    pathname === '/' || pathname === '/gallery' ? 'text-white bg-gray-800' : 'text-gray-300 hover:bg-gray-900 hover:text-white'
                   }`}
                 >
                   Create
-                </Link>
-                <Link
-                  href="/gallery"
-                  className={`px-3 py-2 rounded-md text-md font-medium ${
-                    pathname === '/gallery' ? 'text-white bg-gray-800' : 'text-gray-300 hover:bg-gray-900 hover:text-white'
-                  }`}
-                >
-                  Gallery
                 </Link>
                 {user.isAdmin && (
                   <Link
@@ -235,20 +227,11 @@ export default function Navbar() {
               <Link
                 href="/"
                 className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === '/' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  pathname === '/' || pathname === '/gallery' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                 }`}
                 onClick={closeMenu}
               >
                 Create
-              </Link>
-              <Link
-                href="/gallery"
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === '/gallery' ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                }`}
-                onClick={closeMenu}
-              >
-                Gallery
               </Link>
               {user.isAdmin && (
                 <Link
