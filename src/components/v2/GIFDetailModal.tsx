@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Video } from '@prisma/client';
 import { 
   X, Download, Share, Copy, Check, Trash2, RefreshCw, 
   ChevronLeft, ChevronRight, Zap, Clock,
-  CheckCircle, XCircle
+  CheckCircle, XCircle, Scissors
 } from 'lucide-react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import GIFFrameSelector from './GIFFrameSelector';
 
 interface GIFDetailModalV2Props {
   video: Video | null;
@@ -37,6 +38,8 @@ export default function GIFDetailModalV2({
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [isGifLoaded, setIsGifLoaded] = useState(false);
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [isFrameSelectorOpen, setIsFrameSelectorOpen] = useState(false);
+  const miniGalleryRef = useRef<HTMLDivElement>(null);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -60,6 +63,25 @@ export default function GIFDetailModalV2({
   useEffect(() => {
     setIsGifLoaded(false);
   }, [video?.gifUrl]);
+
+  // Scroll mini-gallery to selected video
+  useEffect(() => {
+    if (isOpen && video && miniGalleryRef.current) {
+      const currentIndex = videos.findIndex(v => v.id === video.id);
+      if (currentIndex !== -1) {
+        // Find the video element in the mini gallery
+        const videoElement = miniGalleryRef.current.children[currentIndex] as HTMLElement;
+        if (videoElement) {
+          // Scroll the element into view with smooth behavior
+          videoElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest'
+          });
+        }
+      }
+    }
+  }, [isOpen, video, videos]);
 
   // Handle escape key for fullscreen
   useEffect(() => {
@@ -157,6 +179,23 @@ export default function GIFDetailModalV2({
     } finally {
       setIsRegenerating(false);
     }
+  };
+
+  const handleFrameTweak = (frameImageUrl: string, frameIndex: number) => {
+    if (!video || !onTweak) return;
+
+    toast.success(`Frame ${frameIndex + 1} loaded into generator!`);
+    onTweak(video.prompt, frameImageUrl);
+    setIsFrameSelectorOpen(false);
+    onClose();
+  };
+
+  const openFrameSelector = () => {
+    if (!video.gifUrl) {
+      toast.error('GIF not available for frame selection');
+      return;
+    }
+    setIsFrameSelectorOpen(true);
   };
 
   const handleGifClick = () => {
@@ -436,30 +475,43 @@ export default function GIFDetailModalV2({
 
                   {/* Tweak and Regenerate */}
                   {video.status === 'completed' && (onTweak || onRegenerate) && (
-                    <div className="grid grid-cols-2 gap-2 col-span-2">
-                      {/* Tweak */}
-                      {onTweak && (
+                    <div className="space-y-2 col-span-2">
+                      {/* Frame Selection */}
+                      {onTweak && video.gifUrl && (
                         <button
-                          onClick={handleTweak}
-                          disabled={isTweaking}
-                          className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-[#A53FFF] to-[#8B5CF6] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
+                          onClick={openFrameSelector}
+                          className="w-full flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-[#3EFFE2] to-[#1E3AFF] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
                         >
-                          <RefreshCw size={16} className={isTweaking ? 'animate-spin' : ''} />
-                          <span>{isTweaking ? 'Opening...' : 'Tweak'}</span>
+                          <Scissors size={16} />
+                          <span>Select Frame</span>
                         </button>
                       )}
                       
-                      {/* Direct Regenerate */}
-                      {onRegenerate && (
-                        <button
-                          onClick={handleDirectRegenerate}
-                          disabled={isRegenerating}
-                          className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
-                        >
-                          <RefreshCw size={16} className={isRegenerating ? 'animate-spin' : ''} />
-                          <span>{isRegenerating ? 'Generating...' : 'Regenerate'}</span>
-                        </button>
-                      )}
+                      <div className="grid grid-cols-2 gap-2">
+                        {/* Tweak */}
+                        {onTweak && (
+                          <button
+                            onClick={handleTweak}
+                            disabled={isTweaking}
+                            className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-[#A53FFF] to-[#8B5CF6] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
+                          >
+                            <RefreshCw size={16} className={isTweaking ? 'animate-spin' : ''} />
+                            <span>{isTweaking ? 'Opening...' : 'Tweak'}</span>
+                          </button>
+                        )}
+                        
+                        {/* Direct Regenerate */}
+                        {onRegenerate && (
+                          <button
+                            onClick={handleDirectRegenerate}
+                            disabled={isRegenerating}
+                            className="flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
+                          >
+                            <RefreshCw size={16} className={isRegenerating ? 'animate-spin' : ''} />
+                            <span>{isRegenerating ? 'Generating...' : 'Regenerate'}</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   )}
 
@@ -628,9 +680,20 @@ export default function GIFDetailModalV2({
                       <span>Share</span>
                     </button>
 
-                    {/* Tweak and Regenerate */}
+                    {/* Frame Selection and Actions */}
                     {video.status === 'completed' && (onTweak || onRegenerate) && (
                       <>
+                        {/* Frame Selection */}
+                        {onTweak && video.gifUrl && (
+                          <button
+                            onClick={openFrameSelector}
+                            className="w-full flex items-center gap-2 p-3 bg-gradient-to-r from-[#3EFFE2] to-[#1E3AFF] text-white rounded-lg transition-opacity hover:opacity-90 text-sm"
+                          >
+                            <Scissors size={16} />
+                            <span>Select Frame</span>
+                          </button>
+                        )}
+
                         {/* Tweak */}
                         {onTweak && (
                           <button
@@ -678,7 +741,7 @@ export default function GIFDetailModalV2({
                 <h4 className="text-sm font-medium text-white mb-4 sticky top-0 bg-[#0D0D0E] py-2 -my-2">
                   Your GIFs ({videos.length})
                 </h4>
-                <div className="space-y-2">
+                <div ref={miniGalleryRef} className="space-y-2">
                   {videos.map((v) => (
                     <button
                       key={v.id}
@@ -761,6 +824,15 @@ export default function GIFDetailModalV2({
             ) : null}
           </div>
         </div>
+      )}
+
+      {/* Frame Selector Modal */}
+      {isFrameSelectorOpen && video?.gifUrl && (
+        <GIFFrameSelector
+          gifUrl={video.gifUrl}
+          onFrameSelected={handleFrameTweak}
+          onClose={() => setIsFrameSelectorOpen(false)}
+        />
       )}
     </>
   );
