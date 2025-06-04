@@ -17,14 +17,14 @@ export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
     if (!email || !password) {
-      return new NextResponse('Missing email or password', { status: 400 });
+      return NextResponse.json({ error: 'Missing email or password' }, { status: 400 });
     }
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
     if (error || !data.session) {
-      return new NextResponse(error?.message || 'Failed to sign in', { status: 400 });
+      return NextResponse.json({ error: error?.message || 'Failed to sign in' }, { status: 400 });
     }
     // Session from Supabase after successful sign-in
     const session = data.session;
@@ -59,8 +59,22 @@ export async function POST(request: Request) {
       session.provider_refresh_token ?? '',
       factors
     ]);
-    // Create JSON response and attach cookie
-    const response = NextResponse.json({ user: data.user });
+    // Get user data from database for credits info
+    const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });
+    
+    // Create JSON response with token and user info for mobile app compatibility
+    const responseData = {
+      token: session.access_token,
+      user: {
+        id: session.user.id,
+        email: session.user.email,
+        credits: dbUser?.credits ?? 5,
+        isAdmin: dbUser?.isAdmin ?? false,
+        createdAt: dbUser?.createdAt ?? new Date().toISOString()
+      }
+    };
+    
+    const response = NextResponse.json(responseData);
     response.cookies.set('supabase-auth-token', cookieValue, {
       httpOnly: false,
       maxAge: session.expires_in,
@@ -71,9 +85,8 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     console.error('LOGIN_ERROR', error);
-    return new NextResponse(
-      error instanceof Error ? error.message : 'Internal Error',
-      { status: 500 }
-    );
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : 'Internal Error'
+    }, { status: 500 });
   }
 }

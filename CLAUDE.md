@@ -39,26 +39,55 @@ npm run db:seed      # Seed database with initial data
 
 ### AI Video Generation Workflow
 1. Image upload to Supabase storage
-2. Replicate API call with image URL and parameters
+2. Replicate API call with image URL, parameters, and webhook URL
 3. Webhook receives completion notification at `/api/replicate-webhook`
-4. FFmpeg processing converts MP4 to GIF
+4. External service converts MP4 to GIF
 5. Final GIF uploaded to Supabase storage
+6. Polling system remains as fallback for status checking
 
 ### Key File Locations
 - **Auth Config**: `/lib/authOptions.ts` (NextAuth.js setup)
 - **Database Client**: `/lib/prisma.ts` and `/lib/supabaseDb.ts`
 - **Payment Processing**: `/lib/stripe.ts`
-- **Main Generator**: `/components/VideoGenerator.tsx`
+- **Main Generator**: `/components/v2/GIFGenerator.tsx`
 - **Auth Middleware**: `/middleware.ts` (Supabase session refresh)
 
 ### API Structure
-- **Generation**: `/api/generate-video`, `/api/check-status`
+- **Generation**: `/api/generate-video`, `/api/check-status`, `/api/replicate-webhook`
 - **Payment**: `/api/checkout`, `/api/credits/purchase`, `/api/payments/verify`
 - **Admin**: `/api/admin/users`, `/api/admin/videos`
 - **Auth**: `/api/login`, `/api/register`, `/api/forgot-password`
 
-### Testing AI Generation
-Use the webhook test endpoint `/api/webhook-test` to simulate Replicate completion callbacks during development.
 
 ### Environment Requirements
 Critical environment variables: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `REPLICATE_API_TOKEN`, `STRIPE_SECRET_KEY`, `NEXTAUTH_SECRET`.
+
+Optional for webhooks: `REPLICATE_WEBHOOK_SECRET` (for signature verification), `NEXT_PUBLIC_SITE_URL` (for webhook URL construction).
+
+## iOS Mobile App
+
+A native iOS app is available in the `/ios` directory, built with SwiftUI and targeting iOS 17+. The app provides full feature parity with the web application:
+
+### iOS App Features
+- Native authentication (login/signup)
+- Image upload from camera or photo library
+- GIF generation with all web app options (prompt enhancement, fast/slow modes, advanced settings)
+- Multiple generation support (1-10 GIFs per submission)
+- Gallery view with pull-to-refresh
+- Detailed GIF view with source image, prompt, and actions
+- Frame selection and extraction
+- GIF download to Photos
+- "Tweak" functionality to regenerate with modified prompts
+- Credit purchase via web checkout
+- Real-time credit tracking
+
+### iOS Development Commands
+```bash
+# Open project
+open /Users/dan/projects/i2v/ios/StillMotion/StillMotion.xcworkspace
+
+# Build and run on simulator
+build_run_ios_sim_name_ws --workspace-path "/Users/dan/projects/i2v/ios/StillMotion/StillMotion.xcworkspace" --scheme "StillMotion" --simulator-name "iPhone 16"
+```
+
+The iOS app uses the same backend API endpoints and maintains design consistency with the web application.

@@ -26,6 +26,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [sampleSteps, setSampleSteps] = useState(30);
   const [sampleGuideScale, setSampleGuideScale] = useState(5);
+  const [numberOfGenerations, setNumberOfGenerations] = useState(1);
 
   // Get user credits
   const { data: userData } = useSWR('/api/user', axiosFetcher);
@@ -41,7 +42,8 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
     }
   }, [prefill, onPrefillConsumed]);
 
-  const cost = generationType === 'slow' ? 1 : 2;
+  const costPerGeneration = generationType === 'slow' ? 1 : 2;
+  const totalCost = costPerGeneration * numberOfGenerations;
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -77,8 +79,8 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
       return;
     }
 
-    if (userCredits < cost) {
-      toast.error(`You need at least ${cost} credits to generate a GIF. Please purchase credits.`);
+    if (userCredits < totalCost) {
+      toast.error(`You need at least ${totalCost} credits to generate ${numberOfGenerations} GIF${numberOfGenerations > 1 ? 's' : ''}. Please purchase credits.`);
       return;
     }
 
@@ -102,23 +104,32 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
         imageUrlToUse = imagePreview!;
       }
 
-      toast.loading('Starting GIF generation...', { id: 'generate' });
-      await axios.post('/api/generate-video', {
-        imageUrl: imageUrlToUse,
-        prompt,
-        generationType,
-        enhancePrompt,
-        ...(generationType === 'fast' && {
-          sampleSteps,
-          sampleGuideScale,
-        }),
-      });
-
+      toast.loading(`Starting ${numberOfGenerations} GIF generation${numberOfGenerations > 1 ? 's' : ''}...`, { id: 'generate' });
+      
+      // Submit multiple requests
+      const promises = [];
+      for (let i = 0; i < numberOfGenerations; i++) {
+        promises.push(
+          axios.post('/api/generate-video', {
+            imageUrl: imageUrlToUse,
+            prompt,
+            generationType,
+            enhancePrompt,
+            ...(generationType === 'fast' && {
+              sampleSteps,
+              sampleGuideScale,
+            }),
+          })
+        );
+      }
+      
+      await Promise.all(promises);
       toast.dismiss('generate');
       
       // Reset form
       handleRemoveImage();
       setPrompt('');
+      setNumberOfGenerations(1);
       
       onSuccess?.();
     } catch (error) {
@@ -281,6 +292,43 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
         </div>
       </div>
 
+      {/* Number of Generations */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-white">Number of Generations</h3>
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => setNumberOfGenerations(Math.max(1, numberOfGenerations - 1))}
+            disabled={isGenerating || numberOfGenerations <= 1}
+            className="w-10 h-10 bg-[#0D0D0E] border border-gray-600 rounded-lg text-white hover:border-[#FF497D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            -
+          </button>
+          
+          <div className="min-w-[120px] text-center">
+            <span className="text-2xl font-semibold text-white">{numberOfGenerations}</span>
+            <p className="text-sm text-gray-400 mt-1">
+              {totalCost} credit{totalCost !== 1 ? 's' : ''} total
+            </p>
+          </div>
+          
+          <button
+            type="button"
+            onClick={() => setNumberOfGenerations(Math.min(10, numberOfGenerations + 1))}
+            disabled={isGenerating || numberOfGenerations >= 10 || userCredits < (costPerGeneration * (numberOfGenerations + 1))}
+            className="w-10 h-10 bg-[#0D0D0E] border border-gray-600 rounded-lg text-white hover:border-[#FF497D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            +
+          </button>
+        </div>
+        
+        {numberOfGenerations > 1 && (
+          <p className="text-sm text-gray-400">
+            Each generation will create a unique GIF with the same image and prompt
+          </p>
+        )}
+      </div>
+
       {/* Advanced Settings (Fast Mode Only) */}
       {generationType === 'fast' && (
         <div className="space-y-4">
@@ -342,27 +390,27 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
       <div className="pt-4">
         <button
           onClick={generateGIF}
-          disabled={(!selectedImage && !imagePreview) || !prompt.trim() || isGenerating || userCredits < cost}
+          disabled={(!selectedImage && !imagePreview) || !prompt.trim() || isGenerating || userCredits < totalCost}
           className="w-full py-4 px-6 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#FF497D]/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
         >
           {isGenerating ? (
             <div className="flex items-center justify-center gap-2">
               <RefreshCw size={20} className="animate-spin" />
-              <span>Generating GIF...</span>
+              <span>Generating {numberOfGenerations} GIF{numberOfGenerations > 1 ? 's' : ''}...</span>
             </div>
           ) : (
             <div className="flex items-center justify-center gap-2">
               <ImageIcon size={20} />
-              <span>Generate GIF ({cost} credit{cost > 1 ? 's' : ''})</span>
+              <span>Generate {numberOfGenerations} GIF{numberOfGenerations > 1 ? 's' : ''} ({totalCost} credit{totalCost > 1 ? 's' : ''})</span>
             </div>
           )}
         </button>
 
         {/* Insufficient credits warning */}
-        {(selectedImage || imagePreview) && prompt.trim() && userCredits < cost && (
+        {(selectedImage || imagePreview) && prompt.trim() && userCredits < totalCost && (
           <div className="mt-4 p-4 bg-red-600/10 border border-red-600/20 rounded-xl">
             <p className="text-red-400 text-sm text-center">
-              You need {cost} credit{cost > 1 ? 's' : ''} to generate this GIF. 
+              You need {totalCost} credit{totalCost > 1 ? 's' : ''} to generate {numberOfGenerations} GIF{numberOfGenerations > 1 ? 's' : ''}. 
               You currently have {userCredits} credit{userCredits !== 1 ? 's' : ''}.
             </p>
           </div>

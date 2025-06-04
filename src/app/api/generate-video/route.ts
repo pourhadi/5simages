@@ -168,6 +168,14 @@ export async function POST(request: Request) {
     // If using Slow and Good option, skip primary API and use slow Replicate model
     if (generationType === 'slow') {
       // Start an asynchronous prediction with the slow model (Kling v1.6 Standard)
+      // Construct webhook URL for Vercel deployment
+      let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL || 'http://localhost:3000';
+      // Ensure HTTPS for Vercel URLs
+      if (baseUrl.includes('vercel.app') && !baseUrl.startsWith('https://')) {
+        baseUrl = `https://${baseUrl}`;
+      }
+      const webhookUrl = `${baseUrl}/api/replicate-webhook`;
+      
         const prediction = await replicate.predictions.create({
           version: SLOW_REPLICATE_MODEL_VERSION,
           input: {
@@ -177,6 +185,8 @@ export async function POST(request: Request) {
             start_image: signedUrl ?? imageUrl,
             cfg_scale: 0.5,
           },
+          webhook: webhookUrl,
+          webhook_events_filter: ["start", "output", "logs", "completed"],
         });
       if (!prediction?.id) {
         throw new Error("Failed to create Replicate prediction.");
@@ -248,6 +258,14 @@ export async function POST(request: Request) {
     // Fallback to Replicate API
     // Start an asynchronous prediction
     // Use version field for Replicate API (required by HTTP API)
+    // Construct webhook URL for Vercel deployment
+    let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL || 'http://localhost:3000';
+    // Ensure HTTPS for Vercel URLs
+    if (baseUrl.includes('vercel.app') && !baseUrl.startsWith('https://')) {
+      baseUrl = `https://${baseUrl}`;
+    }
+    const webhookUrl = `${baseUrl}/api/replicate-webhook`;
+    
     const prediction = await replicate.predictions.create({
       version: REPLICATE_MODEL_VERSION,
       input: {
@@ -256,6 +274,8 @@ export async function POST(request: Request) {
         sample_steps: sampleSteps,
         sample_guidance_scale: sampleGuideScale,
       },
+      webhook: webhookUrl,
+      webhook_events_filter: ["start", "output", "logs", "completed"],
     });
     if (!prediction?.id) {
       throw new Error("Failed to create Replicate prediction.");
