@@ -1,0 +1,244 @@
+
+> i2v@0.1.0 dev
+> source .env && next dev
+
+Environment variables status:
+NEXT_PUBLIC_SUPABASE_URL: Loaded
+NEXT_PUBLIC_SUPABASE_ANON_KEY: Loaded
+Environment variables status:
+NEXT_PUBLIC_SUPABASE_URL: Loaded
+NEXT_PUBLIC_SUPABASE_ANON_KEY: Loaded
+   ▲ Next.js 15.3.0
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.225:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 1540ms
+ ○ Compiling /mergetrain ...
+ ✓ Compiled /mergetrain in 1065ms (907 modules)
+ HEAD /mergetrain 200 in 1224ms
+ ✓ Compiled in 216ms (411 modules)
+ ✓ Compiled /api/mergetrain/files in 296ms (913 modules)
+ GET /api/mergetrain/files 200 in 347ms
+ ✓ Compiled in 156ms (927 modules)
+ ✓ Compiled in 123ms (927 modules)
+ ✓ Compiled in 129ms (927 modules)
+ ✓ Compiled in 157ms (927 modules)
+ ✓ Compiled in 96ms (498 modules)
+ ✓ Compiled in 130ms (413 modules)
+ ✓ Compiled in 91ms (413 modules)
+ ✓ Compiled /mergetrain in 206ms (497 modules)
+ GET /mergetrain 200 in 347ms
+ ○ Compiling /api/auth/[...nextauth] ...
+ ✓ Compiled /api/auth/[...nextauth] in 586ms (1235 modules)
+ GET /api/mergetrain/files 200 in 727ms
+ GET /api/user 401 in 775ms
+ GET /mergetrain 200 in 38ms
+[next-auth][warn][DEBUG_ENABLED] 
+https://next-auth.js.org/warnings#debug_enabled
+ GET /api/auth/session 200 in 1056ms
+ GET /api/user 401 in 13ms
+ GET /api/user 401 in 8ms
+ GET /api/user 401 in 6ms
+ GET /api/user 401 in 6ms
+ ✓ Compiled in 292ms (910 modules)
+ GET /mergetrain 200 in 73ms
+ ✓ Compiled /_not-found in 107ms (900 modules)
+ GET /_next/static/css/app/layout.css?v=1749157840418 404 in 200ms
+ ✓ Compiled in 198ms (914 modules)
+ GET /mergetrain 200 in 33ms
+ GET /_next/static/css/app/layout.css?v=1749157847228 404 in 49ms
+ ✓ Compiled in 128ms (914 modules)
+ GET /mergetrain 200 in 37ms
+ GET /_next/static/css/app/layout.css?v=1749157854146 404 in 44ms
+ ✓ Compiled in 87ms (416 modules)
+ GET /mergetrain 200 in 9ms
+ GET /_next/static/css/app/layout.css?v=1749157861710 404 in 18ms
+ ✓ Compiled in 75ms (416 modules)
+ GET /mergetrain 200 in 11ms
+ GET /_next/static/css/app/layout.css?v=1749157893543 404 in 16ms
+ ✓ Compiled in 74ms (416 modules)
+ GET /mergetrain 200 in 8ms
+ GET /_next/static/css/app/layout.css?v=1749157899662 404 in 14ms
+ ✓ Compiled in 80ms (416 modules)
+ GET /mergetrain 200 in 9ms
+ GET /_next/static/css/app/layout.css?v=1749157909434 404 in 17ms
+ ✓ Compiled in 77ms (416 modules)
+ GET /mergetrain 200 in 9ms
+ GET /_next/static/css/app/layout.css?v=1749157921535 404 in 17ms
+ ✓ Compiled /api/user in 269ms (618 modules)
+ GET /api/user 401 in 378ms
+ GET /mergetrain 200 in 114ms
+ ✓ Compiled /_not-found in 169ms (1035 modules)
+ ⨯ Error: Cannot find module './4243.js'
+Require stack:
+- /Users/dan/projects/i2v/.next/server/webpack-runtime.js
+- /Users/dan/projects/i2v/.next/server/app/_not-found/page.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/require.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/load-components.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/utils.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/options.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/index.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/parse-module.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/get-page-static-info.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-server.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:7374)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:7421) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './4243.js'
+Require stack:
+- /Users/dan/projects/i2v/.next/server/webpack-runtime.js
+- /Users/dan/projects/i2v/.next/server/app/_not-found/page.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/require.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/load-components.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/utils.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/options.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/index.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/parse-module.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/get-page-static-info.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-server.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:7374)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:7421) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './4243.js'
+Require stack:
+- /Users/dan/projects/i2v/.next/server/webpack-runtime.js
+- /Users/dan/projects/i2v/.next/server/app/_not-found/page.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/require.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/load-components.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/utils.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/options.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/index.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/parse-module.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/get-page-static-info.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-server.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:7374)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:7421) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './4243.js'
+Require stack:
+- /Users/dan/projects/i2v/.next/server/webpack-runtime.js
+- /Users/dan/projects/i2v/.next/server/app/_not-found/page.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/require.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/load-components.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/utils.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/options.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/index.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/parse-module.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/get-page-static-info.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-server.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:7374)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:7421) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './4243.js'
+Require stack:
+- /Users/dan/projects/i2v/.next/server/webpack-runtime.js
+- /Users/dan/projects/i2v/.next/server/app/_not-found/page.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/require.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/load-components.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/utils.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/options.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/index.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/parse-module.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/get-page-static-info.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-server.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:7374)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:7421) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module './4243.js'
+Require stack:
+- /Users/dan/projects/i2v/.next/server/webpack-runtime.js
+- /Users/dan/projects/i2v/.next/server/app/_not-found/page.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/require.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/load-components.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/utils.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/options.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/swc/index.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/parse-module.js
+- /Users/dan/projects/i2v/node_modules/next/dist/build/analysis/get-page-static-info.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/router-server.js
+- /Users/dan/projects/i2v/node_modules/next/dist/server/lib/start-server.js
+    at __webpack_require__.f.require (.next/server/webpack-runtime.js:203:28)
+    at <unknown> (.next/server/webpack-runtime.js:116:40)
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (.next/server/webpack-runtime.js:115:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (.next/server/webpack-runtime.js:167:22)
+    at <unknown> (.next/server/app/_not-found/page.js:1:7374)
+    at Object.<anonymous> (.next/server/app/_not-found/page.js:1:7421) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from /Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback.pack.gz: Error: invalid block type
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from /Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback.pack.gz: Error: invalid block type
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from /Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback.pack.gz: Error: invalid block type
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from /Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback.pack.gz: Error: invalid block type
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from /Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback.pack.gz: Error: invalid block type
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from /Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback.pack.gz: Error: invalid block type
+ ✓ Compiled /_error in 419ms (1354 modules)
+ GET /_next/static/chunks/main-app.js?v=1749158523153 500 in 5810ms
+ GET /_next/static/chunks/webpack.js?v=1749158523153 500 in 5812ms
+ GET /_next/static/chunks/app/layout.js 500 in 5809ms
+ GET /_next/static/css/app/layout.css?v=1749158523153 500 in 5812ms
+ GET /_next/static/chunks/app/mergetrain/page.js 500 in 5809ms
+ GET /_next/static/chunks/app-pages-internals.js 500 in 5811ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/dan/projects/i2v/.next/cache/webpack/client-development-fallback/0.pack.gz'
+ ✓ Compiled in 167ms (658 modules)
+ ✓ Compiled in 238ms (1200 modules)
+ ✓ Compiled in 99ms (658 modules)

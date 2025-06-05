@@ -1,5 +1,8 @@
 'use client';
 
+// Note: When adding new MP3 files to /public/mergetrain, also update the 
+// MP3_FILES array in /api/mergetrain/files/route.ts for Vercel deployment
+
 import { useState, useEffect } from 'react';
 import { Play, Pause, Volume2, Download, VolumeX, RefreshCw } from 'lucide-react';
 import Navbar from '@/components/Navbar';

@@ -1,31 +1,29 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+
+// Hardcoded list of MP3 files for Vercel deployment
+// On Vercel, we can't use fs.readdir to read the public directory
+const MP3_FILES = [
+  'emo.mp3',
+  'gilbert&sullivan.mp3',
+  'kircore.mp3',
+  'poppunk.mp3',
+  'poppunk2.mp3',
+  'screamo.mp3'
+];
 
 export async function GET() {
   try {
-    const mergetrainPath = path.join(process.cwd(), 'public', 'mergetrain');
-    
-    // Check if directory exists
-    if (!fs.existsSync(mergetrainPath)) {
-      return NextResponse.json({ files: [] });
-    }
-
-    // Read directory contents
-    const files = fs.readdirSync(mergetrainPath);
-    
-    // Filter for MP3 files only
-    const mp3Files = files
-      .filter(file => file.toLowerCase().endsWith('.mp3'))
-      .map(file => ({
-        name: file.replace('.mp3', '').replace(/[-_]/g, ' '),
-        filename: file,
-        url: `/mergetrain/${file}`
-      }));
+    // On Vercel and in production, we must use the hardcoded list
+    // The filesystem is read-only and public directory content isn't accessible via fs
+    const mp3Files = MP3_FILES.map(file => ({
+      name: file.replace('.mp3', '').replace(/[-_]/g, ' '),
+      filename: file,
+      url: `/mergetrain/${file}`
+    }));
 
     return NextResponse.json({ files: mp3Files });
   } catch (error) {
-    console.error('Error reading mergetrain directory:', error);
-    return NextResponse.json({ error: 'Failed to read files' }, { status: 500 });
+    console.error('Error in mergetrain files API:', error);
+    return NextResponse.json({ error: 'Failed to load files' }, { status: 500 });
   }
 }
