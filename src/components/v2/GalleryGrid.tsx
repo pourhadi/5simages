@@ -16,6 +16,12 @@ interface GalleryGridV2Props {
   onTweak: (prompt: string, imageUrl: string) => void;
   onRegenerate: (prompt: string, imageUrl: string, originalType: string) => void;
   onMutate: () => void;
+  isGeneratorOpen?: boolean;
+}
+
+interface GroupedVideos {
+  date: string;
+  videos: Video[];
 }
 
 export default function GalleryGridV2({ 
@@ -25,7 +31,8 @@ export default function GalleryGridV2({
   isLoading, 
   onTweak,
   onRegenerate, 
-  onMutate 
+  onMutate,
+  isGeneratorOpen 
 }: GalleryGridV2Props) {
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -194,12 +201,46 @@ export default function GalleryGridV2({
     }
   };
 
+  // Group videos by date
+  const groupVideosByDate = (videos: Video[]): GroupedVideos[] => {
+    const groups: Record<string, Video[]> = {};
+    
+    videos.forEach(video => {
+      const date = new Date(video.createdAt);
+      const dateKey = date.toLocaleDateString('en-US', { 
+        weekday: 'long',
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(video);
+    });
+    
+    // Convert to array and sort by date (newest first)
+    return Object.entries(groups)
+      .map(([date, videos]) => ({ date, videos }))
+      .sort((a, b) => {
+        const dateA = new Date(a.videos[0].createdAt).getTime();
+        const dateB = new Date(b.videos[0].createdAt).getTime();
+        return dateB - dateA;
+      });
+  };
+
+  const groupedVideos = groupVideosByDate(videos);
+
   return (
     <>
-      {viewMode === 'grid' ? (
-        /* Grid View */
-        <div className={getGridClasses()}>
-          {videos.map((video) => (
+      {/* Grid View */}
+      <div className="space-y-12">
+        {groupedVideos.map(({ date, videos: groupVideos }) => (
+          <div key={date}>
+            <h3 className="text-lg font-semibold text-gray-300 mb-4">{date}</h3>
+            <div className={getGridClasses()}>
+              {groupVideos.map((video) => (
             <div
               key={video.id}
               className={`group relative bg-[#1A1A1D] border border-[#2A2A2D] rounded-2xl overflow-hidden hover:border-[#FF497D]/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#FF497D]/10 flex flex-col ${getHeightClasses()}`}
@@ -317,111 +358,11 @@ export default function GalleryGridV2({
                 </div>
               )}
             </div>
-          ))}
-        </div>
-      ) : (
-        /* List View */
-        <div className="space-y-4">
-          {videos.map((video) => (
-            <div
-              key={video.id}
-              className="group bg-[#1A1A1D] border border-[#2A2A2D] rounded-2xl p-6 hover:border-[#FF497D]/30 transition-all duration-300"
-            >
-              <div className="flex items-center gap-6">
-                {/* Thumbnail */}
-                <div className="flex-shrink-0 w-24 h-24 relative rounded-xl overflow-hidden">
-                  {video.status === 'completed' && video.imageUrl ? (
-                    <Image
-                      src={video.imageUrl}
-                      alt={video.prompt}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : video.status === 'processing' ? (
-                    <div className="w-full h-full bg-[#0D0D0E] flex items-center justify-center">
-                      <Clock size={24} className="text-blue-400 animate-pulse" />
-                    </div>
-                  ) : (
-                    <div className="w-full h-full bg-[#0D0D0E] flex items-center justify-center">
-                      <XCircle size={24} className="text-red-400" />
-                    </div>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-white font-medium text-lg line-clamp-1">
-                      {video.prompt}
-                    </h3>
-                    
-                    {/* Status Badge - Only show for processing/failed */}
-                    {video.status !== 'completed' && (
-                      <div className={`px-3 py-1 rounded-full border text-xs font-medium ${getStatusColor(video.status)}`}>
-                        <div className="flex items-center gap-1">
-                          {getStatusIcon(video.status)}
-                          <span className="capitalize">{video.status}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center gap-4 text-sm text-gray-400 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Calendar size={14} />
-                      <span>{new Date(video.createdAt).toLocaleString()}</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-1">
-                      <Zap size={14} className="text-[#3EFFE2]" />
-                      <span>{video.type === 'fast' ? '2' : '1'} credits</span>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => openDetail(video)}
-                      className="flex items-center gap-2 px-4 py-2 bg-[#2A2A2D] hover:bg-[#3A3A3D] text-white rounded-lg transition-colors text-sm"
-                    >
-                      <Eye size={16} />
-                      <span>View Details</span>
-                    </button>
-                    
-                    {video.status === 'completed' && (
-                      <>
-                        <button
-                          onClick={() => onTweak(video.prompt, video.imageUrl)}
-                          className="flex items-center gap-2 px-4 py-2 bg-[#A53FFF]/10 hover:bg-[#A53FFF]/20 text-[#A53FFF] rounded-lg transition-colors text-sm"
-                        >
-                          <RefreshCw size={16} />
-                          <span>Tweak</span>
-                        </button>
-                        
-                        <button
-                          onClick={() => onRegenerate(video.prompt, video.imageUrl, video.type)}
-                          className="flex items-center gap-2 px-4 py-2 bg-[#FF497D]/10 hover:bg-[#FF497D]/20 text-[#FF497D] rounded-lg transition-colors text-sm"
-                        >
-                          <RefreshCw size={16} />
-                          <span>Regenerate</span>
-                        </button>
-                      </>
-                    )}
-                    
-                    <button
-                      onClick={() => handleDelete(video.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 rounded-lg transition-colors text-sm"
-                    >
-                      <Trash2 size={16} />
-                      <span>Delete</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
 
       {/* Detail Modal */}
       <GIFDetailModalV2
@@ -436,6 +377,7 @@ export default function GalleryGridV2({
         onTweak={onTweak}
         onRegenerate={onRegenerate}
         onNavigate={setSelectedVideo}
+        isGeneratorOpen={isGeneratorOpen}
       />
     </>
   );

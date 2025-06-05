@@ -1,28 +1,31 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Video } from '@prisma/client';
-import { ChevronUp, Plus, Grid3X3, List, Zap, Search, Filter } from 'lucide-react';
+import { ChevronUp, Plus, Zap, Search, Filter } from 'lucide-react';
 import useSWR from 'swr';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import GIFGeneratorV2 from './GIFGenerator';
 import GalleryGridV2 from './GalleryGrid';
 import CreditsPurchaseV2 from './CreditsPurchase';
+import Navbar from '../Navbar';
 
 const axiosFetcher = (url: string) => axios.get(url).then(res => res.data);
 
 export default function GalleryScreenV2() {
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const [showCreditsPurchase, setShowCreditsPurchase] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode] = useState<'grid' | 'list'>('grid');
   const [thumbnailSize, setThumbnailSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'processing' | 'failed'>('all');
   const [regenerationPrefill, setRegenerationPrefill] = useState<{ prompt: string; imageUrl: string } | null>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
   
   // Ref to track the gallery position for smooth scrolling
   const galleryRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   // Fetch user data and videos
   const { data: userData } = useSWR('/api/user', axiosFetcher);
@@ -37,6 +40,29 @@ export default function GalleryScreenV2() {
 
   const userCredits = userData?.credits || 0;
 
+  // Measure header height
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      if (headerRef.current) {
+        setHeaderHeight(headerRef.current.offsetHeight);
+      }
+    };
+    
+    updateHeaderHeight();
+    window.addEventListener('resize', updateHeaderHeight);
+    
+    // Update on component mount and whenever header content changes
+    const observer = new ResizeObserver(updateHeaderHeight);
+    if (headerRef.current) {
+      observer.observe(headerRef.current);
+    }
+    
+    return () => {
+      window.removeEventListener('resize', updateHeaderHeight);
+      observer.disconnect();
+    };
+  }, []);
+
   // Filter videos based on search and status
   const filteredVideos = (videos || []).filter(video => {
     const matchesSearch = video.prompt.toLowerCase().includes(searchQuery.toLowerCase());
@@ -47,14 +73,6 @@ export default function GalleryScreenV2() {
   const handleRegeneratePopulate = (prompt: string, imageUrl: string) => {
     setRegenerationPrefill({ prompt, imageUrl });
     setIsGeneratorOpen(true);
-    
-    // Scroll to the top of the page where the generator will be
-    setTimeout(() => {
-      window.scrollTo({ 
-        top: 0, 
-        behavior: 'smooth' 
-      });
-    }, 100); // Small delay to ensure the generator is rendered
   };
 
   const handleDirectRegenerate = async (prompt: string, imageUrl: string, originalType: string) => {
@@ -81,39 +99,25 @@ export default function GalleryScreenV2() {
   };
 
   const handleCloseGenerator = () => {
-    // Scroll to gallery section smoothly when closing generator
-    if (galleryRef.current) {
-      galleryRef.current.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
-      });
-    }
     setIsGeneratorOpen(false);
     setRegenerationPrefill(null);
   };
 
   const handleGeneratorSuccess = () => {
     mutateVideos();
-    // Scroll to top of page smoothly when closing after success
-    window.scrollTo({ 
-      top: 0, 
-      behavior: 'smooth' 
-    });
     setIsGeneratorOpen(false);
     toast.success('GIF generation started! It will appear in your gallery soon.');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0D0D0E] via-[#1A1A1D] to-[#0D0D0E]">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            {/* Title and Credits */}
-            <div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-white mb-2">
-                Your Gallery
-              </h1>
+      {/* Sticky Header with Navbar */}
+      <div ref={headerRef} className="sticky top-0 z-40 bg-[#0D0D0E]/95 backdrop-blur-md">
+        <Navbar />
+        <div className="border-b border-[#2A2A2D] bg-[#0D0D0E]/95">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              {/* Credits */}
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 px-4 py-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-full">
                   <Zap size={18} className="text-[#3EFFE2]" />
@@ -126,40 +130,50 @@ export default function GalleryScreenV2() {
                   Buy Credits
                 </button>
               </div>
-            </div>
 
-            {/* Create New Button */}
-            <button
-              onClick={() => setIsGeneratorOpen(!isGeneratorOpen)}
-              className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white rounded-2xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#FF497D]/25"
-            >
-              <Plus size={20} className={`transition-transform duration-300 ${isGeneratorOpen ? 'rotate-45' : 'rotate-0'}`} />
-              <span>{isGeneratorOpen ? 'Close Generator' : 'Create New GIF'}</span>
-            </button>
+              {/* Create New Button */}
+              <button
+                onClick={() => setIsGeneratorOpen(!isGeneratorOpen)}
+                className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white rounded-2xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#FF497D]/25"
+              >
+                <Plus size={20} className={`transition-transform duration-300 ${isGeneratorOpen ? 'rotate-45' : 'rotate-0'}`} />
+                <span>{isGeneratorOpen ? 'Close Generator' : 'Create New GIF'}</span>
+              </button>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Collapsible Generator */}
-        <div className={`mb-8 transition-all duration-500 ease-in-out ${isGeneratorOpen ? 'opacity-100' : 'opacity-0 pointer-events-none h-0 overflow-hidden'}`}>
-          {isGeneratorOpen && (
-            <div className="bg-[#1A1A1D] border border-[#2A2A2D] rounded-3xl p-8 shadow-2xl">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white">Create New GIF</h2>
-                <button
-                  onClick={handleCloseGenerator}
-                  className="p-2 text-gray-400 hover:text-white transition-colors"
-                >
-                  <ChevronUp size={24} />
-                </button>
+      {/* Generator Overlay */}
+      {isGeneratorOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" 
+          style={{ top: `${headerHeight}px` }}>
+          <div className="h-full overflow-y-auto">
+            <div className="bg-[#1A1A1D] border-b border-[#2A2A2D] min-h-full">
+              <div className="max-w-4xl mx-auto px-6 py-6">
+                <div className="flex items-center justify-between mb-4 sticky top-0 bg-[#1A1A1D] py-2 -my-2 z-10">
+                  <h2 className="text-xl font-bold text-white">Create New GIF</h2>
+                  <button
+                    onClick={handleCloseGenerator}
+                    className="p-2 text-gray-400 hover:text-white transition-colors rounded-full hover:bg-[#2A2A2D]"
+                  >
+                    <ChevronUp size={20} />
+                  </button>
+                </div>
+                <GIFGeneratorV2
+                  prefill={regenerationPrefill}
+                  onSuccess={handleGeneratorSuccess}
+                  onPrefillConsumed={() => setRegenerationPrefill(null)}
+                />
               </div>
-              <GIFGeneratorV2
-                prefill={regenerationPrefill}
-                onSuccess={handleGeneratorSuccess}
-                onPrefillConsumed={() => setRegenerationPrefill(null)}
-              />
             </div>
-          )}
+          </div>
         </div>
+      )}
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
 
         {/* Gallery Controls */}
         <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between mb-8">
@@ -195,66 +209,40 @@ export default function GalleryScreenV2() {
 
           {/* View Controls */}
           <div className="flex items-center gap-4">
-            {/* Thumbnail Size (only show for grid view) */}
-            {viewMode === 'grid' && (
-              <div className="flex items-center gap-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-xl p-1">
-                <button
-                  onClick={() => setThumbnailSize('small')}
-                  className={`px-3 py-2 rounded-lg text-xs transition-colors ${
-                    thumbnailSize === 'small'
-                      ? 'bg-[#FF497D] text-white'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                  title="Small thumbnails (5 columns)"
-                >
-                  S
-                </button>
-                <button
-                  onClick={() => setThumbnailSize('medium')}
-                  className={`px-3 py-2 rounded-lg text-xs transition-colors ${
-                    thumbnailSize === 'medium'
-                      ? 'bg-[#FF497D] text-white'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                  title="Medium thumbnails (4 columns)"
-                >
-                  M
-                </button>
-                <button
-                  onClick={() => setThumbnailSize('large')}
-                  className={`px-3 py-2 rounded-lg text-xs transition-colors ${
-                    thumbnailSize === 'large'
-                      ? 'bg-[#FF497D] text-white'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                  title="Large thumbnails (3 columns)"
-                >
-                  L
-                </button>
-              </div>
-            )}
-
-            {/* View Mode Toggle */}
+            {/* Thumbnail Size */}
             <div className="flex items-center gap-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-xl p-1">
               <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'grid' 
-                    ? 'bg-[#FF497D] text-white' 
+                onClick={() => setThumbnailSize('small')}
+                className={`px-3 py-2 rounded-lg text-xs transition-colors ${
+                  thumbnailSize === 'small'
+                    ? 'bg-[#FF497D] text-white'
                     : 'text-gray-400 hover:text-white'
                 }`}
+                title="Small thumbnails (5 columns)"
               >
-                <Grid3X3 size={18} />
+                S
               </button>
               <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-colors ${
-                  viewMode === 'list' 
-                    ? 'bg-[#FF497D] text-white' 
+                onClick={() => setThumbnailSize('medium')}
+                className={`px-3 py-2 rounded-lg text-xs transition-colors ${
+                  thumbnailSize === 'medium'
+                    ? 'bg-[#FF497D] text-white'
                     : 'text-gray-400 hover:text-white'
                 }`}
+                title="Medium thumbnails (4 columns)"
               >
-                <List size={18} />
+                M
+              </button>
+              <button
+                onClick={() => setThumbnailSize('large')}
+                className={`px-3 py-2 rounded-lg text-xs transition-colors ${
+                  thumbnailSize === 'large'
+                    ? 'bg-[#FF497D] text-white'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+                title="Large thumbnails (3 columns)"
+              >
+                L
               </button>
             </div>
           </div>
@@ -270,6 +258,7 @@ export default function GalleryScreenV2() {
             onTweak={handleRegeneratePopulate}
             onRegenerate={handleDirectRegenerate}
             onMutate={mutateVideos}
+            isGeneratorOpen={isGeneratorOpen}
           />
         </div>
 

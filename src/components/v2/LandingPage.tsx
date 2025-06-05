@@ -5,12 +5,14 @@ import Image from 'next/image';
 import exampleGif1 from '../../../gifs/1.gif';
 import exampleGif2 from '../../../gifs/2.gif';
 import exampleGif3 from '../../../gifs/flag.gif';
+import Navbar from '../Navbar';
 
 export default function LandingPageV2() {
   const router = useRouter();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0D0D0E] via-[#1A1A1D] to-[#0D0D0E]">
+      <Navbar />
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Background decoration */}
@@ -19,9 +21,9 @@ export default function LandingPageV2() {
         <div className="relative max-w-7xl mx-auto px-6 py-20">
           <div className="text-center space-y-8">
             {/* Main headline */}
-            <h1 className="text-6xl md:text-7xl font-black tracking-tight">
-              <span className="block text-white">Bring Your</span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF]">
+            <h1 className="text-6xl md:text-7xl font-black tracking-tight leading-[1.2]">
+              <span className="block text-white pb-2">Bring Your</span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] pb-4 overflow-visible">
                 Images to Life
               </span>
             </h1>

@@ -20,6 +20,7 @@ interface GIFDetailModalV2Props {
   onTweak?: (prompt: string, imageUrl: string) => void;
   onRegenerate?: (prompt: string, imageUrl: string, originalType: string) => void;
   onNavigate: (video: Video) => void;
+  isGeneratorOpen?: boolean;
 }
 
 export default function GIFDetailModalV2({
@@ -30,7 +31,8 @@ export default function GIFDetailModalV2({
   onDelete,
   onTweak,
   onRegenerate,
-  onNavigate
+  onNavigate,
+  isGeneratorOpen
 }: GIFDetailModalV2Props) {
   const [copied, setCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -156,7 +158,10 @@ export default function GIFDetailModalV2({
       setIsTweaking(true);
       onTweak(video.prompt, video.imageUrl);
       toast.success('Form populated for tweaking');
-      onClose();
+      // Don't close the modal if generator is already open
+      if (!isGeneratorOpen) {
+        onClose();
+      }
     } catch (err) {
       console.error('Tweak error:', err);
       toast.error('Failed to populate tweak form');

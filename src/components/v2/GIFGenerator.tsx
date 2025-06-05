@@ -148,37 +148,37 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Image Upload Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-white">Upload Image</h3>
+      <div className="space-y-3">
+        <h3 className="text-base font-semibold text-white">Upload Image</h3>
         
         {!imagePreview ? (
           <div
             {...getRootProps()}
-            className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-300 ${
+            className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ${
               isDragActive 
                 ? 'border-[#FF497D] bg-[#FF497D]/5' 
                 : 'border-gray-600 hover:border-[#FF497D] hover:bg-[#FF497D]/5'
             }`}
           >
             <input {...getInputProps()} />
-            <div className="flex flex-col items-center space-y-4">
-              <div className="w-16 h-16 bg-[#2A2A2D] rounded-2xl flex items-center justify-center">
-                <Upload className="text-gray-400" size={24} />
+            <div className="flex flex-col items-center space-y-3">
+              <div className="w-12 h-12 bg-[#2A2A2D] rounded-xl flex items-center justify-center">
+                <Upload className="text-gray-400" size={20} />
               </div>
               {isDragActive ? (
                 <div>
-                  <p className="text-[#FF497D] font-medium text-lg">Drop your image here</p>
+                  <p className="text-[#FF497D] font-medium">Drop your image here</p>
                   <p className="text-gray-400 text-sm">Release to upload</p>
                 </div>
               ) : (
                 <div>
-                  <p className="text-white font-medium text-lg">
+                  <p className="text-white font-medium">
                     Drag & drop an image here, or{' '}
                     <span className="text-[#FF497D] underline">browse</span>
                   </p>
-                  <p className="text-gray-400 text-sm mt-2">
+                  <p className="text-gray-400 text-sm mt-1">
                     Supports JPG, PNG • Max size: 5MB
                   </p>
                 </div>
@@ -187,20 +187,20 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
           </div>
         ) : (
           <div className="relative">
-            <div className="relative w-full max-w-md mx-auto bg-[#0D0D0E] rounded-2xl overflow-hidden">
+            <div className="relative w-full max-w-xs mx-auto bg-[#0D0D0E] rounded-xl overflow-hidden">
               <Image 
                 src={imagePreview} 
                 alt="Preview" 
-                width={400}
-                height={300}
+                width={300}
+                height={200}
                 className="w-full h-auto object-cover"
               />
               <button 
                 onClick={handleRemoveImage}
                 disabled={isGenerating}
-                className="absolute top-3 right-3 p-2 bg-red-600/80 hover:bg-red-700 text-white rounded-full transition-colors"
+                className="absolute top-2 right-2 p-1.5 bg-red-600/80 hover:bg-red-700 text-white rounded-full transition-colors"
               >
-                <Trash2 size={16} />
+                <Trash2 size={14} />
               </button>
             </div>
           </div>
@@ -208,12 +208,12 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
       </div>
 
       {/* Prompt Section */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-white">Describe the Animation</h3>
+      <div className="space-y-3">
+        <h3 className="text-base font-semibold text-white">Describe the Animation</h3>
         <textarea
-          className="w-full px-4 py-4 bg-[#0D0D0E] border border-gray-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#FF497D] focus:border-transparent text-white placeholder-gray-400 resize-none"
+          className="w-full px-3 py-3 bg-[#0D0D0E] border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF497D] focus:border-transparent text-white placeholder-gray-400 resize-none text-sm"
           placeholder="Describe how you want your image to move... (e.g., 'gentle waves flowing', 'leaves rustling in the wind', 'hair flowing gracefully')"
-          rows={4}
+          rows={3}
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           disabled={isGenerating}
@@ -231,19 +231,12 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
             />
             <span className="text-white text-sm">Auto-enhance prompt</span>
           </label>
-          
-          <div className="group relative">
-            <Info size={16} className="text-gray-400 cursor-help" />
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-72 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-              AI will analyze your image and enhance your prompt with relevant details for better animation results.
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Generation Mode Selection */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-white">Generation Mode</h3>
+      <div className="space-y-3">
+        <h3 className="text-base font-semibold text-white">Generation Mode</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <button
@@ -252,8 +245,8 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
             disabled={isGenerating}
             className={`p-6 rounded-2xl border-2 transition-all text-left ${
               generationType === 'fast'
-                ? 'border-[#FF497D] bg-[#FF497D]/5'
-                : 'border-gray-600 hover:border-gray-500'
+                ? 'border-[#FF497D] bg-[#FF497D]/10'
+                : 'border-gray-600 hover:border-[#FF497D]/50'
             }`}
           >
             <div className="flex items-center justify-between mb-3">
@@ -274,8 +267,8 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
             disabled={isGenerating}
             className={`p-6 rounded-2xl border-2 transition-all text-left ${
               generationType === 'slow'
-                ? 'border-[#1E3AFF] bg-[#1E3AFF]/5'
-                : 'border-gray-600 hover:border-gray-500'
+                ? 'border-[#1E3AFF] bg-[#1E3AFF]/10'
+                : 'border-gray-600 hover:border-[#1E3AFF]/50'
             }`}
           >
             <div className="flex items-center justify-between mb-3">
@@ -286,7 +279,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
               <span className="text-[#3EFFE2] font-medium">1 credit</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Good quality results in 2-5 minutes. Budget-friendly option.
+              Good quality results in 2-5 minutes. More economical option.
             </p>
           </button>
         </div>
@@ -331,23 +324,23 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
 
       {/* Advanced Settings (Fast Mode Only) */}
       {generationType === 'fast' && (
-        <div className="space-y-4">
+        <div className="space-y-3">
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="flex items-center gap-2 text-[#FF497D] hover:text-[#A53FFF] transition-colors"
+            className="flex items-center gap-2 text-[#FF497D] hover:text-[#A53FFF] transition-colors text-sm"
           >
-            <Settings size={18} />
+            <Settings size={16} />
             <span className="font-medium">
-              {showAdvanced ? 'Hide' : 'Show'} Advanced Settings
+              {showAdvanced ? 'Hide' : 'Show'} Advanced
             </span>
           </button>
 
           {showAdvanced && (
-            <div className="bg-[#0D0D0E] border border-gray-600 rounded-2xl p-6 space-y-6">
+            <div className="bg-[#0D0D0E] border border-gray-600 rounded-xl p-4 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Sample Steps: {sampleSteps}
+                  Steps: {sampleSteps}
                 </label>
                 <input
                   type="range"
@@ -358,8 +351,8 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
                   disabled={isGenerating}
                   className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"
                 />
-                <p className="text-xs text-gray-400 mt-2">
-                  More steps = higher quality but slower generation. 30 is recommended.
+                <p className="text-xs text-gray-400 mt-1">
+                  More steps = higher quality (30 recommended)
                 </p>
               </div>
 
@@ -377,8 +370,8 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
                   disabled={isGenerating}
                   className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"
                 />
-                <p className="text-xs text-gray-400 mt-2">
-                  Higher values follow the prompt more closely but reduce creativity.
+                <p className="text-xs text-gray-400 mt-1">
+                  Higher values follow prompt more closely
                 </p>
               </div>
             </div>
@@ -387,15 +380,15 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
       )}
 
       {/* Generate Button */}
-      <div className="pt-4">
+      <div className="pt-2">
         <button
           onClick={generateGIF}
           disabled={(!selectedImage && !imagePreview) || !prompt.trim() || isGenerating || userCredits < totalCost}
-          className="w-full py-4 px-6 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-[#FF497D]/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+          className="w-full py-3 px-6 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white font-semibold rounded-xl transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-[#FF497D]/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
         >
           {isGenerating ? (
             <div className="flex items-center justify-center gap-2">
-              <RefreshCw size={20} className="animate-spin" />
+              <RefreshCw size={18} className="animate-spin" />
               <span>Generating {numberOfGenerations} GIF{numberOfGenerations > 1 ? 's' : ''}...</span>
             </div>
           ) : (

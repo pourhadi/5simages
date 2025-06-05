@@ -52,8 +52,7 @@ export default function RootLayout({
               color: '#f3f4f6',
             },
           }} />
-          <Navbar />
-          <main className="max-w-7xl mx-auto sm:py-6 lg:py-12 sm:px-6 lg:px-8">
+          <main>
             {children}
           </main>
           <Footer />
