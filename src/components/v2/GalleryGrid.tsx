@@ -10,7 +10,6 @@ import GIFDetailModalV2 from './GIFDetailModal';
 
 interface GalleryGridV2Props {
   videos: Video[];
-  viewMode: 'grid' | 'list';
   thumbnailSize: 'small' | 'medium' | 'large';
   isLoading: boolean;
   onTweak: (prompt: string, imageUrl: string) => void;
@@ -26,7 +25,6 @@ interface GroupedVideos {
 
 export default function GalleryGridV2({ 
   videos, 
-  viewMode, 
   thumbnailSize,
   isLoading, 
   onTweak,

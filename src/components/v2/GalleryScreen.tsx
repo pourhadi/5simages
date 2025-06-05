@@ -16,7 +16,6 @@ const axiosFetcher = (url: string) => axios.get(url).then(res => res.data);
 export default function GalleryScreenV2() {
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const [showCreditsPurchase, setShowCreditsPurchase] = useState(false);
-  const [viewMode] = useState<'grid' | 'list'>('grid');
   const [thumbnailSize, setThumbnailSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'processing' | 'failed'>('all');
@@ -252,7 +251,6 @@ export default function GalleryScreenV2() {
         <div ref={galleryRef}>
           <GalleryGridV2
             videos={filteredVideos}
-            viewMode={viewMode}
             thumbnailSize={thumbnailSize}
             isLoading={videosLoading}
             onTweak={handleRegeneratePopulate}

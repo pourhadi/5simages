@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, ImageIcon, Trash2, RefreshCw, Zap, Settings, Info } from 'lucide-react';
+import { Upload, ImageIcon, Trash2, RefreshCw, Zap, Settings } from 'lucide-react';
 import Image from 'next/image';
 import axios from 'axios';
 import toast from 'react-hot-toast';

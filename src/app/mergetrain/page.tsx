@@ -27,7 +27,7 @@ export default function MergetrainPage() {
       const data = await response.json();
       
       if (data.files && Array.isArray(data.files)) {
-        const availableTracks: AudioTrack[] = data.files.map((file: any) => ({
+        const availableTracks: AudioTrack[] = data.files.map((file: { name: string; url: string }) => ({
           name: file.name,
           url: file.url,
           isPlaying: false,
@@ -81,7 +81,7 @@ export default function MergetrainPage() {
         audio.src = '';
       });
     };
-  }, [tracks.length]);
+  }, [tracks, volume, isMuted]);
 
   // Update volume on all audio elements when volume changes
   useEffect(() => {

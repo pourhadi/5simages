@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
 import { Toaster } from 'react-hot-toast';
-import Navbar from "@/components/Navbar";
 import RefreshCredits from "@/components/RefreshCredits";
 import Footer from "@/components/Footer";
 
