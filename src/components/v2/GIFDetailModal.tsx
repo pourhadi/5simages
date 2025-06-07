@@ -10,6 +10,7 @@ import {
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import GIFFrameSelector from './GIFFrameSelector';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 interface GIFDetailModalV2Props {
   video: Video | null;
@@ -99,13 +100,29 @@ export default function GIFDetailModalV2({
     }
   }, [isFullscreenOpen]);
 
+  const currentIndex = video ? videos.findIndex((v) => v.id === video.id) : -1;
+  const prevVideo = currentIndex > 0 ? videos[currentIndex - 1] : null;
+  const nextVideo = currentIndex < videos.length - 1 ? videos[currentIndex + 1] : null;
+
+  // Keyboard shortcuts for navigation
+  useKeyboardShortcuts([
+    {
+      key: 'ArrowLeft',
+      callback: () => isOpen && prevVideo && onNavigate(prevVideo),
+    },
+    {
+      key: 'ArrowRight',
+      callback: () => isOpen && nextVideo && onNavigate(nextVideo),
+    },
+    {
+      key: 'Escape',
+      callback: () => isOpen && onClose(),
+    },
+  ]);
+
   if (!isOpen || !video) {
     return null;
   }
-
-  const currentIndex = videos.findIndex((v) => v.id === video.id);
-  const prevVideo = currentIndex > 0 ? videos[currentIndex - 1] : null;
-  const nextVideo = currentIndex < videos.length - 1 ? videos[currentIndex + 1] : null;
 
   const handleCopyPrompt = () => {
     navigator.clipboard.writeText(video.prompt);

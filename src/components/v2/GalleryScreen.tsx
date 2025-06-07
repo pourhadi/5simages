@@ -10,6 +10,8 @@ import GIFGeneratorV2 from './GIFGenerator';
 import GalleryGridV2 from './GalleryGrid';
 import CreditsPurchaseV2 from './CreditsPurchase';
 import Navbar from '../Navbar';
+import { UserInfoSkeleton } from '@/components/ui/Skeleton';
+import { useKeyboardShortcuts, globalShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 const axiosFetcher = (url: string) => axios.get(url).then(res => res.data);
 
@@ -21,10 +23,12 @@ export default function GalleryScreenV2() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'processing' | 'failed'>('all');
   const [regenerationPrefill, setRegenerationPrefill] = useState<{ prompt: string; imageUrl: string } | null>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
   
   // Ref to track the gallery position for smooth scrolling
   const galleryRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch user data and videos
   const { data: userData } = useSWR('/api/user', axiosFetcher);
@@ -38,6 +42,34 @@ export default function GalleryScreenV2() {
   });
 
   const userCredits = userData?.credits || 0;
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts([
+    {
+      ...globalShortcuts.newGif,
+      callback: () => setIsGeneratorOpen(true),
+    },
+    {
+      ...globalShortcuts.search,
+      callback: () => searchInputRef.current?.focus(),
+    },
+    {
+      ...globalShortcuts.credits,
+      callback: () => setShowCreditsPurchase(true),
+    },
+    {
+      ...globalShortcuts.help,
+      callback: () => setShowShortcutsHelp(true),
+    },
+    {
+      ...globalShortcuts.escape,
+      callback: () => {
+        if (showShortcutsHelp) setShowShortcutsHelp(false);
+        else if (showCreditsPurchase) setShowCreditsPurchase(false);
+        else if (isGeneratorOpen) setIsGeneratorOpen(false);
+      },
+    },
+  ]);
 
   // Measure header height
   useEffect(() => {
@@ -117,18 +149,22 @@ export default function GalleryScreenV2() {
           <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               {/* Credits */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-4 py-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-full">
-                  <Zap size={18} className="text-[#3EFFE2]" />
-                  <span className="text-white font-medium">{userCredits} credits</span>
+              {userData ? (
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-full">
+                    <Zap size={18} className="text-[#3EFFE2]" />
+                    <span className="text-white font-medium">{userCredits} credits</span>
+                  </div>
+                  <button
+                    onClick={() => setShowCreditsPurchase(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
+                  >
+                    Buy Credits
+                  </button>
                 </div>
-                <button
-                  onClick={() => setShowCreditsPurchase(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
-                >
-                  Buy Credits
-                </button>
-              </div>
+              ) : (
+                <UserInfoSkeleton />
+              )}
 
               {/* Create New Button */}
               <button
@@ -182,6 +218,7 @@ export default function GalleryScreenV2() {
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
               <input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Search your GIFs..."
                 value={searchQuery}
@@ -286,6 +323,56 @@ export default function GalleryScreenV2() {
                   toast.success('Credits purchased successfully!');
                 }}
               />
+            </div>
+          </div>
+        )}
+
+        {/* Keyboard Shortcuts Help Modal */}
+        {showShortcutsHelp && (
+          <div 
+            className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+            onClick={() => setShowShortcutsHelp(false)}
+          >
+            <div 
+              className="bg-[#1A1A1D] border border-[#2A2A2D] rounded-3xl p-6 max-w-md w-full shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-white">Keyboard Shortcuts</h2>
+                <button
+                  onClick={() => setShowShortcutsHelp(false)}
+                  className="text-gray-400 hover:text-white transition-colors p-1"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between items-center py-2 border-b border-[#2A2A2D]">
+                  <span className="text-gray-300">Create new GIF</span>
+                  <kbd className="px-2 py-1 bg-[#2A2A2D] rounded text-white text-sm">⌘ N</kbd>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-[#2A2A2D]">
+                  <span className="text-gray-300">Search GIFs</span>
+                  <kbd className="px-2 py-1 bg-[#2A2A2D] rounded text-white text-sm">/</kbd>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-[#2A2A2D]">
+                  <span className="text-gray-300">Buy credits</span>
+                  <kbd className="px-2 py-1 bg-[#2A2A2D] rounded text-white text-sm">⌘ C</kbd>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-[#2A2A2D]">
+                  <span className="text-gray-300">Show shortcuts</span>
+                  <kbd className="px-2 py-1 bg-[#2A2A2D] rounded text-white text-sm">?</kbd>
+                </div>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-gray-300">Close modal</span>
+                  <kbd className="px-2 py-1 bg-[#2A2A2D] rounded text-white text-sm">ESC</kbd>
+                </div>
+              </div>
+              
+              <p className="text-xs text-gray-400 mt-4 text-center">
+                Press any shortcut to try it out!
+              </p>
             </div>
           </div>
         )}

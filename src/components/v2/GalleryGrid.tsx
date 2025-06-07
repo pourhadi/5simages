@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { Video } from '@prisma/client';
-import { Trash2, Clock, XCircle, Eye, RefreshCw, Calendar, Zap } from 'lucide-react';
+import { Trash2, Clock, XCircle, Eye, Calendar, Zap, Copy } from 'lucide-react';
 import Image from 'next/image';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import GIFDetailModalV2 from './GIFDetailModal';
+import { GallerySkeleton } from '@/components/ui/Skeleton';
 
 interface GalleryGridV2Props {
   videos: Video[];
@@ -90,6 +91,17 @@ export default function GalleryGridV2({
     }
   };
 
+  const handleCopyPrompt = async (prompt: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(prompt);
+      toast.success('Prompt copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy prompt:', err);
+      toast.error('Failed to copy prompt');
+    }
+  };
+
   const openDetail = (video: Video) => {
     setSelectedVideo(video);
     setIsModalOpen(true);
@@ -136,14 +148,7 @@ export default function GalleryGridV2({
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="text-center space-y-4">
-          <RefreshCw size={32} className="text-[#FF497D] animate-spin mx-auto" />
-          <p className="text-gray-400">Loading your GIFs...</p>
-        </div>
-      </div>
-    );
+    return <GallerySkeleton thumbnailSize={thumbnailSize} count={8} />;
   }
 
   if (videos.length === 0) {
@@ -305,6 +310,13 @@ export default function GalleryGridV2({
                 {/* Action Buttons */}
                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="flex gap-2">
+                    <button
+                      onClick={(e) => handleCopyPrompt(video.prompt, e)}
+                      className="p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors"
+                      title="Copy Prompt"
+                    >
+                      <Copy size={16} />
+                    </button>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
