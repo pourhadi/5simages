@@ -7,7 +7,8 @@ import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
-import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Chrome } from 'lucide-react';
+import { signInWithGoogle } from '@/lib/supabaseBrowser';
 
 // Login schema
 const loginSchema = z.object({
@@ -36,6 +37,7 @@ export default function AuthPagesV2({ mode }: AuthPagesV2Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const isLogin = mode === 'login';
   
@@ -88,6 +90,18 @@ export default function AuthPagesV2({ mode }: AuthPagesV2Props) {
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+      // The OAuth flow will redirect, so we don't need to do anything else here
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      toast.error('Failed to sign in with Google. Please try again.');
+      setIsGoogleLoading(false);
     }
   };
 
@@ -258,7 +272,7 @@ export default function AuthPagesV2({ mode }: AuthPagesV2Props) {
             {/* Submit button */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || isGoogleLoading}
               className="w-full py-3 px-6 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] rounded-xl text-white font-semibold transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#FF497D]/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isLoading 
@@ -267,6 +281,26 @@ export default function AuthPagesV2({ mode }: AuthPagesV2Props) {
               }
             </button>
           </form>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#2A2A2D]"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-[#1A1A1D] px-4 text-gray-400">Or continue with</span>
+            </div>
+          </div>
+
+          {/* Google Sign-In */}
+          <button
+            onClick={handleGoogleSignIn}
+            disabled={isLoading || isGoogleLoading}
+            className="w-full py-3 px-6 bg-[#0D0D0E] border border-[#2A2A2D] rounded-xl text-white font-semibold transition-all duration-300 hover:bg-[#2A2A2D] hover:border-[#3A3A3D] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+          >
+            <Chrome size={20} />
+            {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
+          </button>
 
           {/* Footer links */}
           <div className="mt-6 text-center text-sm text-gray-400">
