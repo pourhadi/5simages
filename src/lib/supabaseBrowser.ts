@@ -19,14 +19,22 @@ export const supabaseBrowser = createClient(supabaseUrl, supabaseAnonKey, {
 
 // OAuth sign in helper
 export async function signInWithGoogle() {
+  // Ensure we have a clean origin without any hash fragments
+  const origin = window.location.origin;
+  const redirectTo = `${origin}/auth/callback`;
+  
+  console.log('Initiating Google OAuth with redirect to:', redirectTo);
+  
   const { data, error } = await supabaseBrowser.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo,
+      scopes: 'email profile',
     },
   });
 
   if (error) {
+    console.error('OAuth initiation error:', error);
     throw error;
   }
 
