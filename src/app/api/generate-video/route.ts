@@ -19,7 +19,8 @@ const BUDGET_REPLICATE_MODEL_VERSION = "wan-video/wan-2.1-1.3b:1c66833e07ba51c14
 // Standard model: Kling v1.6 Standard ($0.25/video)
 const STANDARD_REPLICATE_MODEL_VERSION = process.env.STANDARD_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
 // Premium model: wan-2.1-i2v-480p ($0.45/video)
-const PREMIUM_REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
+// Using a similar wan model with proper version ID
+const PREMIUM_REPLICATE_MODEL_VERSION = "wan-video/wan-2.1-i2v-480p:ec1a3bc837e674ffd92058fc5c102026c502c5e17fd956b0fc08e0e5fb228cf3";
 // Model version and prompt prefix for optional prompt enhancement via llava-13b
 const LLAVA_ENHANCER_MODEL_VERSION = process.env.LLAVA_ENHANCER_MODEL_VERSION ?? "yorickvp/llava-13b:80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb";
 // Prefix to include before user instructions when asking llava-13b to enhance the prompt
@@ -357,24 +358,69 @@ export async function POST(request: Request) {
     // Start an asynchronous prediction
     // Use version field for Replicate API (required by HTTP API)
     // Construct webhook URL for Vercel deployment
-    let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL || 'http://localhost:3000';
-    // Ensure HTTPS for Vercel URLs
-    if (baseUrl.includes('vercel.app') && !baseUrl.startsWith('https://')) {
+    let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL;
+    
+    // If no base URL is set, try to construct from request headers
+    if (!baseUrl) {
+      const forwardedHost = headerStore.get('x-forwarded-host');
+      const forwardedProto = headerStore.get('x-forwarded-proto') || 'https';
+      const host = headerStore.get('host');
+      
+      if (forwardedHost) {
+        baseUrl = `${forwardedProto}://${forwardedHost}`;
+      } else if (host) {
+        // In production, default to HTTPS
+        const protocol = host.includes('localhost') ? 'http' : 'https';
+        baseUrl = `${protocol}://${host}`;
+      } else {
+        // Fallback for local development
+        baseUrl = 'http://localhost:3000';
+      }
+    }
+    
+    // Ensure HTTPS for production URLs
+    if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
       baseUrl = `https://${baseUrl}`;
     }
-    const webhookUrl = `${baseUrl}/api/replicate-webhook`;
     
-    const prediction = await replicate.predictions.create({
-      version: PREMIUM_REPLICATE_MODEL_VERSION,
-      input: {
-        image: signedUrl ?? imageUrl,
-        prompt: effectivePrompt,
-        sample_steps: sampleSteps,
-        sample_guidance_scale: sampleGuideScale,
-      },
-      webhook: webhookUrl,
-      webhook_events_filter: ["start", "output", "logs", "completed"],
-    });
+    // For production, always use HTTPS (except localhost)
+    if (baseUrl.startsWith('http://') && !baseUrl.includes('localhost')) {
+      baseUrl = baseUrl.replace('http://', 'https://');
+    }
+    
+    const webhookUrl = `${baseUrl}/api/replicate-webhook`;
+    console.log('Premium fallback webhook URL:', webhookUrl);
+    
+    // For local development, don't use webhooks since Replicate requires HTTPS
+    const isLocalDevelopment = baseUrl.includes('localhost') || baseUrl.startsWith('http://');
+    
+    let prediction;
+    if (!isLocalDevelopment) {
+      // Production with webhook
+      prediction = await replicate.predictions.create({
+        version: PREMIUM_REPLICATE_MODEL_VERSION,
+        input: {
+          image: signedUrl ?? imageUrl,
+          prompt: effectivePrompt,
+          sample_steps: sampleSteps,
+          sample_guidance_scale: sampleGuideScale,
+        },
+        webhook: webhookUrl,
+        webhook_events_filter: ["start", "output", "logs", "completed"],
+      });
+    } else {
+      // Local development without webhook
+      console.log('Local development detected for premium fallback - webhook disabled, will use polling instead');
+      prediction = await replicate.predictions.create({
+        version: PREMIUM_REPLICATE_MODEL_VERSION,
+        input: {
+          image: signedUrl ?? imageUrl,
+          prompt: effectivePrompt,
+          sample_steps: sampleSteps,
+          sample_guidance_scale: sampleGuideScale,
+        },
+      });
+    }
     if (!prediction?.id) {
       throw new Error("Failed to create Replicate prediction.");
     }
