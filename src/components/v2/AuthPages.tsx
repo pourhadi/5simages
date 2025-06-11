@@ -7,8 +7,8 @@ import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
-import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Chrome } from 'lucide-react';
-import { signInWithGoogle } from '@/lib/supabaseBrowser';
+import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
+// import { signInWithGoogle } from '@/lib/supabaseBrowser';
 
 // Login schema
 const loginSchema = z.object({
@@ -38,7 +38,7 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  // const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const isLogin = mode === 'login';
   
@@ -114,17 +114,17 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    try {
-      await signInWithGoogle();
-      // The OAuth flow will redirect, so we don't need to do anything else here
-    } catch (error) {
-      console.error('Google sign-in error:', error);
-      toast.error('Failed to sign in with Google. Please try again.');
-      setIsGoogleLoading(false);
-    }
-  };
+  // const handleGoogleSignIn = async () => {
+  //   setIsGoogleLoading(true);
+  //   try {
+  //     await signInWithGoogle();
+  //     // The OAuth flow will redirect, so we don't need to do anything else here
+  //   } catch (error) {
+  //     console.error('Google sign-in error:', error);
+  //     toast.error('Failed to sign in with Google. Please try again.');
+  //     setIsGoogleLoading(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0D0D0E] via-[#1A1A1D] to-[#0D0D0E] flex items-center justify-center p-4">
@@ -293,7 +293,7 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
             {/* Submit button */}
             <button
               type="submit"
-              disabled={isLoading || isGoogleLoading}
+              disabled={isLoading}
               className="w-full py-3 px-6 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] rounded-xl text-white font-semibold transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#FF497D]/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isLoading 
@@ -303,8 +303,8 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-6">
+          {/* Google Sign-In - Hidden for now */}
+          {/* <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-[#2A2A2D]"></div>
             </div>
@@ -313,7 +313,6 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
             </div>
           </div>
 
-          {/* Google Sign-In */}
           <button
             onClick={handleGoogleSignIn}
             disabled={isLoading || isGoogleLoading}
@@ -321,7 +320,7 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
           >
             <Chrome size={20} />
             {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
-          </button>
+          </button> */}
 
           {/* Footer links */}
           <div className="mt-6 text-center text-sm text-gray-400">
