@@ -147,6 +147,9 @@ export async function POST(request: Request) {
         
         // Convert to GIF using external service
         const apiKey = process.env.VIDEO2GIF_WEBHOOK_API_KEY || process.env.GIF_CONVERTER_API_KEY;
+        if (!apiKey) {
+          throw new Error('VIDEO2GIF_WEBHOOK_API_KEY or GIF_CONVERTER_API_KEY environment variable is not set');
+        }
         const formData = new FormData();
         formData.append('fps', '16');
         formData.append('file', new Blob([videoData], { type: 'video/mp4' }), 'video.mp4');
