@@ -362,7 +362,7 @@ export default function GalleryGridV2({
                     
                     <div className="flex items-center gap-1">
                       <Zap size={10} className="text-[#3EFFE2]" />
-                      <span className="text-xs">{video.type === 'fast' ? '2' : '1'}</span>
+                      <span className="text-xs">{video.type === 'premium' ? '3' : video.type === 'slow' ? '1' : '2'}</span>
                     </div>
                   </div>
                 </div>

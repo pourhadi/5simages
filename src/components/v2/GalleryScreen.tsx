@@ -111,7 +111,7 @@ export default function GalleryScreenV2() {
       const response = await axios.post('/api/generate-video', {
         imageUrl,
         prompt,
-        generationType: originalType, // Use the original type (fast/slow)
+        generationType: originalType, // Use the original type (standard/premium)
         enhancePrompt: false, // No prompt enhancement for direct regeneration
       });
 

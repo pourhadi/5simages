@@ -13,9 +13,6 @@ if (!process.env.REPLICATE_API_TOKEN) {
   console.warn("REPLICATE_API_TOKEN is not set. Video generation will fail.");
 }
 
-// Budget model: wan-2.1-1.3b ($0.20/video)
-// Using the model without version ID to get the latest version
-const BUDGET_REPLICATE_MODEL_VERSION = process.env.BUDGET_REPLICATE_MODEL_VERSION || "wan-video/wan-2.1-1.3b";
 // Standard model: Kling v1.6 Standard ($0.25/video)
 const STANDARD_REPLICATE_MODEL_VERSION = process.env.STANDARD_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
 // Premium model: wan-2.1-i2v-480p ($0.45/video)
@@ -82,18 +79,13 @@ export async function POST(request: Request) {
       return new NextResponse('Missing imageUrl or prompt', { status: 400 });
     }
 
-    // Determine credit cost based on generation type (rounded up)
-    // Budget: $0.20 = 1 credit
-    // Standard: $0.25 = 2 credits (rounded up from 1.25)
-    // Premium: $0.45 = 3 credits (rounded up from 2.25)
-    if (generationType === 'budget') {
-      cost = 1;
-    } else if (generationType === 'standard') {
-      cost = 2;
-    } else if (generationType === 'premium') {
+    // Determine credit cost based on generation type
+    // Standard: $0.25 = 2 credits
+    // Premium: $0.45 = 3 credits
+    if (generationType === 'premium') {
       cost = 3;
     } else {
-      // Default to standard for backward compatibility
+      // Default to standard
       cost = 2;
     }
     // Check credits and create video record in a transaction
@@ -186,18 +178,7 @@ export async function POST(request: Request) {
     let modelVersion = STANDARD_REPLICATE_MODEL_VERSION;
     let modelInputs: Record<string, string | number> = {};
     
-    if (generationType === 'budget') {
-      modelVersion = BUDGET_REPLICATE_MODEL_VERSION;
-      // wan-2.1-1.3b model inputs
-      modelInputs = {
-        image: signedUrl ?? imageUrl,
-        prompt: effectivePrompt,
-        num_frames: 81, // 5 seconds at 16fps
-        fps: 16,
-        width: 854,
-        height: 480,
-      };
-    } else if (generationType === 'standard') {
+    if (generationType === 'standard') {
       modelVersion = STANDARD_REPLICATE_MODEL_VERSION;
       // Kling v1.6 Standard model inputs
       modelInputs = {
@@ -219,7 +200,7 @@ export async function POST(request: Request) {
     }
 
     // If using Standard model, skip primary API and use Replicate directly
-    if (generationType === 'standard' || generationType === 'budget') {
+    if (generationType === 'standard') {
       // Construct webhook URL for Vercel deployment
       let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL;
       
@@ -261,22 +242,12 @@ export async function POST(request: Request) {
       let prediction;
       if (!isLocalDevelopment) {
         // Production with webhook
-        if (generationType === 'budget' && !modelVersion.includes(':')) {
-          console.log('Using model field for budget generation (latest version)');
-          prediction = await replicate.predictions.create({
-            model: modelVersion,
-            input: modelInputs,
-            webhook: webhookUrl,
-            webhook_events_filter: ["start", "output", "logs", "completed"],
-          });
-        } else {
-          prediction = await replicate.predictions.create({
-            version: modelVersion,
-            input: modelInputs,
-            webhook: webhookUrl,
-            webhook_events_filter: ["start", "output", "logs", "completed"],
-          });
-        }
+        prediction = await replicate.predictions.create({
+          version: modelVersion,
+          input: modelInputs,
+          webhook: webhookUrl,
+          webhook_events_filter: ["start", "output", "logs", "completed"],
+        });
       } else {
         // Local development without webhook
         console.log('Local development detected - webhook disabled, will use polling instead');
@@ -284,19 +255,10 @@ export async function POST(request: Request) {
         console.log('Model inputs:', modelInputs);
         
         try {
-          // For budget model, try using model field if version fails
-          if (generationType === 'budget' && !modelVersion.includes(':')) {
-            console.log('Using model field for budget generation (latest version)');
-            prediction = await replicate.predictions.create({
-              model: modelVersion,
-              input: modelInputs,
-            });
-          } else {
-            prediction = await replicate.predictions.create({
-              version: modelVersion,
-              input: modelInputs,
-            });
-          }
+          prediction = await replicate.predictions.create({
+            version: modelVersion,
+            input: modelInputs,
+          });
         } catch (replicateError) {
           console.error('Replicate API error:', replicateError);
           // If the model version is invalid, provide a helpful error message

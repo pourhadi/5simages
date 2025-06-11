@@ -15,21 +15,21 @@ const creditPackages = [
     price: 1.00,
     popular: false,
     description: 'Perfect for trying out',
-    value: '1 Fast GIF',
+    value: '1 Standard GIF',
   },
   {
     credits: 10,
     price: 4.50,
     popular: true,
     description: 'Most popular choice',
-    value: '5 Fast GIFs or 10 Slow GIFs',
+    value: '5 Standard GIFs or 3 Premium GIFs',
   },
   {
     credits: 30,
     price: 12.00,
     popular: false,
     description: 'Best value for creators',
-    value: '15 Fast GIFs or 30 Slow GIFs',
+    value: '15 Standard GIFs or 10 Premium GIFs',
   },
 ];
 
@@ -159,7 +159,7 @@ export default function CreditsPurchaseV2({ currentCredits }: CreditsPurchaseV2P
         <div className="space-y-1.5">
           {[
             'High-quality AI-generated GIFs',
-            'Fast processing (1-3 min) or Budget (2-5 min)',
+            'Fast processing with Standard or Premium quality',
             'Download in GIF and MP4 formats',
             'No subscription required',
             'Credits never expire'

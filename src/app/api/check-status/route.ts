@@ -70,8 +70,8 @@ export async function GET(request: Request) {
     // Attempt primary API status check
     const PRIMARY_API_URL = process.env.VIDEO_API_URL;
     const PRIMARY_API_TOKEN = process.env.VIDEO_API_TOKEN;
-    // Only use primary API for fast generation; slow uses Replicate only
-    if (video.type !== 'slow' && PRIMARY_API_URL && PRIMARY_API_TOKEN) {
+    // Only use primary API for standard generation; premium uses Replicate only
+    if (video.type === 'standard' && PRIMARY_API_URL && PRIMARY_API_TOKEN) {
       try {
         // Call primary API status endpoint
         const statusRes = await fetch(
@@ -177,7 +177,9 @@ export async function GET(request: Request) {
           });
           // Refund credits on failure
           try {
-            const refundAmount = video.type === 'slow' ? 1 : 2;
+            // Use type assertion since we're in a narrowed scope
+            const videoType = video.type as string;
+            const refundAmount = videoType === 'premium' ? 3 : videoType === 'slow' ? 1 : 2;
             await prisma.user.update({
               where: { id: userId },
               data: { credits: { increment: refundAmount } },
@@ -211,7 +213,7 @@ export async function GET(request: Request) {
         });
         // Refund credits on failure
         try {
-          const refundAmount = video.type === 'slow' ? 1 : 2;
+          const refundAmount = video.type === 'premium' ? 3 : video.type === 'slow' ? 1 : 2;
           await prisma.user.update({
             where: { id: userId },
             data: { credits: { increment: refundAmount } },
@@ -236,7 +238,7 @@ export async function GET(request: Request) {
         });
         // Refund credits on failure
         try {
-          const refundAmount = video.type === 'slow' ? 1 : 2;
+          const refundAmount = video.type === 'premium' ? 3 : video.type === 'slow' ? 1 : 2;
           await prisma.user.update({
             where: { id: userId },
             data: { credits: { increment: refundAmount } },
@@ -350,7 +352,7 @@ export async function GET(request: Request) {
         });
         // Refund credits on failure
         try {
-          const refundAmount = video.type === 'slow' ? 1 : 2;
+          const refundAmount = video.type === 'premium' ? 3 : video.type === 'slow' ? 1 : 2;
           await prisma.user.update({
             where: { id: userId },
             data: { credits: { increment: refundAmount } },
@@ -372,7 +374,7 @@ export async function GET(request: Request) {
       });
       // Refund credits on failure
       try {
-        const refundAmount = video.type === 'slow' ? 1 : 2;
+        const refundAmount = video.type === 'premium' ? 3 : video.type === 'slow' ? 1 : 2;
         await prisma.user.update({
           where: { id: userId },
           data: { credits: { increment: refundAmount } },

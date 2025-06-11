@@ -437,7 +437,7 @@ export default function GIFDetailModalV2({
                 <div className="bg-[#0D0D0E] p-3 rounded-lg border border-[#2A2A2D]">
                   <div className="text-xs text-gray-400 mb-1">Credits used</div>
                   <div className="flex items-center gap-2">
-                    <span className="text-white text-sm font-medium">{video.type === 'fast' ? '2' : '1'}</span>
+                    <span className="text-white text-sm font-medium">{video.type === 'premium' ? '3' : video.type === 'slow' ? '1' : '2'}</span>
                     <Zap size={14} className="text-[#3EFFE2]" />
                   </div>
                 </div>
@@ -644,7 +644,7 @@ export default function GIFDetailModalV2({
                   <div className="bg-[#0D0D0E] p-3 rounded-lg border border-[#2A2A2D]">
                     <div className="text-xs text-gray-400 mb-1">Credits used</div>
                     <div className="flex items-center gap-2">
-                      <span className="text-white text-sm font-medium">{video.type === 'fast' ? '2' : '1'}</span>
+                      <span className="text-white text-sm font-medium">{video.type === 'premium' ? '3' : video.type === 'slow' ? '1' : '2'}</span>
                       <Zap size={14} className="text-[#3EFFE2]" />
                     </div>
                   </div>

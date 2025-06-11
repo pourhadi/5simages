@@ -75,7 +75,7 @@ async function uploadGifToSupabase(gifData: ArrayBuffer, userId: string): Promis
 
 async function refundCredits(userId: string, videoType: string): Promise<void> {
   try {
-    const refundAmount = videoType === 'slow' ? 1 : 2;
+    const refundAmount = videoType === 'premium' ? 3 : videoType === 'slow' ? 1 : 2;
     await prisma.user.update({
       where: { id: userId },
       data: { credits: { increment: refundAmount } },
