@@ -152,24 +152,40 @@ export default function LandingPageV2() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="bg-[#1A1A1D] border border-[#2A2A2D] rounded-3xl p-8">
             <div className="text-center space-y-4">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF497D]/10 border border-[#FF497D]/20 rounded-full">
-                <span className="text-[#FF497D] font-medium">⚡ Fast & Great</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#3EFFE2]/10 border border-[#3EFFE2]/20 rounded-full">
+                <span className="text-[#3EFFE2] font-medium">💚 Budget</span>
+              </div>
+              <div className="text-3xl font-bold text-white">1 Credit</div>
+              <p className="text-gray-400">Fast processing, good quality</p>
+              <p className="text-sm text-gray-500">$0.20 per video</p>
+            </div>
+          </div>
+          
+          <div className="bg-[#1A1A1D] border border-[#2A2A2D] rounded-3xl p-8 relative">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-[#1E3AFF] to-[#A53FFF] rounded-full text-white text-sm font-medium">
+              Recommended
+            </div>
+            <div className="text-center space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E3AFF]/10 border border-[#1E3AFF]/20 rounded-full">
+                <span className="text-[#1E3AFF] font-medium">⚡ Standard</span>
               </div>
               <div className="text-3xl font-bold text-white">2 Credits</div>
-              <p className="text-gray-400">High quality results in 1-3 minutes</p>
+              <p className="text-gray-400">Balanced quality and speed</p>
+              <p className="text-sm text-gray-500">$0.25 per video</p>
             </div>
           </div>
           
           <div className="bg-[#1A1A1D] border border-[#2A2A2D] rounded-3xl p-8">
             <div className="text-center space-y-4">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E3AFF]/10 border border-[#1E3AFF]/20 rounded-full">
-                <span className="text-[#1E3AFF] font-medium">🐢 Slow & Good</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF497D]/10 border border-[#FF497D]/20 rounded-full">
+                <span className="text-[#FF497D] font-medium">✨ Premium</span>
               </div>
-              <div className="text-3xl font-bold text-white">1 Credit</div>
-              <p className="text-gray-400">Good quality results in 2-5 minutes</p>
+              <div className="text-3xl font-bold text-white">3 Credits</div>
+              <p className="text-gray-400">Highest quality results</p>
+              <p className="text-sm text-gray-500">$0.45 per video</p>
             </div>
           </div>
         </div>

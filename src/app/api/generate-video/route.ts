@@ -13,9 +13,12 @@ if (!process.env.REPLICATE_API_TOKEN) {
   console.warn("REPLICATE_API_TOKEN is not set. Video generation will fail.");
 }
 
-const REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
-// Model version for Slow and Good generation via Replicate (Kling v1.6 Standard)
-const SLOW_REPLICATE_MODEL_VERSION = process.env.SLOW_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
+// Budget model: wan-2.1-1.3b ($0.20/video)
+const BUDGET_REPLICATE_MODEL_VERSION = "wan-video/wan-2.1-1.3b:ede44b74cf96e4a87ac31cf0c2bfbe1e4b1e9b8f7c2e10e04ad38c95e6e3fc4d";
+// Standard model: Kling v1.6 Standard ($0.25/video)
+const STANDARD_REPLICATE_MODEL_VERSION = process.env.STANDARD_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
+// Premium model: wan-2.1-i2v-480p ($0.45/video)
+const PREMIUM_REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
 // Model version and prompt prefix for optional prompt enhancement via llava-13b
 const LLAVA_ENHANCER_MODEL_VERSION = process.env.LLAVA_ENHANCER_MODEL_VERSION ?? "yorickvp/llava-13b:80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb";
 // Prefix to include before user instructions when asking llava-13b to enhance the prompt
@@ -71,14 +74,26 @@ export async function POST(request: Request) {
   try {
     // Parse request body; optional duration in seconds
     const body = await request.json();
-    const { imageUrl, prompt, generationType = 'fast', enhancePrompt = false, sampleSteps = 30, sampleGuideScale = 5 } = body;
+    const { imageUrl, prompt, generationType = 'standard', enhancePrompt = false, sampleSteps = 30, sampleGuideScale = 5 } = body;
 
     if (!imageUrl || !prompt) {
       return new NextResponse('Missing imageUrl or prompt', { status: 400 });
     }
 
-    // Determine credit cost based on generation type
-    cost = generationType === 'slow' ? 1 : 2;
+    // Determine credit cost based on generation type (rounded up)
+    // Budget: $0.20 = 1 credit
+    // Standard: $0.25 = 2 credits (rounded up from 1.25)
+    // Premium: $0.45 = 3 credits (rounded up from 2.25)
+    if (generationType === 'budget') {
+      cost = 1;
+    } else if (generationType === 'standard') {
+      cost = 2;
+    } else if (generationType === 'premium') {
+      cost = 3;
+    } else {
+      // Default to standard for backward compatibility
+      cost = 2;
+    }
     // Check credits and create video record in a transaction
     const videoRecord = await prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({
@@ -165,9 +180,44 @@ export async function POST(request: Request) {
     //   signedUrl = signedData.signedUrl;
     // }
 
-    // If using Slow and Good option, skip primary API and use slow Replicate model
-    if (generationType === 'slow') {
-      // Start an asynchronous prediction with the slow model (Kling v1.6 Standard)
+    // Select model based on generation type
+    let modelVersion = STANDARD_REPLICATE_MODEL_VERSION;
+    let modelInputs: Record<string, string | number> = {};
+    
+    if (generationType === 'budget') {
+      modelVersion = BUDGET_REPLICATE_MODEL_VERSION;
+      // wan-2.1-1.3b model inputs
+      modelInputs = {
+        image: signedUrl ?? imageUrl,
+        prompt: effectivePrompt,
+        num_frames: 81, // 5 seconds at 16fps
+        fps: 16,
+        width: 854,
+        height: 480,
+      };
+    } else if (generationType === 'standard') {
+      modelVersion = STANDARD_REPLICATE_MODEL_VERSION;
+      // Kling v1.6 Standard model inputs
+      modelInputs = {
+        prompt: effectivePrompt,
+        duration: 5,
+        aspect_ratio: "16:9",
+        start_image: signedUrl ?? imageUrl,
+        cfg_scale: 0.5,
+      };
+    } else if (generationType === 'premium') {
+      modelVersion = PREMIUM_REPLICATE_MODEL_VERSION;
+      // wan-2.1-i2v-480p model inputs
+      modelInputs = {
+        image: signedUrl ?? imageUrl,
+        prompt: effectivePrompt,
+        sample_steps: sampleSteps,
+        sample_guidance_scale: sampleGuideScale,
+      };
+    }
+
+    // If using Standard model, skip primary API and use Replicate directly
+    if (generationType === 'standard' || generationType === 'budget') {
       // Construct webhook URL for Vercel deployment
       let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL || 'http://localhost:3000';
       // Ensure HTTPS for Vercel URLs
@@ -176,18 +226,12 @@ export async function POST(request: Request) {
       }
       const webhookUrl = `${baseUrl}/api/replicate-webhook`;
       
-        const prediction = await replicate.predictions.create({
-          version: SLOW_REPLICATE_MODEL_VERSION,
-          input: {
-            prompt: effectivePrompt,
-            duration: 5,
-            aspect_ratio: "16:9",
-            start_image: signedUrl ?? imageUrl,
-            cfg_scale: 0.5,
-          },
-          webhook: webhookUrl,
-          webhook_events_filter: ["start", "output", "logs", "completed"],
-        });
+      const prediction = await replicate.predictions.create({
+        version: modelVersion,
+        input: modelInputs,
+        webhook: webhookUrl,
+        webhook_events_filter: ["start", "output", "logs", "completed"],
+      });
       if (!prediction?.id) {
         throw new Error("Failed to create Replicate prediction.");
       }
@@ -267,7 +311,7 @@ export async function POST(request: Request) {
     const webhookUrl = `${baseUrl}/api/replicate-webhook`;
     
     const prediction = await replicate.predictions.create({
-      version: REPLICATE_MODEL_VERSION,
+      version: PREMIUM_REPLICATE_MODEL_VERSION,
       input: {
         image: signedUrl ?? imageUrl,
         prompt: effectivePrompt,

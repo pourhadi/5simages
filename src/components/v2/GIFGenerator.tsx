@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, ImageIcon, Trash2, RefreshCw, Zap, Settings } from 'lucide-react';
+import { Upload, ImageIcon, Trash2, RefreshCw, Zap, Settings, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -21,7 +21,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generationType, setGenerationType] = useState<'fast' | 'slow'>('slow');
+  const [generationType, setGenerationType] = useState<'budget' | 'standard' | 'premium'>('standard');
   const [enhancePrompt, setEnhancePrompt] = useState(true);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [sampleSteps, setSampleSteps] = useState(30);
@@ -42,7 +42,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
     }
   }, [prefill, onPrefillConsumed]);
 
-  const costPerGeneration = generationType === 'slow' ? 1 : 2;
+  const costPerGeneration = generationType === 'budget' ? 1 : generationType === 'standard' ? 2 : 3;
   const totalCost = costPerGeneration * numberOfGenerations;
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -238,48 +238,70 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-white">Generation Mode</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button
             type="button"
-            onClick={() => setGenerationType('fast')}
+            onClick={() => setGenerationType('budget')}
             disabled={isGenerating}
             className={`p-6 rounded-2xl border-2 transition-all text-left ${
-              generationType === 'fast'
-                ? 'border-[#FF497D] bg-[#FF497D]/10'
-                : 'border-gray-600 hover:border-[#FF497D]/50'
+              generationType === 'budget'
+                ? 'border-[#3EFFE2] bg-[#3EFFE2]/10'
+                : 'border-gray-600 hover:border-[#3EFFE2]/50'
             }`}
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Zap size={20} className="text-[#FF497D]" />
-                <span className="font-semibold text-white">Fast & Great</span>
+                <RefreshCw size={20} className="text-[#3EFFE2]" />
+                <span className="font-semibold text-white">Budget</span>
               </div>
-              <span className="text-[#3EFFE2] font-medium">2 credits</span>
+              <span className="text-[#3EFFE2] font-medium">1 credit</span>
             </div>
             <p className="text-gray-400 text-sm">
-              High-quality results in 1-3 minutes. Best for most use cases.
+              Fast processing, good quality. Most economical option.
             </p>
           </button>
 
           <button
             type="button"
-            onClick={() => setGenerationType('slow')}
+            onClick={() => setGenerationType('standard')}
             disabled={isGenerating}
             className={`p-6 rounded-2xl border-2 transition-all text-left ${
-              generationType === 'slow'
+              generationType === 'standard'
                 ? 'border-[#1E3AFF] bg-[#1E3AFF]/10'
                 : 'border-gray-600 hover:border-[#1E3AFF]/50'
             }`}
           >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <RefreshCw size={20} className="text-[#1E3AFF]" />
-                <span className="font-semibold text-white">Slow & Good</span>
+                <Zap size={20} className="text-[#1E3AFF]" />
+                <span className="font-semibold text-white">Standard</span>
               </div>
-              <span className="text-[#3EFFE2] font-medium">1 credit</span>
+              <span className="text-[#3EFFE2] font-medium">2 credits</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Good quality results in 2-5 minutes. More economical option.
+              Balanced quality and speed. Recommended for most uses.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setGenerationType('premium')}
+            disabled={isGenerating}
+            className={`p-6 rounded-2xl border-2 transition-all text-left ${
+              generationType === 'premium'
+                ? 'border-[#FF497D] bg-[#FF497D]/10'
+                : 'border-gray-600 hover:border-[#FF497D]/50'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Sparkles size={20} className="text-[#FF497D]" />
+                <span className="font-semibold text-white">Premium</span>
+              </div>
+              <span className="text-[#3EFFE2] font-medium">3 credits</span>
+            </div>
+            <p className="text-gray-400 text-sm">
+              Highest quality results. Best for detailed animations.
             </p>
           </button>
         </div>
@@ -322,8 +344,8 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
         )}
       </div>
 
-      {/* Advanced Settings (Fast Mode Only) */}
-      {generationType === 'fast' && (
+      {/* Advanced Settings (Premium Mode Only) */}
+      {generationType === 'premium' && (
         <div className="space-y-3">
           <button
             type="button"
