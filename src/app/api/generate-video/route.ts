@@ -219,12 +219,38 @@ export async function POST(request: Request) {
     // If using Standard model, skip primary API and use Replicate directly
     if (generationType === 'standard' || generationType === 'budget') {
       // Construct webhook URL for Vercel deployment
-      let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL || 'http://localhost:3000';
-      // Ensure HTTPS for Vercel URLs
-      if (baseUrl.includes('vercel.app') && !baseUrl.startsWith('https://')) {
+      let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL;
+      
+      // If no base URL is set, try to construct from request headers
+      if (!baseUrl) {
+        const forwardedHost = headerStore.get('x-forwarded-host');
+        const forwardedProto = headerStore.get('x-forwarded-proto') || 'https';
+        const host = headerStore.get('host');
+        
+        if (forwardedHost) {
+          baseUrl = `${forwardedProto}://${forwardedHost}`;
+        } else if (host) {
+          // In production, default to HTTPS
+          const protocol = host.includes('localhost') ? 'http' : 'https';
+          baseUrl = `${protocol}://${host}`;
+        } else {
+          // Fallback for local development
+          baseUrl = 'http://localhost:3000';
+        }
+      }
+      
+      // Ensure HTTPS for production URLs
+      if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
         baseUrl = `https://${baseUrl}`;
       }
+      
+      // For production, always use HTTPS (except localhost)
+      if (baseUrl.startsWith('http://') && !baseUrl.includes('localhost')) {
+        baseUrl = baseUrl.replace('http://', 'https://');
+      }
+      
       const webhookUrl = `${baseUrl}/api/replicate-webhook`;
+      console.log('Webhook URL:', webhookUrl);
       
       const prediction = await replicate.predictions.create({
         version: modelVersion,
