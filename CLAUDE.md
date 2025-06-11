@@ -91,3 +91,6 @@ build_run_ios_sim_name_ws --workspace-path "/Users/dan/projects/i2v/ios/StillMot
 ```
 
 The iOS app uses the same backend API endpoints and maintains design consistency with the web application.
+
+## Development Workflow Reminders
+- build after changes before committing to fix any issues

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { supabase } from '@/lib/supabaseClient';
 
 // Get bucket name from environment variables
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     
     // Generate a unique filename
     const fileExtension = file.name.split('.').pop();
-    const fileName = `${userId}/${uuidv4()}.${fileExtension}`;
+    const fileName = `${userId}/${randomUUID()}.${fileExtension}`;
     
     // Upload the file to Supabase Storage
     const buffer = await file.arrayBuffer();
