@@ -115,7 +115,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
             prompt,
             generationType,
             enhancePrompt,
-            ...(generationType === 'fast' && {
+            ...(generationType === 'premium' && {
               sampleSteps,
               sampleGuideScale,
             }),
