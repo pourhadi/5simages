@@ -96,7 +96,11 @@ export async function GET(request: Request) {
           const videoData = await downloadRes.arrayBuffer();
           // Upload video to external GIF conversion service
           const supabaseAdmin = getSupabaseAdmin();
-          const apiKey = process.env.VIDEO2GIF_WEBHOOK_API_KEY || process.env.GIF_CONVERTER_API_KEY || 'dabf5af2d8d1138dee335941f670a1c2a6218cd2197b95f2178d8d21247e8bc6';
+          const apiKey = process.env.VIDEO2GIF_WEBHOOK_API_KEY || process.env.GIF_CONVERTER_API_KEY;
+        if (!apiKey) {
+          console.error('GIF converter API key not configured. Please set VIDEO2GIF_WEBHOOK_API_KEY or GIF_CONVERTER_API_KEY environment variable.');
+          throw new Error('GIF conversion service not configured');
+        }
           const formData = new FormData();
           formData.append('fps', '16');
           formData.append(
@@ -258,11 +262,16 @@ export async function GET(request: Request) {
 
         // Upload video to external GIF conversion service
         const supabaseAdmin = getSupabaseAdmin();
-        const apiKey = process.env.VIDEO2GIF_WEBHOOK_API_KEY || process.env.GIF_CONVERTER_API_KEY || 'dabf5af2d8d1138dee335941f670a1c2a6218cd2197b95f2178d8d21247e8bc6';
+        const apiKey = process.env.VIDEO2GIF_WEBHOOK_API_KEY || process.env.GIF_CONVERTER_API_KEY;
+        if (!apiKey) {
+          console.error('GIF converter API key not configured. Please set VIDEO2GIF_WEBHOOK_API_KEY or GIF_CONVERTER_API_KEY environment variable.');
+          throw new Error('GIF conversion service not configured');
+        }
         // Create GIF conversion job
         const formData = new FormData();
         formData.append('fps', '16');
         formData.append('file', new Blob([videoData], { type: 'video/mp4' }), 'video.mp4');
+        console.log('Creating GIF conversion job with API key:', apiKey ? 'Present' : 'Missing');
         const createJobResponse = await fetch(
           'https://video2gif-580559758743.us-central1.run.app/jobs',
           {
@@ -272,7 +281,13 @@ export async function GET(request: Request) {
           }
         );
         if (!createJobResponse.ok) {
-          throw new Error(`Failed to create GIF job: ${createJobResponse.statusText}`);
+          const errorText = await createJobResponse.text();
+          console.error('GIF conversion API error:', {
+            status: createJobResponse.status,
+            statusText: createJobResponse.statusText,
+            body: errorText,
+          });
+          throw new Error(`Failed to create GIF job: ${createJobResponse.statusText} - ${errorText}`);
         }
         const { job_id: jobId } = await createJobResponse.json();
         // Poll for job status
