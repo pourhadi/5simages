@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -10,19 +10,36 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     try {
+      // Create a Supabase server client for the route handler
       const cookieStore = await cookies();
-      const headerStore = await headers();
-      const supabase = createRouteHandlerSupabaseClient({ 
-        cookies: () => cookieStore,
-        headers: () => headerStore
-      });
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            getAll() {
+              return cookieStore.getAll();
+            },
+            setAll(cookiesToSet) {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                cookieStore.set(name, value, options);
+              });
+            },
+          },
+        }
+      );
       
       // Exchange code for session
       const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code);
       
       if (error) {
         console.error('OAuth callback error:', error);
-        return NextResponse.redirect(new URL('/login?error=oauth_error', request.url));
+        console.error('Error details:', {
+          message: error.message,
+          code: error.code,
+          status: error.status,
+        });
+        return NextResponse.redirect(new URL(`/login?error=oauth_error&message=${encodeURIComponent(error.message || 'Authentication failed')}`, request.url));
       }
 
       if (session?.user) {
@@ -54,7 +71,7 @@ export async function GET(request: NextRequest) {
           });
         }
 
-        // The Supabase middleware will handle setting the session cookies
+        // The session has been established and cookies are set by the server client
         // Just redirect to the destination
         return NextResponse.redirect(new URL(next, request.url));
       }

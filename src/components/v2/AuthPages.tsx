@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -30,9 +30,10 @@ const registerSchema = z.object({
 
 interface AuthPagesV2Props {
   mode: 'login' | 'register';
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default function AuthPagesV2({ mode }: AuthPagesV2Props) {
+export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -40,6 +41,26 @@ export default function AuthPagesV2({ mode }: AuthPagesV2Props) {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const isLogin = mode === 'login';
+  
+  // Check for OAuth errors
+  React.useEffect(() => {
+    async function checkError() {
+      if (searchParams) {
+        const params = await searchParams;
+        const error = params.error;
+        const message = params.message;
+        
+        if (error === 'oauth_error') {
+          toast.error(
+            typeof message === 'string' 
+              ? decodeURIComponent(message) 
+              : 'Failed to sign in with Google. Please try again.'
+          );
+        }
+      }
+    }
+    checkError();
+  }, [searchParams]);
   
   const {
     register,
