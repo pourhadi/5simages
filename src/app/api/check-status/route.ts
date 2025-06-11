@@ -96,7 +96,7 @@ export async function GET(request: Request) {
           const videoData = await downloadRes.arrayBuffer();
           // Upload video to external GIF conversion service
           const supabaseAdmin = getSupabaseAdmin();
-          const apiKey = 'dabf5af2d8d1138dee335941f670a1c2a6218cd2197b95f2178d8d21247e8bc6';
+          const apiKey = process.env.VIDEO2GIF_WEBHOOK_API_KEY || process.env.GIF_CONVERTER_API_KEY || 'dabf5af2d8d1138dee335941f670a1c2a6218cd2197b95f2178d8d21247e8bc6';
           const formData = new FormData();
           formData.append('fps', '16');
           formData.append(
@@ -258,7 +258,7 @@ export async function GET(request: Request) {
 
         // Upload video to external GIF conversion service
         const supabaseAdmin = getSupabaseAdmin();
-        const apiKey = 'dabf5af2d8d1138dee335941f670a1c2a6218cd2197b95f2178d8d21247e8bc6';
+        const apiKey = process.env.VIDEO2GIF_WEBHOOK_API_KEY || process.env.GIF_CONVERTER_API_KEY || 'dabf5af2d8d1138dee335941f670a1c2a6218cd2197b95f2178d8d21247e8bc6';
         // Create GIF conversion job
         const formData = new FormData();
         formData.append('fps', '16');

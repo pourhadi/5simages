@@ -53,8 +53,8 @@ const setupGoogleOAuth = async () => {
         console.log('3. Copy and paste the contents of setup-google-oauth.sql');
         console.log('4. Run the query');
         console.log('\nThen configure Google OAuth in Authentication > Providers > Google with:');
-        console.log('- Client ID: 580559758743-smvvvip811bibamnkfkanlbf6t1nopse.apps.googleusercontent.com');
-        console.log('- Client Secret: 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');
+        console.log(`- Client ID: ${process.env.GOOGLE_CLIENT_ID || '580559758743-smvvvip811bibamnkfkanlbf6t1nopse.apps.googleusercontent.com'}`);
+        console.log(`- Client Secret: ${process.env.GOOGLE_CLIENT_SECRET || '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'}`);
         return;
       }
 
@@ -89,8 +89,8 @@ const setupGoogleOAuth = async () => {
     console.log('1. Go to Supabase Dashboard > Authentication > Providers > Google');
     console.log('2. Enable Google provider');
     console.log('3. Set the following:');
-    console.log('   - Client ID: 580559758743-smvvvip811bibamnkfkanlbf6t1nopse.apps.googleusercontent.com');
-    console.log('   - Client Secret: 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');
+    console.log(`   - Client ID: ${process.env.GOOGLE_CLIENT_ID || '580559758743-smvvvip811bibamnkfkanlbf6t1nopse.apps.googleusercontent.com'}`);
+    console.log(`   - Client Secret: ${process.env.GOOGLE_CLIENT_SECRET || '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'}`);
     console.log('4. Ensure the redirect URL matches your Supabase project URL');
     console.log('\n✅ Setup complete!');
 

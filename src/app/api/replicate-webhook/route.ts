@@ -146,7 +146,7 @@ export async function POST(request: Request) {
         const videoData = await videoResponse.arrayBuffer();
         
         // Convert to GIF using external service
-        const apiKey = 'dabf5af2d8d1138dee335941f670a1c2a6218cd2197b95f2178d8d21247e8bc6';
+        const apiKey = process.env.VIDEO2GIF_WEBHOOK_API_KEY || process.env.GIF_CONVERTER_API_KEY;
         const formData = new FormData();
         formData.append('fps', '16');
         formData.append('file', new Blob([videoData], { type: 'video/mp4' }), 'video.mp4');
