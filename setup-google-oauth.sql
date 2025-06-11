@@ -9,8 +9,8 @@ CREATE SCHEMA IF NOT EXISTS auth;
 -- You'll need to configure this in the Supabase dashboard under Authentication > Providers > Google
 
 -- The configuration should be:
--- Client ID: stillmotion.ai
--- Client Secret: cybnaq-fyzku8-raqdoT
+-- Client ID: 580559758743-smvvvip811bibamnkfkanlbf6t1nopse.apps.googleusercontent.com
+-- Client Secret: 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
 -- Authorized redirect URIs: https://afzjzoefogvzdnqmnidz.supabase.co/auth/v1/callback
 
 -- Enable Google provider (this is usually done via dashboard)
