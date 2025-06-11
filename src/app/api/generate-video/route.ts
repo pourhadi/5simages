@@ -252,12 +252,27 @@ export async function POST(request: Request) {
       const webhookUrl = `${baseUrl}/api/replicate-webhook`;
       console.log('Webhook URL:', webhookUrl);
       
-      const prediction = await replicate.predictions.create({
-        version: modelVersion,
-        input: modelInputs,
-        webhook: webhookUrl,
-        webhook_events_filter: ["start", "output", "logs", "completed"],
-      });
+      // For local development, don't use webhooks since Replicate requires HTTPS
+      const isLocalDevelopment = baseUrl.includes('localhost') || baseUrl.startsWith('http://');
+      
+      // Build prediction options based on environment
+      let prediction;
+      if (!isLocalDevelopment) {
+        // Production with webhook
+        prediction = await replicate.predictions.create({
+          version: modelVersion,
+          input: modelInputs,
+          webhook: webhookUrl,
+          webhook_events_filter: ["start", "output", "logs", "completed"],
+        });
+      } else {
+        // Local development without webhook
+        console.log('Local development detected - webhook disabled, will use polling instead');
+        prediction = await replicate.predictions.create({
+          version: modelVersion,
+          input: modelInputs,
+        });
+      }
       if (!prediction?.id) {
         throw new Error("Failed to create Replicate prediction.");
       }
