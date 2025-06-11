@@ -14,7 +14,8 @@ if (!process.env.REPLICATE_API_TOKEN) {
 }
 
 // Budget model: wan-2.1-1.3b ($0.20/video)
-const BUDGET_REPLICATE_MODEL_VERSION = "wan-video/wan-2.1-1.3b:ede44b74cf96e4a87ac31cf0c2bfbe1e4b1e9b8f7c2e10e04ad38c95e6e3fc4d";
+// Try the latest version of the model
+const BUDGET_REPLICATE_MODEL_VERSION = "wan-video/wan-2.1-1.3b:1c66833e07ba51c14f18beff25e91d89c7d013b8c11f6e4f90c99a3f7a20f13d";
 // Standard model: Kling v1.6 Standard ($0.25/video)
 const STANDARD_REPLICATE_MODEL_VERSION = process.env.STANDARD_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
 // Premium model: wan-2.1-i2v-480p ($0.45/video)
@@ -268,10 +269,22 @@ export async function POST(request: Request) {
       } else {
         // Local development without webhook
         console.log('Local development detected - webhook disabled, will use polling instead');
-        prediction = await replicate.predictions.create({
-          version: modelVersion,
-          input: modelInputs,
-        });
+        console.log('Using model version:', modelVersion);
+        console.log('Model inputs:', modelInputs);
+        
+        try {
+          prediction = await replicate.predictions.create({
+            version: modelVersion,
+            input: modelInputs,
+          });
+        } catch (replicateError) {
+          console.error('Replicate API error:', replicateError);
+          // If the model version is invalid, provide a helpful error message
+          if (replicateError instanceof Error && replicateError.message.includes('version does not exist')) {
+            throw new Error(`Invalid Replicate model version: ${modelVersion}. Please check if the model is still available or update to a newer version.`);
+          }
+          throw replicateError;
+        }
       }
       if (!prediction?.id) {
         throw new Error("Failed to create Replicate prediction.");
