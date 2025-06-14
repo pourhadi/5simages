@@ -16,8 +16,8 @@ if (!process.env.REPLICATE_API_TOKEN) {
 // Standard model: Kling v1.6 Standard ($0.25/video)
 const STANDARD_REPLICATE_MODEL_VERSION = process.env.STANDARD_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
 // Premium model: wan-2.1-i2v-480p ($0.45/video)
-// Using a similar wan model with proper version ID
-const PREMIUM_REPLICATE_MODEL_VERSION = "wan-video/wan-2.1-i2v-480p:ec1a3bc837e674ffd92058fc5c102026c502c5e17fd956b0fc08e0e5fb228cf3";
+// Using wavespeedai's wan model implementation
+const PREMIUM_REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
 // Model version and prompt prefix for optional prompt enhancement via llava-13b
 const LLAVA_ENHANCER_MODEL_VERSION = process.env.LLAVA_ENHANCER_MODEL_VERSION ?? "yorickvp/llava-13b:80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb";
 // Prefix to include before user instructions when asking llava-13b to enhance the prompt

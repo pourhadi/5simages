@@ -66,3 +66,4 @@ Optional for webhooks: `REPLICATE_WEBHOOK_SECRET` (for signature verification), 
 
 ## Development Workflow Reminders
 - build after changes before committing to fix any issues
+- when the mcp server is updated, I need to manually restart claude to test it
