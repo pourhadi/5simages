@@ -146,18 +146,18 @@ export default function GalleryScreenV2() {
       <div ref={headerRef} className="sticky top-0 z-40 bg-[#0D0D0E]/95 backdrop-blur-md">
         <Navbar />
         <div className="border-b border-[#2A2A2D] bg-[#0D0D0E]/95">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-4">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2 sm:gap-4">
               {/* Credits */}
               {userData ? (
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-full">
-                    <Zap size={18} className="text-[#3EFFE2]" />
-                    <span className="text-white font-medium">{userCredits} credits</span>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-full">
+                    <Zap size={14} className="text-[#3EFFE2] sm:w-[18px] sm:h-[18px]" />
+                    <span className="text-white text-xs sm:text-base font-medium">{userCredits} credits</span>
                   </div>
                   <button
                     onClick={() => setShowCreditsPurchase(true)}
-                    className="px-4 py-2 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
+                    className="px-3 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-[#FF497D] to-[#A53FFF] text-white rounded-full text-xs sm:text-sm font-medium hover:opacity-90 transition-opacity"
                   >
                     Buy Credits
                   </button>
@@ -169,9 +169,9 @@ export default function GalleryScreenV2() {
               {/* Create New Button */}
               <button
                 onClick={() => setIsGeneratorOpen(!isGeneratorOpen)}
-                className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white rounded-2xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#FF497D]/25"
+                className="group flex items-center gap-1 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#FF497D]/25"
               >
-                <Plus size={20} className={`transition-transform duration-300 ${isGeneratorOpen ? 'rotate-45' : 'rotate-0'}`} />
+                <Plus size={16} className={`transition-transform duration-300 sm:w-5 sm:h-5 ${isGeneratorOpen ? 'rotate-45' : 'rotate-0'}`} />
                 <span>{isGeneratorOpen ? 'Close Generator' : 'Create New GIF'}</span>
               </button>
             </div>
@@ -208,32 +208,32 @@ export default function GalleryScreenV2() {
       )}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
 
         {/* Gallery Controls */}
-        <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between mb-8">
+        <div className="flex flex-col lg:flex-row gap-2 sm:gap-4 lg:items-center justify-between mb-4 sm:mb-8">
           {/* Search and Filter */}
-          <div className="flex flex-col sm:flex-row gap-4 flex-1">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 flex-1">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+              <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
               <input
                 ref={searchInputRef}
                 type="text"
                 placeholder="Search your GIFs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-[#1A1A1D] border border-[#2A2A2D] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF497D] focus:border-transparent text-white placeholder-gray-400"
+                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 bg-[#1A1A1D] border border-[#2A2A2D] rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF497D] focus:border-transparent text-white placeholder-gray-400 text-sm sm:text-base"
               />
             </div>
 
             {/* Status Filter */}
             <div className="relative">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+              <Filter className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value as 'all' | 'completed' | 'processing' | 'failed')}
-                className="pl-10 pr-8 py-3 bg-[#1A1A1D] border border-[#2A2A2D] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF497D] focus:border-transparent text-white appearance-none cursor-pointer"
+                className="pl-8 sm:pl-10 pr-6 sm:pr-8 py-2 sm:py-3 bg-[#1A1A1D] border border-[#2A2A2D] rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF497D] focus:border-transparent text-white appearance-none cursor-pointer text-sm sm:text-base"
               >
                 <option value="all">All Status</option>
                 <option value="completed">Completed</option>
@@ -244,12 +244,12 @@ export default function GalleryScreenV2() {
           </div>
 
           {/* View Controls */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Thumbnail Size */}
-            <div className="flex items-center gap-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-xl p-1">
+            <div className="flex items-center gap-1 sm:gap-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-lg sm:rounded-xl p-0.5 sm:p-1">
               <button
                 onClick={() => setThumbnailSize('small')}
-                className={`px-3 py-2 rounded-lg text-xs transition-colors ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg text-xs transition-colors ${
                   thumbnailSize === 'small'
                     ? 'bg-[#FF497D] text-white'
                     : 'text-gray-400 hover:text-white'
@@ -260,7 +260,7 @@ export default function GalleryScreenV2() {
               </button>
               <button
                 onClick={() => setThumbnailSize('medium')}
-                className={`px-3 py-2 rounded-lg text-xs transition-colors ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg text-xs transition-colors ${
                   thumbnailSize === 'medium'
                     ? 'bg-[#FF497D] text-white'
                     : 'text-gray-400 hover:text-white'
@@ -271,7 +271,7 @@ export default function GalleryScreenV2() {
               </button>
               <button
                 onClick={() => setThumbnailSize('large')}
-                className={`px-3 py-2 rounded-lg text-xs transition-colors ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg text-xs transition-colors ${
                   thumbnailSize === 'large'
                     ? 'bg-[#FF497D] text-white'
                     : 'text-gray-400 hover:text-white'
