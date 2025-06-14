@@ -1,7 +1,7 @@
 # StillMotion.ai - Complete Feature Documentation
 
 ## Overview
-StillMotion.ai is an AI-powered web and iOS application that transforms static images into animated GIFs. The platform uses advanced AI models through Replicate API to generate high-quality animations from user-uploaded images and prompts.
+StillMotion.ai is an AI-powered web application that transforms static images into animated GIFs. The platform uses advanced AI models through Replicate API to generate high-quality animations from user-uploaded images and prompts.
 
 ## Core Features
 
@@ -92,16 +92,7 @@ StillMotion.ai is an AI-powered web and iOS application that transforms static i
 - **Keyboard Navigation**: Accessible interface elements
 - **Smooth Animations**: CSS transitions and hover effects
 
-### 8. iOS Mobile App
-- **Native SwiftUI**: Built for iOS 17+ with modern architecture
-- **Feature Parity**: All web features available on mobile
-- **Camera Integration**: Direct photo capture for GIF creation
-- **Photo Library**: Access and use existing photos
-- **Native Gallery**: Optimized scrolling and performance
-- **Share Extension**: Export GIFs to Photos app
-- **Push Notifications**: Generation completion alerts (planned)
-
-### 9. API Endpoints
+### 8. API Endpoints
 - **Public APIs**:
   - User authentication and registration
   - Video generation and status checking
@@ -114,7 +105,7 @@ StillMotion.ai is an AI-powered web and iOS application that transforms static i
   - Replicate completion notifications
   - Stripe payment confirmations
 
-### 10. Security Features
+### 9. Security Features
 - **Authentication**: Secure password hashing with bcrypt
 - **API Protection**: Route-level authentication checks
 - **File Validation**: Type and size restrictions on uploads

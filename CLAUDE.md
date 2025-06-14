@@ -33,7 +33,7 @@ npm run db:seed      # Seed database with initial data
 - **Admin Operations**: Use service role client in `/lib/supabaseDb.ts`
 
 ### Credit System
-- **Generation Costs**: Fast/Great quality (2 credits), Slow/Good quality (1 credit)
+- **Generation Costs**: Standard quality (2 credits), Premium quality (3 credits)
 - **Stripe Integration**: Payment processing for credit packages
 - **Real-time Updates**: Credits tracked in JWT tokens, refreshed on generation
 
@@ -63,34 +63,6 @@ npm run db:seed      # Seed database with initial data
 Critical environment variables: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `REPLICATE_API_TOKEN`, `STRIPE_SECRET_KEY`, `NEXTAUTH_SECRET`.
 
 Optional for webhooks: `REPLICATE_WEBHOOK_SECRET` (for signature verification), `NEXT_PUBLIC_SITE_URL` (for webhook URL construction).
-
-## iOS Mobile App
-
-A native iOS app is available in the `/ios` directory, built with SwiftUI and targeting iOS 17+. The app provides full feature parity with the web application:
-
-### iOS App Features
-- Native authentication (login/signup)
-- Image upload from camera or photo library
-- GIF generation with all web app options (prompt enhancement, fast/slow modes, advanced settings)
-- Multiple generation support (1-10 GIFs per submission)
-- Gallery view with pull-to-refresh
-- Detailed GIF view with source image, prompt, and actions
-- Frame selection and extraction
-- GIF download to Photos
-- "Tweak" functionality to regenerate with modified prompts
-- Credit purchase via web checkout
-- Real-time credit tracking
-
-### iOS Development Commands
-```bash
-# Open project
-open /Users/dan/projects/i2v/ios/StillMotion/StillMotion.xcworkspace
-
-# Build and run on simulator
-build_run_ios_sim_name_ws --workspace-path "/Users/dan/projects/i2v/ios/StillMotion/StillMotion.xcworkspace" --scheme "StillMotion" --simulator-name "iPhone 16"
-```
-
-The iOS app uses the same backend API endpoints and maintains design consistency with the web application.
 
 ## Development Workflow Reminders
 - build after changes before committing to fix any issues
