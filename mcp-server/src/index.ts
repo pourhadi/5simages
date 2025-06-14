@@ -12,12 +12,15 @@ import axios, { AxiosInstance } from 'axios';
 import FormData from 'form-data';
 import fs from 'fs';
 import path from 'path';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 interface ServerConfig {
   apiUrl: string;
   authToken?: string;
   email?: string;
   password?: string;
+  supabaseUrl?: string;
+  supabaseAnonKey?: string;
 }
 
 class StillMotionMCPServer {
@@ -25,6 +28,8 @@ class StillMotionMCPServer {
   private apiClient: AxiosInstance;
   private config: ServerConfig;
   private authToken: string | null = null;
+  private supabase: SupabaseClient | null = null;
+  private supabaseSession: any = null;
 
   constructor() {
     this.server = new Server(
@@ -45,7 +50,14 @@ class StillMotionMCPServer {
       authToken: process.env.STILLMOTION_AUTH_TOKEN,
       email: process.env.STILLMOTION_EMAIL,
       password: process.env.STILLMOTION_PASSWORD,
+      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://afzjzoefogvzdnqmnidz.supabase.co',
+      supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmemp6b2Vmb2d2emRucW1uaWR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTQwMjYsImV4cCI6MjA2MDEzMDAyNn0.1Kx2xysfuPAHS6gd19VsaFBtowkr-itDl48oUQLyvNM',
     };
+
+    // Initialize Supabase client
+    if (this.config.supabaseUrl && this.config.supabaseAnonKey) {
+      this.supabase = createClient(this.config.supabaseUrl, this.config.supabaseAnonKey);
+    }
 
     // Initialize axios client
     this.apiClient = axios.create({
@@ -57,9 +69,14 @@ class StillMotionMCPServer {
 
     // Add auth interceptor
     this.apiClient.interceptors.request.use((config) => {
-      if (this.authToken) {
+      if (this.supabaseSession?.access_token) {
+        // Use Supabase access token
+        config.headers.Authorization = `Bearer ${this.supabaseSession.access_token}`;
+        // Set cookie for legacy compatibility
+        config.headers.Cookie = `sb-${this.config.supabaseUrl?.split('.')[0].split('//')[1]}-auth-token=${this.supabaseSession.access_token}`;
+      } else if (this.authToken) {
+        // Fallback to old auth token
         config.headers.Authorization = `Bearer ${this.authToken}`;
-        // Also set the cookie for compatibility
         config.headers.Cookie = `supabase-auth-token=${this.authToken}`;
       }
       return config;
@@ -74,6 +91,11 @@ class StillMotionMCPServer {
   }
 
   private async authenticate(): Promise<void> {
+    if (this.supabaseSession?.access_token) {
+      // Already authenticated
+      return;
+    }
+
     if (this.config.authToken) {
       this.authToken = this.config.authToken;
       return;
@@ -86,16 +108,26 @@ class StillMotionMCPServer {
       );
     }
 
+    if (!this.supabase) {
+      this.error(ErrorCode.InvalidRequest, 'Supabase client not initialized');
+    }
+
     try {
-      const response = await this.apiClient.post('/api/login', {
-        email: this.config.email,
-        password: this.config.password,
+      // Use Supabase authentication
+      const { data, error } = await this.supabase!.auth.signInWithPassword({
+        email: this.config.email!,
+        password: this.config.password!,
       });
 
-      if (response.data.token) {
-        this.authToken = response.data.token;
+      if (error) {
+        this.error(ErrorCode.InternalError, `Authentication failed: ${error.message}`);
+      }
+
+      if (data.session) {
+        this.supabaseSession = data.session;
+        this.authToken = data.session.access_token;
       } else {
-        this.error(ErrorCode.InternalError, 'Failed to obtain auth token');
+        this.error(ErrorCode.InternalError, 'Failed to obtain auth session');
       }
     } catch (error) {
       this.error(
@@ -264,14 +296,24 @@ class StillMotionMCPServer {
   private async handleAuthenticate(args: any) {
     const { email, password } = args;
     
+    if (!this.supabase) {
+      this.error(ErrorCode.InvalidRequest, 'Supabase client not initialized');
+    }
+
     try {
-      const response = await this.apiClient.post('/api/login', {
+      // Use Supabase authentication
+      const { data, error } = await this.supabase!.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (response.data.token) {
-        this.authToken = response.data.token;
+      if (error) {
+        this.error(ErrorCode.InvalidRequest, `Authentication failed: ${error.message}`);
+      }
+
+      if (data.session) {
+        this.supabaseSession = data.session;
+        this.authToken = data.session.access_token;
         this.config.email = email;
         this.config.password = password;
         
@@ -284,16 +326,11 @@ class StillMotionMCPServer {
           ],
         };
       } else {
-        this.error(ErrorCode.InvalidRequest, 'Authentication failed: No token received');
+        this.error(ErrorCode.InvalidRequest, 'Authentication failed: No session received');
       }
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        this.error(
-          ErrorCode.InvalidRequest,
-          `Authentication failed: ${error.response.data.message || error.response.statusText}`
-        );
-      }
-      throw error;
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      this.error(ErrorCode.InvalidRequest, `Authentication failed: ${message}`);
     }
   }
 

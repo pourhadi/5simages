@@ -9,11 +9,17 @@
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts"
   },
-  "keywords": ["mcp", "ai", "gif", "stillmotion"],
+  "keywords": [
+    "mcp",
+    "ai",
+    "gif",
+    "stillmotion"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.5.0",
+    "@supabase/supabase-js": "^2.50.0",
     "axios": "^1.6.2",
     "form-data": "^4.0.0"
   },
