@@ -379,27 +379,19 @@ export async function POST(request: Request) {
     if (!isLocalDevelopment) {
       // Production with webhook
       prediction = await replicate.predictions.create({
-        version: PREMIUM_REPLICATE_MODEL_VERSION,
-        input: {
-          image: signedUrl ?? imageUrl,
-          prompt: effectivePrompt,
-          sample_steps: sampleSteps,
-          sample_guidance_scale: sampleGuideScale,
-        },
+        version: modelVersion,
+        input: modelInputs,
         webhook: webhookUrl,
         webhook_events_filter: ["start", "output", "logs", "completed"],
       });
     } else {
       // Local development without webhook
-      console.log('Local development detected for premium fallback - webhook disabled, will use polling instead');
+      console.log('Local development detected for fallback - webhook disabled, will use polling instead');
+      console.log('Using model version:', modelVersion);
+      console.log('Model inputs:', modelInputs);
       prediction = await replicate.predictions.create({
-        version: PREMIUM_REPLICATE_MODEL_VERSION,
-        input: {
-          image: signedUrl ?? imageUrl,
-          prompt: effectivePrompt,
-          sample_steps: sampleSteps,
-          sample_guidance_scale: sampleGuideScale,
-        },
+        version: modelVersion,
+        input: modelInputs,
       });
     }
     if (!prediction?.id) {
