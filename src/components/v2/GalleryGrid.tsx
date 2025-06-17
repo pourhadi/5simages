@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Video } from '@prisma/client';
-import { Trash2, Clock, XCircle, Eye, Calendar, Zap, Copy } from 'lucide-react';
+import { Trash2, Clock, XCircle, Eye, Calendar, Zap, Copy, Heart } from 'lucide-react';
 import Image from 'next/image';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -99,6 +99,20 @@ export default function GalleryGridV2({
     } catch (err) {
       console.error('Failed to copy prompt:', err);
       toast.error('Failed to copy prompt');
+    }
+  };
+
+  const handleToggleLike = async (videoId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const response = await axios.post(`/api/videos/${videoId}/like`);
+      if (response.data.success) {
+        onMutate(); // Refresh the videos list
+        toast.success(response.data.video.isLiked ? 'GIF liked!' : 'GIF unliked');
+      }
+    } catch (err) {
+      console.error('Failed to toggle like:', err);
+      toast.error('Failed to update like status');
     }
   };
 
@@ -310,6 +324,13 @@ export default function GalleryGridV2({
                 {/* Action Buttons */}
                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="flex gap-2">
+                    <button
+                      onClick={(e) => handleToggleLike(video.id, e)}
+                      className={`p-2 ${video.isLiked ? 'bg-red-500/80 hover:bg-red-500' : 'bg-black/60 hover:bg-black/80'} text-white rounded-full transition-colors`}
+                      title={video.isLiked ? "Unlike" : "Like"}
+                    >
+                      <Heart size={16} fill={video.isLiked ? "currentColor" : "none"} />
+                    </button>
                     <button
                       onClick={(e) => handleCopyPrompt(video.prompt, e)}
                       className="p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors"

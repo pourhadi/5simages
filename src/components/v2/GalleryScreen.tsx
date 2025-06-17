@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Video } from '@prisma/client';
-import { ChevronUp, Plus, Zap, Search, Filter } from 'lucide-react';
+import { ChevronUp, Plus, Zap, Search, Filter, Heart } from 'lucide-react';
 import useSWR from 'swr';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -21,6 +21,7 @@ export default function GalleryScreenV2() {
   const [thumbnailSize, setThumbnailSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'processing' | 'failed'>('all');
+  const [showOnlyLiked, setShowOnlyLiked] = useState(false);
   const [regenerationPrefill, setRegenerationPrefill] = useState<{ prompt: string; imageUrl: string } | null>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [showShortcutsHelp, setShowShortcutsHelp] = useState(false);
@@ -94,11 +95,12 @@ export default function GalleryScreenV2() {
     };
   }, []);
 
-  // Filter videos based on search and status
+  // Filter videos based on search, status, and liked
   const filteredVideos = (videos || []).filter(video => {
     const matchesSearch = video.prompt.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || video.status === filterStatus;
-    return matchesSearch && matchesStatus;
+    const matchesLiked = !showOnlyLiked || video.isLiked;
+    return matchesSearch && matchesStatus && matchesLiked;
   });
 
   const handleRegeneratePopulate = (prompt: string, imageUrl: string) => {
@@ -245,6 +247,20 @@ export default function GalleryScreenV2() {
 
           {/* View Controls */}
           <div className="flex items-center gap-2 sm:gap-4">
+            {/* Liked Filter */}
+            <button
+              onClick={() => setShowOnlyLiked(!showOnlyLiked)}
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border transition-all ${
+                showOnlyLiked
+                  ? 'bg-red-500/20 border-red-500/40 text-red-400'
+                  : 'bg-[#1A1A1D] border-[#2A2A2D] text-gray-400 hover:text-white'
+              }`}
+              title={showOnlyLiked ? "Show all GIFs" : "Show only liked GIFs"}
+            >
+              <Heart size={16} fill={showOnlyLiked ? "currentColor" : "none"} />
+              <span className="text-sm hidden sm:inline">Liked</span>
+            </button>
+
             {/* Thumbnail Size */}
             <div className="flex items-center gap-1 sm:gap-2 bg-[#1A1A1D] border border-[#2A2A2D] rounded-lg sm:rounded-xl p-0.5 sm:p-1">
               <button

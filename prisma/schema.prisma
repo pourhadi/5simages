@@ -80,5 +80,6 @@ model Video {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   emailWhenComplete     Boolean? @default(false)
+  isLiked               Boolean  @default(false) // Whether the user has liked this video
   user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
