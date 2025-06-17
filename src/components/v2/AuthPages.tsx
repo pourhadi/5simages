@@ -30,7 +30,7 @@ const registerSchema = z.object({
 
 interface AuthPagesV2Props {
   mode: 'login' | 'register';
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
@@ -45,30 +45,26 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
   
   // Check for OAuth errors and redirect parameter
   React.useEffect(() => {
-    async function checkParams() {
-      if (searchParams) {
-        const params = await searchParams;
-        const error = params.error;
-        const message = params.message;
-        const redirect = params.redirect;
-        
-        if (error === 'oauth_error') {
-          toast.error(
-            typeof message === 'string' 
-              ? decodeURIComponent(message) 
-              : 'Failed to sign in with Google. Please try again.'
-          );
-        } else if (error === 'access_denied') {
-          toast.error('Please sign in to continue.');
-        }
-        
-        // Set redirect URL if provided
-        if (redirect && typeof redirect === 'string') {
-          setRedirectUrl(decodeURIComponent(redirect));
-        }
+    if (searchParams) {
+      const error = searchParams.error;
+      const message = searchParams.message;
+      const redirect = searchParams.redirect;
+      
+      if (error === 'oauth_error') {
+        toast.error(
+          typeof message === 'string' 
+            ? decodeURIComponent(message) 
+            : 'Failed to sign in with Google. Please try again.'
+        );
+      } else if (error === 'access_denied') {
+        toast.error('Please sign in to continue.');
+      }
+      
+      // Set redirect URL if provided
+      if (redirect && typeof redirect === 'string') {
+        setRedirectUrl(decodeURIComponent(redirect));
       }
     }
-    checkParams();
   }, [searchParams]);
   
   const {
