@@ -72,10 +72,12 @@ export default function GIFDetailModalV2({
     setIsGifLoaded(false);
   }, [video?.gifUrl]);
 
-  // Update local like state when video changes
+  // Update local like state when video changes (including navigation)
   useEffect(() => {
-    setLocalIsLiked(video?.isLiked || false);
-  }, [video?.isLiked]);
+    if (video) {
+      setLocalIsLiked(video.isLiked || false);
+    }
+  }, [video?.id, video?.isLiked]);
 
   // Scroll mini-gallery to selected video
   useEffect(() => {
