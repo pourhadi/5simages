@@ -97,12 +97,9 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
       
       if (isLogin) {
         toast.success('Login successful!');
-        // Redirect to the intended page or home
-        if (typeof window !== 'undefined') {
-          window.location.href = redirectUrl;
-        } else {
-          router.push(redirectUrl);
-        }
+        // Force a hard refresh to ensure authentication state is updated
+        // This is necessary because SWR might cache the unauthenticated state
+        window.location.href = redirectUrl;
       } else {
         // Registration - redirect to success page
         const responseData = await res.json();

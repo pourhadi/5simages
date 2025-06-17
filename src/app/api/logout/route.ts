@@ -1,32 +1,62 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 /**
  * Sign out the current user by clearing session cookie.
  */
 export async function POST() {
-  // Initialize Supabase client with awaited cookies and headers
-  const cookieStore = await cookies();
-  const headerStore = await headers();
-  const supabase = createRouteHandlerSupabaseClient({
-    cookies: () => cookieStore,
-    headers: () => headerStore,
-  });
-  const { error } = await supabase.auth.signOut();
-  if (error) {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                cookieStore.set(name, value, options);
+              });
+            } catch {
+              // This is expected in route handlers
+            }
+          },
+        },
+      }
+    );
+
+    // Sign out from Supabase
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      console.error('LOGOUT_ERROR', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Create response
+    const response = NextResponse.json({ success: true });
+    
+    // Clear all Supabase auth cookies
+    cookieStore.getAll().forEach(cookie => {
+      if (cookie.name.startsWith('sb-') && cookie.name.includes('-auth-token')) {
+        response.cookies.set({
+          name: cookie.name,
+          value: '',
+          expires: new Date(0),
+          path: '/'
+        });
+      }
+    });
+    
+    return response;
+  } catch (error) {
     console.error('LOGOUT_ERROR', error);
-    return new NextResponse(error.message, { status: 500 });
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : 'Internal Error'
+    }, { status: 500 });
   }
-  // Clear the Supabase auth cookie to fully sign out the user
-  const response = NextResponse.json({ success: true });
-  response.cookies.set('supabase-auth-token', '', {
-    httpOnly: false,
-    path: '/',
-    // Expire cookie immediately
-    expires: new Date(0),
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-  });
-  return response;
 }
