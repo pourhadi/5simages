@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import prisma from '@/lib/prisma';
 
 /**
@@ -9,13 +8,8 @@ import prisma from '@/lib/prisma';
  */
 export async function GET() {
   try {
-    // Initialize Supabase client with awaited cookies and headers
-    const cookieStore = await cookies();
-    const headerStore = headers();
-    const supabase = createRouteHandlerSupabaseClient({
-      cookies: () => cookieStore,
-      headers: () => headerStore,
-    });
+    // Initialize Supabase client using the new SSR approach
+    const supabase = await createSupabaseServerClient();
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

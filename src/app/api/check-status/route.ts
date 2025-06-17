@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import Replicate from 'replicate';
 
 import prisma from '@/lib/prisma';
@@ -14,14 +13,8 @@ const replicate = new Replicate({
 // Supabase buckets (videos bucket unused in this handler)
 const GIFS_BUCKET = process.env.SUPABASE_GIFS_BUCKET_NAME || 'gifs';
 export async function GET(request: Request) {
-  // Initialize Supabase client for this route: await cookies() and headers() to avoid sync dynamic API usage
-  // Properly await cookies and headers to avoid sync dynamic API usage
-  const cookiesStore = await cookies();
-  const headersStore = await headers();
-  const supabase = createRouteHandlerSupabaseClient({
-    cookies: () => cookiesStore,
-    headers: () => headersStore,
-  });
+  // Initialize Supabase client using the new SSR approach
+  const supabase = await createSupabaseServerClient();
   const {
     data: { session },
   } = await supabase.auth.getSession();

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import prisma from '@/lib/prisma';
 import { getSupabaseAdmin } from '@/lib/supabaseClient'; // Import admin client getter
 
@@ -30,13 +29,8 @@ export async function GET(request: Request) {
   // Request param is required by Next.js API routes even if unused
   void request;
   
-  // Initialize Supabase client with awaited headers and cookies to avoid sync dynamic API usage
-  const cookieStore = await cookies();
-  const headerStore = await headers();
-  const supabase = createRouteHandlerSupabaseClient({
-    cookies: () => cookieStore,
-    headers: () => headerStore,
-  });
+  // Initialize Supabase client using the new SSR approach
+  const supabase = await createSupabaseServerClient();
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session?.user?.id) {
@@ -67,13 +61,8 @@ export async function GET(request: Request) {
 
 // Optional: Add DELETE endpoint for deleting videos
  export async function DELETE(request: Request) {
-    // Initialize Supabase client with awaited headers and cookies to avoid sync dynamic API usage
-    const cookieStore = await cookies();
-    const headerStore = await headers();
-    const supabase = createRouteHandlerSupabaseClient({
-      cookies: () => cookieStore,
-      headers: () => headerStore,
-    });
+    // Initialize Supabase client using the new SSR approach
+    const supabase = await createSupabaseServerClient();
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user?.id) {
         return new NextResponse('Unauthorized', { status: 401 });
