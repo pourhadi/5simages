@@ -70,7 +70,8 @@ model Video {
   id                    String   @id @default(cuid())
   userId                String
   imageUrl              String // URL of the input image
-  prompt                String
+  prompt                String // Original user input prompt
+  enhancedPrompt        String? // AI-enhanced prompt used for generation
   videoUrl              String? // URL of the generated video from Replicate
   gifUrl                String? // URL of the generated GIF
   status                String   @default("processing") // processing, completed, failed

@@ -143,11 +143,12 @@ export async function POST(request: NextRequest) {
         // Fallback to original prompt on error
       }
     }
-    // If prompt was enhanced, update the database record with the full prompt
+    // If prompt was enhanced, update the database record with the enhanced prompt
+    // Keep the original prompt in the 'prompt' field
     if (enhancePrompt && effectivePrompt !== prompt) {
       await prisma.video.update({
         where: { id: videoRecord.id },
-        data: { prompt: effectivePrompt },
+        data: { enhancedPrompt: effectivePrompt },
       });
     }
 

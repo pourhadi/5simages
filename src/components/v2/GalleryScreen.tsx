@@ -112,7 +112,7 @@ export default function GalleryScreenV2() {
         imageUrl,
         prompt,
         generationType: originalType, // Use the original type (standard/premium)
-        enhancePrompt: false, // No prompt enhancement for direct regeneration
+        enhancePrompt: true, // Re-enhance the prompt for regeneration
       });
 
       if (response.status === 200) {

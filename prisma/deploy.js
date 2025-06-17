@@ -66,7 +66,7 @@ async function deployMigrations() {
     console.log('Running prisma migrate deploy (with 30s timeout)...');
     try {
       const { stdout, stderr } = await runWithTimeout(
-        execAsync('npx prisma migrate deploy --skip-generate'), 
+        execAsync('npx prisma migrate deploy'), 
         MIGRATION_TIMEOUT
       );
       
