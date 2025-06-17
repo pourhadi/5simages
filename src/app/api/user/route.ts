@@ -1,50 +1,22 @@
-import { NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
-import prisma from '@/lib/prisma';
+import { NextResponse, NextRequest } from 'next/server';
+import { getAuthUser } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // Initialize Supabase client with awaited cookies and headers
-    const cookieStore = await cookies();
-    const headerStore = await headers();
-    const supabase = createRouteHandlerSupabaseClient({
-      cookies: () => cookieStore,
-      headers: () => headerStore,
-    });
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    const userEmail = session.user.email;
-    
-    // Fetch user from database including credit information
-    const user = await prisma.user.findUnique({
-      where: { email: userEmail },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        credits: true,
-        image: true,
-        isAdmin: true
-      }
-    });
+    const user = await getAuthUser(request);
     
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    // Set default credits if null
-    const userData = {
-      ...user,
-      credits: user.credits || 0,
-      isAdmin: user.isAdmin ?? false
-    };
-    
-    return NextResponse.json(userData);
+    return NextResponse.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      credits: user.credits,
+      image: user.image,
+      isAdmin: user.isAdmin
+    });
     
   } catch (error) {
     console.error('Error fetching user data:', error);

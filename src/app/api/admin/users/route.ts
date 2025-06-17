@@ -1,11 +1,16 @@
-import { NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { NextResponse, NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
+import { requireAdmin } from '@/lib/auth';
 import type { Prisma } from '@prisma/client';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
+    // Require admin authentication
+    const authResult = await requireAdmin(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+    
     // Parse sorting parameters from query
     const url = new URL(request.url);
     const sortByRaw = url.searchParams.get('sortBy');
@@ -13,25 +18,6 @@ export async function GET(request: Request) {
     const allowedSortFields = ['email', 'name', 'credits', 'isAdmin', 'createdAt'];
     const sortField = allowedSortFields.includes(sortByRaw ?? '') ? sortByRaw! : 'createdAt';
     const order = orderRaw === 'asc' ? 'asc' : 'desc';
-    const cookieStore = await cookies();
-    const headerStore = await headers();
-    const supabase = createRouteHandlerSupabaseClient({
-      cookies: () => cookieStore,
-      headers: () => headerStore,
-    });
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session?.user?.email) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
-    const requester = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: { isAdmin: true },
-    });
-    if (requester?.isAdmin !== true) {
-      return new NextResponse('Forbidden', { status: 403 });
-    }
     const users = await prisma.user.findMany({
       select: {
         id: true,
@@ -50,26 +36,12 @@ export async function GET(request: Request) {
   }
 }
 // PATCH /api/admin/users : update user credits (admin only)
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
-    const cookieStore = await cookies();
-    const headerStore = await headers();
-    const supabase = createRouteHandlerSupabaseClient({
-      cookies: () => cookieStore,
-      headers: () => headerStore,
-    });
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session?.user?.email) {
-      return new NextResponse('Unauthorized', { status: 401 });
-    }
-    const requester = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: { isAdmin: true },
-    });
-    if (requester?.isAdmin !== true) {
-      return new NextResponse('Forbidden', { status: 403 });
+    // Require admin authentication
+    const authResult = await requireAdmin(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
     }
     const body = await request.json();
     const { id, credits } = body;

@@ -22,10 +22,11 @@ npm run db:seed      # Seed database with initial data
 - Uses Supabase as both storage provider and auth middleware
 
 ### Authentication Flow
-- **Dual System**: NextAuth.js handles sessions, Supabase middleware refreshes tokens
-- **Credentials Provider**: Email/password with bcrypt hashing
+- **Supabase Auth**: Handles both email/password and OAuth (Google) authentication
+- **Email/Password**: Direct Supabase Auth with email confirmation required
+- **Google OAuth**: Pre-verified accounts with automatic user creation
 - **Auto-refresh**: Middleware at `/middleware.ts` refreshes Supabase sessions on every request
-- **Session Token**: Includes user credits for real-time credit tracking
+- **Session Management**: Supabase handles JWT tokens and session persistence
 
 ### File Storage Pattern
 - **Supabase Storage**: Separate buckets for images (`stillmotion-images`) and videos (`stillmotion-videos`)
@@ -46,11 +47,13 @@ npm run db:seed      # Seed database with initial data
 6. Polling system remains as fallback for status checking
 
 ### Key File Locations
-- **Auth Config**: `/lib/authOptions.ts` (NextAuth.js setup)
+- **Auth Helpers**: `/lib/auth.ts` (centralized authentication utilities)
+- **Supabase Clients**: `/lib/supabaseClient.ts`, `/lib/supabaseServer.ts`, `/lib/supabaseBrowser.ts`
 - **Database Client**: `/lib/prisma.ts` and `/lib/supabaseDb.ts`
 - **Payment Processing**: `/lib/stripe.ts`
 - **Main Generator**: `/components/v2/GIFGenerator.tsx`
-- **Auth Middleware**: `/middleware.ts` (Supabase session refresh)
+- **Auth Components**: `/components/v2/AuthPages.tsx` (login/register UI)
+- **Auth Middleware**: `/middleware.ts` (Supabase session refresh & route protection)
 
 ### API Structure
 - **Generation**: `/api/generate-video`, `/api/check-status`, `/api/replicate-webhook`

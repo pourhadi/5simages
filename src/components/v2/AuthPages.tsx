@@ -7,8 +7,8 @@ import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
-import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
-// import { signInWithGoogle } from '@/lib/supabaseBrowser';
+import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Chrome } from 'lucide-react';
+import { signInWithGoogle } from '@/lib/supabaseBrowser';
 
 // Login schema
 const loginSchema = z.object({
@@ -38,17 +38,19 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  // const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const isLogin = mode === 'login';
+  const [redirectUrl, setRedirectUrl] = useState<string>('/');
   
-  // Check for OAuth errors
+  // Check for OAuth errors and redirect parameter
   React.useEffect(() => {
-    async function checkError() {
+    async function checkParams() {
       if (searchParams) {
         const params = await searchParams;
         const error = params.error;
         const message = params.message;
+        const redirect = params.redirect;
         
         if (error === 'oauth_error') {
           toast.error(
@@ -56,10 +58,17 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
               ? decodeURIComponent(message) 
               : 'Failed to sign in with Google. Please try again.'
           );
+        } else if (error === 'access_denied') {
+          toast.error('Please sign in to continue.');
+        }
+        
+        // Set redirect URL if provided
+        if (redirect && typeof redirect === 'string') {
+          setRedirectUrl(decodeURIComponent(redirect));
         }
       }
     }
-    checkError();
+    checkParams();
   }, [searchParams]);
   
   const {
@@ -92,10 +101,11 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
       
       if (isLogin) {
         toast.success('Login successful!');
+        // Redirect to the intended page or home
         if (typeof window !== 'undefined') {
-          window.location.href = '/';
+          window.location.href = redirectUrl;
         } else {
-          router.push('/');
+          router.push(redirectUrl);
         }
       } else {
         // Registration - redirect to success page
@@ -105,26 +115,42 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
       }
     } catch (error) {
       console.error(`${isLogin ? 'Login' : 'Registration'} failed:`, error);
-      const errorMessage = error instanceof Error
-        ? error.message
-        : `${isLogin ? 'Login' : 'Registration'} failed. Please try again.`;
+      let errorMessage = `${isLogin ? 'Login' : 'Registration'} failed. Please try again.`;
+      
+      if (error instanceof Error) {
+        // Provide user-friendly error messages
+        if (error.message.includes('Invalid login credentials')) {
+          errorMessage = 'Invalid email or password. Please try again.';
+        } else if (error.message.includes('Email not confirmed')) {
+          errorMessage = 'Please confirm your email before signing in.';
+        } else if (error.message.includes('User already registered')) {
+          errorMessage = 'An account with this email already exists.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const handleGoogleSignIn = async () => {
-  //   setIsGoogleLoading(true);
-  //   try {
-  //     await signInWithGoogle();
-  //     // The OAuth flow will redirect, so we don't need to do anything else here
-  //   } catch (error) {
-  //     console.error('Google sign-in error:', error);
-  //     toast.error('Failed to sign in with Google. Please try again.');
-  //     setIsGoogleLoading(false);
-  //   }
-  // };
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      // Store redirect URL in session storage for OAuth callback
+      if (redirectUrl !== '/') {
+        sessionStorage.setItem('authRedirect', redirectUrl);
+      }
+      await signInWithGoogle();
+      // The OAuth flow will redirect, so we don't need to do anything else here
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      toast.error('Failed to sign in with Google. Please try again.');
+      setIsGoogleLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0D0D0E] via-[#1A1A1D] to-[#0D0D0E] flex items-center justify-center p-4">
@@ -303,8 +329,8 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
             </button>
           </form>
 
-          {/* Google Sign-In - Hidden for now */}
-          {/* <div className="relative my-6">
+          {/* Google Sign-In */}
+          <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-[#2A2A2D]"></div>
             </div>
@@ -320,7 +346,7 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
           >
             <Chrome size={20} />
             {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
-          </button> */}
+          </button>
 
           {/* Footer links */}
           <div className="mt-6 text-center text-sm text-gray-400">

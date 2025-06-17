@@ -6,7 +6,7 @@ import prisma from '@/lib/prisma';
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
-  const next = requestUrl.searchParams.get('next') || '/';
+  const next = requestUrl.searchParams.get('next') || requestUrl.searchParams.get('redirect') || '/';
 
   if (code) {
     try {
@@ -43,30 +43,61 @@ export async function GET(request: NextRequest) {
       }
 
       if (session?.user) {
-        // Check if user exists in our database
+        // Check if user exists in our database by Supabase auth ID first, then by email
         let user = await prisma.user.findUnique({
-          where: { email: session.user.email! },
+          where: { id: session.user.id },
         });
 
         if (!user) {
-          // Create new user with Google account
-          user = await prisma.user.create({
-            data: {
-              email: session.user.email!,
-              name: session.user.user_metadata?.full_name || session.user.email!.split('@')[0],
-              hashedPassword: null, // No password for OAuth users
-              emailVerified: new Date(), // Google accounts are pre-verified
-              image: session.user.user_metadata?.avatar_url,
-              credits: 5, // Welcome bonus
-            },
+          // Check by email as fallback
+          user = await prisma.user.findUnique({
+            where: { email: session.user.email! },
           });
+
+          if (!user) {
+            // Create new user with Google account
+            user = await prisma.user.create({
+              data: {
+                id: session.user.id, // Use Supabase auth ID
+                email: session.user.email!,
+                name: session.user.user_metadata?.full_name || 
+                      session.user.user_metadata?.name || 
+                      session.user.email!.split('@')[0],
+                hashedPassword: null, // No password for OAuth users
+                emailVerified: new Date(), // Google accounts are pre-verified
+                image: session.user.user_metadata?.avatar_url || 
+                       session.user.user_metadata?.picture,
+                credits: 5, // Welcome bonus
+              },
+            });
+          } else {
+            // User exists with email but different ID, update the ID to match Supabase
+            await prisma.user.update({
+              where: { email: session.user.email! },
+              data: { 
+                id: session.user.id,
+                emailVerified: user.emailVerified || new Date(),
+                image: user.image || 
+                       session.user.user_metadata?.avatar_url || 
+                       session.user.user_metadata?.picture,
+                name: user.name || 
+                      session.user.user_metadata?.full_name || 
+                      session.user.user_metadata?.name,
+              },
+            });
+          }
         } else if (!user.emailVerified) {
           // If user exists but email not verified, verify it now (they've authenticated with Google)
           await prisma.user.update({
             where: { id: user.id },
             data: { 
               emailVerified: new Date(),
-              image: user.image || session.user.user_metadata?.avatar_url,
+              image: user.image || 
+                     session.user.user_metadata?.avatar_url || 
+                     session.user.user_metadata?.picture,
+              name: user.name || 
+                    session.user.user_metadata?.full_name || 
+                    session.user.user_metadata?.name,
             },
           });
         }

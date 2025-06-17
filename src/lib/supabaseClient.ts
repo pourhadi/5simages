@@ -2,7 +2,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // Environment variables
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-// const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 // Storage bucket names - store in environment variables for consistency
@@ -12,16 +12,16 @@ export const STORAGE_BUCKETS = {
 };
 
 // Validate required environment variables
-if (!supabaseUrl || !supabaseServiceKey) {
+if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase URL or Anon Key environment variables.');
   console.log('Current URL:', supabaseUrl);
-  console.log('Current Anon Key:', supabaseServiceKey ? 'Exists (hidden)' : 'Missing');
+  console.log('Current Anon Key:', supabaseAnonKey ? 'Exists (hidden)' : 'Missing');
   // Throwing error might break build process, log error instead for broader compatibility
   // throw new Error('Missing Supabase URL or Anon Key environment variables.');
 }
 
 // Client for client-side operations (using Anon key)
-export const supabase: SupabaseClient = createClient(supabaseUrl || '', supabaseServiceKey || '', {
+export const supabase: SupabaseClient = createClient(supabaseUrl || '', supabaseAnonKey || '', {
   auth: {
     persistSession: true,
     autoRefreshToken: true,

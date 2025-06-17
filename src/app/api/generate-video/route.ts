@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { NextResponse, NextRequest } from 'next/server';
+import { headers } from 'next/headers';
 import Replicate from 'replicate';
 import prisma from '@/lib/prisma';
+import { requireAuth, addCredits } from '@/lib/auth';
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN || '',
@@ -51,21 +51,14 @@ Please follow these guidelines:
 
 Provide only the enhanced prompt with no additional explanation. The user's prompt is the following: `;
 
-export async function POST(request: Request) {
-  // Initialize Supabase client with awaited cookies and headers
-  const cookieStore = await cookies();
-  const headerStore = await headers();
-  const supabase = createRouteHandlerSupabaseClient({
-    cookies: () => cookieStore,
-    headers: () => headerStore,
-  });
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session?.user?.id) {
-    return new NextResponse('Unauthorized', { status: 401 });
+export async function POST(request: NextRequest) {
+  // Get authenticated user
+  const authResult = await requireAuth(request);
+  if (authResult instanceof NextResponse) {
+    return authResult;
   }
-
-  const userId = session.user.id;
+  const user = authResult;
+  const userId = user.id;
   // Track credit cost and video record for potential refund on failure
   let cost = 0;
   let videoRecordId: string | undefined;
@@ -206,9 +199,10 @@ export async function POST(request: Request) {
       
       // If no base URL is set, try to construct from request headers
       if (!baseUrl) {
-        const forwardedHost = headerStore.get('x-forwarded-host');
-        const forwardedProto = headerStore.get('x-forwarded-proto') || 'https';
-        const host = headerStore.get('host');
+        const headersList = await headers();
+        const forwardedHost = headersList.get('x-forwarded-host');
+        const forwardedProto = headersList.get('x-forwarded-proto') || 'https';
+        const host = headersList.get('host');
         
         if (forwardedHost) {
           baseUrl = `${forwardedProto}://${forwardedHost}`;
@@ -343,9 +337,10 @@ export async function POST(request: Request) {
     
     // If no base URL is set, try to construct from request headers
     if (!baseUrl) {
-      const forwardedHost = headerStore.get('x-forwarded-host');
-      const forwardedProto = headerStore.get('x-forwarded-proto') || 'https';
-      const host = headerStore.get('host');
+      const headersList = await headers();
+      const forwardedHost = headersList.get('x-forwarded-host');
+      const forwardedProto = headersList.get('x-forwarded-proto') || 'https';
+      const host = headersList.get('host');
       
       if (forwardedHost) {
         baseUrl = `${forwardedProto}://${forwardedHost}`;
@@ -420,10 +415,7 @@ export async function POST(request: Request) {
     // Refund credits if record was created and cost was deducted
     if (videoRecordId && cost > 0) {
       try {
-        await prisma.user.update({
-          where: { id: userId },
-          data: { credits: { increment: cost } },
-        });
+        await addCredits(userId, cost);
         await prisma.video.update({
           where: { id: videoRecordId },
           data: { status: 'failed' },

@@ -1,27 +1,17 @@
-import { NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { NextResponse, NextRequest } from 'next/server';
 import { createCheckoutSession, CREDIT_PACKAGES } from '@/lib/stripe';
+import { requireAuth } from '@/lib/auth';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    // Initialize Supabase client with awaited cookies and headers
-    const cookieStore = await cookies();
-    const headerStore = await headers();
-    const supabase = createRouteHandlerSupabaseClient({
-      cookies: () => cookieStore,
-      headers: () => headerStore,
-    });
-    // Get the authenticated user via Supabase
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user?.id || !session.user.email) {
-      return NextResponse.json(
-        { error: 'You must be signed in to purchase credits' },
-        { status: 401 }
-      );
+    // Get authenticated user
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
     }
-    const userId = session.user.id;
-    const userEmail = session.user.email;
+    const user = authResult;
+    const userId = user.id;
+    const userEmail = user.email;
     
     // Get the requested package from the request
     const body = await request.json();
