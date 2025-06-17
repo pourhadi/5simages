@@ -46,6 +46,7 @@ export default function GIFDetailModalV2({
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [isFrameSelectorOpen, setIsFrameSelectorOpen] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
+  const [localIsLiked, setLocalIsLiked] = useState(video?.isLiked || false);
   const miniGalleryRef = useRef<HTMLDivElement>(null);
 
   // Prevent body scroll when modal is open
@@ -70,6 +71,11 @@ export default function GIFDetailModalV2({
   useEffect(() => {
     setIsGifLoaded(false);
   }, [video?.gifUrl]);
+
+  // Update local like state when video changes
+  useEffect(() => {
+    setLocalIsLiked(video?.isLiked || false);
+  }, [video?.isLiked]);
 
   // Scroll mini-gallery to selected video
   useEffect(() => {
@@ -241,6 +247,9 @@ export default function GIFDetailModalV2({
       setIsLiking(true);
       const response = await axios.post(`/api/videos/${video.id}/like`);
       if (response.data.success) {
+        // Update local state immediately
+        setLocalIsLiked(response.data.video.isLiked);
+        
         if (onMutate) {
           onMutate(); // Refresh the videos list
         }
@@ -329,18 +338,18 @@ export default function GIFDetailModalV2({
                 onClick={handleToggleLike}
                 disabled={isLiking}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-300 ${
-                  video.isLiked
+                  localIsLiked
                     ? 'bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/25'
                     : 'bg-[#2A2A2D] text-gray-300 hover:bg-[#3A3A3D] hover:text-white'
                 }`}
-                title={video.isLiked ? "Unlike this GIF" : "Like this GIF"}
+                title={localIsLiked ? "Unlike this GIF" : "Like this GIF"}
               >
                 <Heart 
                   size={20} 
-                  fill={video.isLiked ? "currentColor" : "none"}
+                  fill={localIsLiked ? "currentColor" : "none"}
                   className={isLiking ? 'animate-pulse' : ''}
                 />
-                <span>{video.isLiked ? 'Liked' : 'Like'}</span>
+                <span>{localIsLiked ? 'Liked' : 'Like'}</span>
               </button>
             </div>
 
