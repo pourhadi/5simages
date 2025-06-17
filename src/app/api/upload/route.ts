@@ -1,8 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { randomUUID } from 'crypto';
 import { requireAuth } from '@/lib/auth';
-import { createSupabaseServerClient } from '@/lib/supabaseServer';
-import { STORAGE_BUCKETS } from '@/lib/supabaseClient';
+import { getSupabaseAdmin, STORAGE_BUCKETS } from '@/lib/supabaseClient';
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,12 +40,12 @@ export async function POST(request: NextRequest) {
     const fileExtension = file.name.split('.').pop();
     const fileName = `${userId}/${randomUUID()}.${fileExtension}`;
     
-    // Create Supabase client with user session
-    const supabase = await createSupabaseServerClient();
+    // Use the admin client for reliable uploads
+    const supabaseAdmin = getSupabaseAdmin();
     
     // Upload the file to Supabase Storage
     const buffer = await file.arrayBuffer();
-    const { error } = await supabase.storage
+    const { error } = await supabaseAdmin.storage
       .from(STORAGE_BUCKETS.IMAGES)
       .upload(fileName, buffer, {
         contentType: file.type,
@@ -60,7 +59,7 @@ export async function POST(request: NextRequest) {
     
     // Generate a signed URL for the uploaded file (since bucket is private)
     // URL expires in 1 year (31536000 seconds)
-    const { data: signedUrlData, error: urlError } = await supabase.storage
+    const { data: signedUrlData, error: urlError } = await supabaseAdmin.storage
       .from(STORAGE_BUCKETS.IMAGES)
       .createSignedUrl(fileName, 31536000);
     
