@@ -1,28 +1,18 @@
-import { NextResponse } from 'next/server';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { NextResponse, NextRequest } from 'next/server';
 import { randomUUID } from 'crypto';
-import { supabase } from '@/lib/supabaseClient';
+import { requireAuth } from '@/lib/auth';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
+import { STORAGE_BUCKETS } from '@/lib/supabaseClient';
 
-// Get bucket name from environment variables
-const BUCKET_NAME = process.env.NEXT_PUBLIC_SUPABASE_IMAGES_BUCKET_NAME || 'images';
-
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    // Authenticate user via Supabase
-    // Await cookies and headers to avoid sync dynamic API usage
-    const cookieStore = await cookies();
-    const headerStore = await headers();
-    const supabaseAuth = createRouteHandlerSupabaseClient({
-      cookies: () => cookieStore,
-      headers: () => headerStore,
-    });
-    const { data: { session } } = await supabaseAuth.auth.getSession();
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // Get authenticated user
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
     }
-    // Get current user ID
-    const userId = session.user.id;
+    const user = authResult;
+    const userId = user.id;
     
     if (!userId) {
       return NextResponse.json({ error: 'User ID not found' }, { status: 401 });
@@ -51,10 +41,13 @@ export async function POST(request: Request) {
     const fileExtension = file.name.split('.').pop();
     const fileName = `${userId}/${randomUUID()}.${fileExtension}`;
     
+    // Create Supabase client with user session
+    const supabase = await createSupabaseServerClient();
+    
     // Upload the file to Supabase Storage
     const buffer = await file.arrayBuffer();
     const { error } = await supabase.storage
-      .from(BUCKET_NAME)
+      .from(STORAGE_BUCKETS.IMAGES)
       .upload(fileName, buffer, {
         contentType: file.type,
         cacheControl: '3600'
@@ -65,14 +58,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
     }
     
-    // Get public URL for the uploaded file
-    const { data: urlData } = supabase.storage
-      .from(BUCKET_NAME)
-      .getPublicUrl(fileName);
+    // Generate a signed URL for the uploaded file (since bucket is private)
+    // URL expires in 1 year (31536000 seconds)
+    const { data: signedUrlData, error: urlError } = await supabase.storage
+      .from(STORAGE_BUCKETS.IMAGES)
+      .createSignedUrl(fileName, 31536000);
+    
+    if (urlError || !signedUrlData?.signedUrl) {
+      console.error('Failed to generate signed URL:', urlError);
+      return NextResponse.json({ error: 'Failed to generate file URL' }, { status: 500 });
+    }
     
     return NextResponse.json({ 
       success: true, 
-      url: urlData?.publicUrl
+      url: signedUrlData.signedUrl
     });
     
   } catch (error) {
