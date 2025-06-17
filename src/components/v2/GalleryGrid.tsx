@@ -409,6 +409,7 @@ export default function GalleryGridV2({
         onRegenerate={onRegenerate}
         onNavigate={setSelectedVideo}
         isGeneratorOpen={isGeneratorOpen}
+        onMutate={onMutate}
       />
     </>
   );

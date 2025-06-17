@@ -5,10 +5,11 @@ import { Video } from '@prisma/client';
 import { 
   X, Download, Share, Copy, Check, Trash2, RefreshCw, 
   ChevronLeft, ChevronRight, Zap, Clock,
-  CheckCircle, XCircle, Scissors
+  CheckCircle, XCircle, Scissors, Heart
 } from 'lucide-react';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 import GIFFrameSelector from './GIFFrameSelector';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
@@ -22,6 +23,7 @@ interface GIFDetailModalV2Props {
   onRegenerate?: (prompt: string, imageUrl: string, originalType: string) => void;
   onNavigate: (video: Video) => void;
   isGeneratorOpen?: boolean;
+  onMutate?: () => void;
 }
 
 export default function GIFDetailModalV2({
@@ -33,7 +35,8 @@ export default function GIFDetailModalV2({
   onTweak,
   onRegenerate,
   onNavigate,
-  isGeneratorOpen
+  isGeneratorOpen,
+  onMutate
 }: GIFDetailModalV2Props) {
   const [copied, setCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -42,6 +45,7 @@ export default function GIFDetailModalV2({
   const [isGifLoaded, setIsGifLoaded] = useState(false);
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [isFrameSelectorOpen, setIsFrameSelectorOpen] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
   const miniGalleryRef = useRef<HTMLDivElement>(null);
 
   // Prevent body scroll when modal is open
@@ -230,6 +234,26 @@ export default function GIFDetailModalV2({
     setIsFullscreenOpen(false);
   };
 
+  const handleToggleLike = async () => {
+    if (!video || isLiking) return;
+    
+    try {
+      setIsLiking(true);
+      const response = await axios.post(`/api/videos/${video.id}/like`);
+      if (response.data.success) {
+        if (onMutate) {
+          onMutate(); // Refresh the videos list
+        }
+        toast.success(response.data.video.isLiked ? 'GIF liked!' : 'GIF unliked');
+      }
+    } catch (err) {
+      console.error('Failed to toggle like:', err);
+      toast.error('Failed to update like status');
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
@@ -299,6 +323,25 @@ export default function GIFDetailModalV2({
                   <span className="capitalize">{video.status}</span>
                 </div>
               </div>
+
+              {/* Like Button - Prominent */}
+              <button
+                onClick={handleToggleLike}
+                disabled={isLiking}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+                  video.isLiked
+                    ? 'bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/25'
+                    : 'bg-[#2A2A2D] text-gray-300 hover:bg-[#3A3A3D] hover:text-white'
+                }`}
+                title={video.isLiked ? "Unlike this GIF" : "Like this GIF"}
+              >
+                <Heart 
+                  size={20} 
+                  fill={video.isLiked ? "currentColor" : "none"}
+                  className={isLiking ? 'animate-pulse' : ''}
+                />
+                <span>{video.isLiked ? 'Liked' : 'Like'}</span>
+              </button>
             </div>
 
             <button
