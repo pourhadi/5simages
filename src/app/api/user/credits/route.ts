@@ -10,12 +10,12 @@ export async function GET() {
   try {
     // Initialize Supabase client using the new SSR approach
     const supabase = await createSupabaseServerClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user?.id) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const userId = session.user.id;
-    const user = await prisma.user.findUnique({
+    const userId = user.id;
+    const dbUser = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
@@ -24,15 +24,15 @@ export async function GET() {
       }
     });
     
-    if (!user) {
+    if (!dbUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
     
     // Return the user's current credit count from the database
     return NextResponse.json({
-      id: user.id,
-      email: user.email,
-      credits: user.credits ?? 0
+      id: dbUser.id,
+      email: dbUser.email,
+      credits: dbUser.credits ?? 0
     });
     
   } catch (error) {

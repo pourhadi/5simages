@@ -12,13 +12,14 @@ export async function GET() {
       headers: () => headerStore,
     });
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session?.user?.email) {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser();
+    if (authError || !user?.email) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
     const requester = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { email: user.email },
       select: { isAdmin: true },
     });
     if (requester?.isAdmin !== true) {

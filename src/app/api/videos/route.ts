@@ -31,13 +31,13 @@ export async function GET(request: Request) {
   
   // Initialize Supabase client using the new SSR approach
   const supabase = await createSupabaseServerClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-  if (!session?.user?.id) {
+  if (authError || !user?.id) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
 
-  const userId = session.user.id;
+  const userId = user.id;
 
   try {
     const videos = await prisma.video.findMany({
@@ -63,11 +63,11 @@ export async function GET(request: Request) {
  export async function DELETE(request: Request) {
     // Initialize Supabase client using the new SSR approach
     const supabase = await createSupabaseServerClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user?.id) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user?.id) {
         return new NextResponse('Unauthorized', { status: 401 });
     }
-    const userId = session.user.id;
+    const userId = user.id;
 
     try {
         const { searchParams } = new URL(request.url);

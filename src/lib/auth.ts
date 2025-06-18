@@ -43,16 +43,16 @@ export async function getAuthUser(_request?: NextRequest): Promise<AuthUser | nu
       }
     );
 
-    // Get session from Supabase
-    const { data: { session }, error } = await supabase.auth.getSession();
+    // Get authenticated user from Supabase (secure server-side validation)
+    const { data: { user }, error } = await supabase.auth.getUser();
     
-    if (error || !session?.user) {
+    if (error || !user) {
       return null;
     }
 
     // Get user data from our database
     const dbUser = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: user.id },
       select: {
         id: true,
         email: true,
@@ -66,7 +66,7 @@ export async function getAuthUser(_request?: NextRequest): Promise<AuthUser | nu
     if (!dbUser) {
       // User exists in Supabase but not in our database
       // This shouldn't happen in normal flow, but handle it gracefully
-      console.error('User exists in Supabase but not in database:', session.user.id);
+      console.error('User exists in Supabase but not in database:', user.id);
       return null;
     }
 

@@ -14,15 +14,16 @@ export async function GET(request: Request) {
       headers: () => headerStore,
     });
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session?.user?.id) {
+      data: { user },
+      error: authError
+    } = await supabase.auth.getUser();
+    if (authError || !user?.id) {
       return NextResponse.json(
         { error: 'You must be signed in to verify payments' },
         { status: 401 }
       );
     }
-    const userId = session.user.id;
+    const userId = user.id;
     
     // Get the session ID from the URL
     const { searchParams } = new URL(request.url);
@@ -54,9 +55,9 @@ export async function GET(request: Request) {
     }
     
     // Get current user credits from Supabase
-    const user = await db.users.findById(userId);
+    const dbUser = await db.users.findById(userId);
     
-    if (!user) {
+    if (!dbUser) {
       return NextResponse.json(
         { error: 'User not found in database' },
         { status: 404 }
@@ -67,7 +68,7 @@ export async function GET(request: Request) {
     
     // Add purchased credits to user's account (fallback if webhook did not run)
     // Compute new balance
-    const oldBalance = user.credits || 0;
+    const oldBalance = dbUser.credits || 0;
     const newBalance = oldBalance + creditAmount;
     if (creditAmount > 0) {
       try {
