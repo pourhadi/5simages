@@ -6,7 +6,7 @@ public struct User: Codable, Identifiable {
     public let name: String?
     public let credits: Int
     public let isAdmin: Bool
-    public let createdAt: Date
+    public let createdAt: Date?
     public let updatedAt: Date?
     
     enum CodingKeys: String, CodingKey {
@@ -19,7 +19,7 @@ public struct User: Codable, Identifiable {
         case updatedAt
     }
     
-    public init(id: String, email: String, name: String?, credits: Int, isAdmin: Bool, createdAt: Date, updatedAt: Date?) {
+    public init(id: String, email: String, name: String?, credits: Int, isAdmin: Bool, createdAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
         self.email = email
         self.name = name
@@ -36,7 +36,7 @@ public struct User: Codable, Identifiable {
         name = try container.decodeIfPresent(String.self, forKey: .name)
         credits = try container.decode(Int.self, forKey: .credits)
         isAdmin = try container.decode(Bool.self, forKey: .isAdmin)
-        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
         updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt)
     }
 }
