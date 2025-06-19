@@ -5,7 +5,10 @@ import StillMotionSDK
 struct StillMotionExampleApp: App {
     init() {
         // Configure the SDK with your base URL if needed
-        // StillMotionSDK.shared.configure(baseURL: "https://your-custom-domain.com")
+        // For local testing:
+        StillMotionSDK.shared.configure(baseURL: "http://localhost:3000")
+        // For production:
+        // StillMotionSDK.shared.configure(baseURL: "https://stillmotion.ai")
     }
     
     var body: some Scene {

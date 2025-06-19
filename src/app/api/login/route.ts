@@ -78,13 +78,16 @@ export async function POST(request: NextRequest) {
       user: {
         id: session.user.id,
         email: session.user.email,
-        name: dbUser?.name ?? null,
+        name: dbUser?.name || null,
         credits: dbUser?.credits ?? 5,
         isAdmin: dbUser?.isAdmin ?? false,
         createdAt: (dbUser?.createdAt ?? new Date()).toISOString(),
         updatedAt: (dbUser?.updatedAt ?? new Date()).toISOString()
       }
     };
+    
+    // Debug log to verify the response structure
+    console.log('Login response data:', JSON.stringify(responseData, null, 2));
     
     // Create response and manually set the Supabase auth cookies
     const response = NextResponse.json(responseData);
