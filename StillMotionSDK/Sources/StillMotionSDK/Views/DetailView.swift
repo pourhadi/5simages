@@ -1,6 +1,8 @@
 import SwiftUI
+import ImageIO
 #if canImport(UIKit)
 import Photos
+import UIKit
 #else
 import AppKit
 import UniformTypeIdentifiers
@@ -25,7 +27,7 @@ public struct DetailView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     if video.videoStatus == .completed, let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
-                        AnimatedGIF(url: url)
+                        AnimatedGIFContainer(url: url)
                             .aspectRatio(contentMode: .fit)
                     } else {
                         statusView
@@ -363,6 +365,129 @@ struct ShareSheet: View {
                     }
                 }
             }
+    }
+}
+#endif
+
+// Internal animated GIF view for DetailView
+struct AnimatedGIFContainer: View {
+    let url: URL
+    @State private var isLoading = true
+    
+    var body: some View {
+        #if canImport(UIKit)
+        AnimatedGIFUIView(url: url, isLoading: $isLoading)
+        #else
+        AnimatedGIFNSView(url: url, isLoading: $isLoading)
+        #endif
+    }
+}
+
+#if canImport(UIKit)
+struct AnimatedGIFUIView: UIViewRepresentable {
+    let url: URL
+    @Binding var isLoading: Bool
+    
+    func makeUIView(context: Context) -> UIImageView {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        loadGIF(into: imageView)
+        return imageView
+    }
+    
+    func updateUIView(_ uiView: UIImageView, context: Context) {}
+    
+    private func loadGIF(into imageView: UIImageView) {
+        isLoading = true
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                DispatchQueue.main.async { isLoading = false }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                if let image = UIImage.gif(data: data) {
+                    imageView.image = image
+                }
+                isLoading = false
+            }
+        }.resume()
+    }
+}
+
+extension UIImage {
+    static func gif(data: Data) -> UIImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+        
+        let count = CGImageSourceGetCount(source)
+        var images: [UIImage] = []
+        var duration: TimeInterval = 0
+        
+        for i in 0..<count {
+            if let cgImage = CGImageSourceCreateImageAtIndex(source, i, nil) {
+                let frameDuration = UIImage.frameDuration(at: i, source: source)
+                duration += frameDuration
+                images.append(UIImage(cgImage: cgImage))
+            }
+        }
+        
+        if images.isEmpty { return nil }
+        
+        if images.count == 1 {
+            return images[0]
+        } else {
+            return UIImage.animatedImage(with: images, duration: duration)
+        }
+    }
+    
+    private static func frameDuration(at index: Int, source: CGImageSource) -> TimeInterval {
+        var frameDuration = 0.1
+        guard let frameProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil) as? [String: Any],
+              let gifProperties = frameProperties[kCGImagePropertyGIFDictionary as String] as? [String: Any] else {
+            return frameDuration
+        }
+        
+        if let unclampedDuration = gifProperties[kCGImagePropertyGIFUnclampedDelayTime as String] as? TimeInterval {
+            frameDuration = unclampedDuration
+        } else if let clampedDuration = gifProperties[kCGImagePropertyGIFDelayTime as String] as? TimeInterval {
+            frameDuration = clampedDuration
+        }
+        
+        if frameDuration < 0.01 {
+            frameDuration = 0.1
+        }
+        
+        return frameDuration
+    }
+}
+#else
+struct AnimatedGIFNSView: NSViewRepresentable {
+    let url: URL
+    @Binding var isLoading: Bool
+    
+    func makeNSView(context: Context) -> NSImageView {
+        let imageView = NSImageView()
+        imageView.imageScaling = .scaleProportionallyUpOrDown
+        imageView.animates = true
+        loadGIF(into: imageView)
+        return imageView
+    }
+    
+    func updateNSView(_ nsView: NSImageView, context: Context) {}
+    
+    private func loadGIF(into imageView: NSImageView) {
+        isLoading = true
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                DispatchQueue.main.async { isLoading = false }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                imageView.image = NSImage(data: data)
+                isLoading = false
+            }
+        }.resume()
     }
 }
 #endif
