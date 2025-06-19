@@ -1,0 +1,4 @@
+module StillMotionSDKPackageTests {
+    header "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDKPackageTests.build/StillMotionSDKPackageTests-Swift.h"
+    requires objc
+}

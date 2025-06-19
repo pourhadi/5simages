@@ -1,0 +1,4 @@
+module SwiftSoup {
+    header "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/SwiftSoup.build/SwiftSoup-Swift.h"
+    requires objc
+}

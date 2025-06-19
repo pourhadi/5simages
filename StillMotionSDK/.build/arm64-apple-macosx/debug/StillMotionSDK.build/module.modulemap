@@ -1,0 +1,4 @@
+module StillMotionSDK {
+    header "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/StillMotionSDK-Swift.h"
+    requires objc
+}

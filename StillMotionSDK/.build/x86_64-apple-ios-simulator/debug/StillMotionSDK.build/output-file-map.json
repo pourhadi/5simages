@@ -1,0 +1,96 @@
+{
+  "": {
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/master.swiftdeps"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/AuthModels.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthModels.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthModels.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthModels~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthModels.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthModels.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/User.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/User.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/User.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/User~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/User.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/User.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/Video.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Video.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Video.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Video~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Video.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Video.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Services/APIClient.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/APIClient.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/APIClient.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/APIClient~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/APIClient.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/APIClient.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Services/AuthManager.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthManager.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthManager.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthManager.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/AuthManager.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Services/VideoService.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/VideoService.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/VideoService.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/VideoService~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/VideoService.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/VideoService.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/StillMotionSDK.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionSDK.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionSDK.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionSDK~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionSDK.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionSDK.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Utils/Extensions.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Extensions.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Extensions.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Extensions~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Extensions.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/Extensions.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/DetailView.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/DetailView.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/DetailView.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/DetailView~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/DetailView.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/DetailView.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/GalleryView.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GalleryView.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GalleryView.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GalleryView~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GalleryView.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GalleryView.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/GeneratorView.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GeneratorView.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GeneratorView.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GeneratorView~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GeneratorView.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/GeneratorView.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/LoginView.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/LoginView.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/LoginView.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/LoginView~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/LoginView.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/LoginView.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/StillMotionView.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionView.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionView.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionView~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionView.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDK.build/StillMotionView.dia"
+  }
+}

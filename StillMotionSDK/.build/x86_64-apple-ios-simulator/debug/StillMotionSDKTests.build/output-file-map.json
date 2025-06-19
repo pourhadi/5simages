@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDKTests.build/master.swiftdeps"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Tests/StillMotionSDKTests/StillMotionSDKTests.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDKTests.build/StillMotionSDKTests.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDKTests.build/StillMotionSDKTests.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDKTests.build/StillMotionSDKTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDKTests.build/StillMotionSDKTests.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/x86_64-apple-ios-simulator/debug/StillMotionSDKTests.build/StillMotionSDKTests.dia"
+  }
+}
