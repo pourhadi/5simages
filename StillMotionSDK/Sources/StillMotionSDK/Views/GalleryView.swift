@@ -1,4 +1,9 @@
 import SwiftUI
+#if canImport(UIKit)
+import Photos
+#else
+import AppKit
+#endif
 
 struct VideoSelection: Identifiable {
     let id = UUID()
@@ -10,7 +15,7 @@ public struct GalleryView: View {
     @StateObject private var videoService = VideoService.shared
     @State private var selectedVideo: (video: Video, index: Int)?
     @State private var showingGenerator = false
-    @State private var previewVideo: Video?
+    @State private var shareItem: ShareItem?
     
     private let columns = [
         GridItem(.flexible(), spacing: 0),
@@ -34,9 +39,56 @@ public struct GalleryView: View {
                                     .onTapGesture {
                                         selectedVideo = (video, index)
                                     }
-                                    .onLongPressGesture(minimumDuration: 0.3) {
+                                    .contextMenu {
                                         if video.videoStatus == .completed {
-                                            previewVideo = video
+                                            Button(action: {
+                                                selectedVideo = (video, index)
+                                            }) {
+                                                Label("View Details", systemImage: "eye")
+                                            }
+                                            
+                                            Button(action: {
+                                                Task {
+                                                    await downloadGIF(video)
+                                                }
+                                            }) {
+                                                Label("Download", systemImage: "arrow.down.circle")
+                                            }
+                                            
+                                            Button(action: {
+                                                Task {
+                                                    await shareGIF(video)
+                                                }
+                                            }) {
+                                                Label("Share", systemImage: "square.and.arrow.up")
+                                            }
+                                            
+                                            Divider()
+                                            
+                                            Button(role: .destructive, action: {
+                                                Task {
+                                                    try await videoService.deleteVideo(video.id)
+                                                }
+                                            }) {
+                                                Label("Delete", systemImage: "trash")
+                                            }
+                                        }
+                                    } preview: {
+                                        if video.videoStatus == .completed, let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
+                                            VStack(spacing: 12) {
+                                                GalleryGIFPreview(url: url)
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 300, height: 300)
+                                                    .cornerRadius(12)
+                                                
+                                                Text(video.enhancedPrompt ?? video.prompt)
+                                                    .font(.caption)
+                                                    .multilineTextAlignment(.center)
+                                                    .lineLimit(3)
+                                                    .padding(.horizontal)
+                                            }
+                                            .padding()
+                                            .background(backgroundColorCompat)
                                         }
                                     }
                             }
@@ -76,14 +128,18 @@ public struct GalleryView: View {
             .task {
                 await loadVideos()
             }
-            .overlay {
-                if let video = previewVideo {
-                    GIFPreviewOverlay(video: video) {
-                        previewVideo = nil
-                    }
-                }
+            .sheet(item: $shareItem) { item in
+                ShareSheet(items: [item.data])
             }
         }
+    }
+    
+    private var backgroundColorCompat: Color {
+        #if canImport(UIKit)
+        return Color(UIColor.systemBackground)
+        #else
+        return Color(NSColor.windowBackgroundColor)
+        #endif
     }
     
     private var emptyState: some View {
@@ -119,6 +175,66 @@ public struct GalleryView: View {
             print("Failed to load videos: \(error)")
         }
     }
+    
+    private func downloadGIF(_ video: Video) async {
+        guard let gifUrl = video.gifUrl else { return }
+        
+        do {
+            let data = try await videoService.downloadGIF(from: gifUrl)
+            await MainActor.run {
+                saveToPhotos(data: data)
+            }
+        } catch {
+            print("Failed to download GIF: \(error)")
+        }
+    }
+    
+    private func shareGIF(_ video: Video) async {
+        guard let gifUrl = video.gifUrl else { return }
+        
+        do {
+            let data = try await videoService.downloadGIF(from: gifUrl)
+            await MainActor.run {
+                shareItem = ShareItem(data: data)
+            }
+        } catch {
+            print("Failed to share GIF: \(error)")
+        }
+    }
+    
+    private func saveToPhotos(data: Data) {
+        #if canImport(UIKit)
+        PHPhotoLibrary.requestAuthorization { status in
+            guard status == .authorized else { return }
+            
+            PHPhotoLibrary.shared().performChanges({
+                let request = PHAssetCreationRequest.forAsset()
+                request.addResource(with: .photo, data: data, options: nil)
+            }) { success, error in
+                if let error = error {
+                    print("Error saving to photos: \(error)")
+                }
+            }
+        }
+        #else
+        // On macOS, save to Downloads folder
+        let downloadsURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
+        let fileName = "StillMotion_\(Date().timeIntervalSince1970).gif"
+        if let url = downloadsURL?.appendingPathComponent(fileName) {
+            do {
+                try data.write(to: url)
+                NSWorkspace.shared.activateFileViewerSelecting([url])
+            } catch {
+                print("Error saving GIF: \(error)")
+            }
+        }
+        #endif
+    }
+}
+
+struct ShareItem: Identifiable {
+    let id = UUID()
+    let data: Data
 }
 
 struct GalleryItemView: View {
@@ -186,67 +302,6 @@ struct GalleryItemView: View {
     }
 }
 
-struct GIFPreviewOverlay: View {
-    let video: Video
-    let onDismiss: () -> Void
-    @State private var scale: CGFloat = 0.8
-    @State private var opacity: Double = 0
-    
-    var body: some View {
-        ZStack {
-            // Dark background
-            Color.black.opacity(0.8)
-                .ignoresSafeArea()
-                .onTapGesture {
-                    onDismiss()
-                }
-            
-            // Animated GIF
-            if let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
-                VStack(spacing: 20) {
-                    GalleryGIFPreview(url: url)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: getScreenWidth() * 0.9)
-                        .frame(maxHeight: getScreenHeight() * 0.7)
-                        .cornerRadius(12)
-                        .shadow(radius: 20)
-                        .scaleEffect(scale)
-                        .opacity(opacity)
-                    
-                    // Prompt text
-                    Text(video.enhancedPrompt ?? video.prompt)
-                        .font(.caption)
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                        .opacity(opacity)
-                }
-            }
-        }
-        .onAppear {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                scale = 1.0
-                opacity = 1.0
-            }
-        }
-    }
-    
-    private func getScreenWidth() -> CGFloat {
-        #if canImport(UIKit)
-        return UIScreen.main.bounds.width
-        #else
-        return NSScreen.main?.frame.width ?? 800
-        #endif
-    }
-    
-    private func getScreenHeight() -> CGFloat {
-        #if canImport(UIKit)
-        return UIScreen.main.bounds.height
-        #else
-        return NSScreen.main?.frame.height ?? 600
-        #endif
-    }
-}
 
 // Reusable animated GIF preview view
 struct GalleryGIFPreview: View {
