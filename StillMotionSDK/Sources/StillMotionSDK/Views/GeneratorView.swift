@@ -25,7 +25,11 @@ public struct GeneratorView: View {
     @State private var showingImagePicker = false
     @State private var isGenerating = false
     @State private var errorMessage: String?
-    @State private var photosPickerItem: PlatformImagePickerItem?
+    #if canImport(UIKit)
+    @State private var photosPickerItem: PhotosPickerItem?
+    #else
+    @State private var selectedFileURL: URL?
+    #endif
     
     let initialImageData: Data?
     let initialPrompt: String
@@ -80,20 +84,18 @@ public struct GeneratorView: View {
                 EmptyView()
             }
             #endif
+            #if canImport(UIKit)
             .onChange(of: photosPickerItem) { newItem in
                 Task {
                     if let data = try? await newItem?.loadTransferable(type: Data.self) {
-                        #if canImport(UIKit)
                         if let uiImage = UIImage(data: data) {
                             selectedImage = uiImage
                             imageData = data
                         }
-                        #else
-                        imageData = data
-                        #endif
                     }
                 }
             }
+            #endif
             .onAppear {
                 if let initialImageData = initialImageData {
                     imageData = initialImageData
@@ -126,7 +128,7 @@ public struct GeneratorView: View {
                 if panel.runModal() == .OK, let url = panel.url {
                     if let data = try? Data(contentsOf: url) {
                         imageData = data
-                        photosPickerItem = PlatformImagePickerItem(url: url)
+                        selectedFileURL = url
                     }
                 }
                 #endif
