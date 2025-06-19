@@ -54,8 +54,13 @@ public class AuthManager: ObservableObject {
     private let apiClient = APIClient()
     
     var authToken: String? {
-        get { keychain.getToken() }
+        get { 
+            let token = keychain.getToken()
+            print("[AuthManager] Getting auth token: \(token != nil ? "Found (\(String(token!.prefix(10)))...)" : "Not found")")
+            return token
+        }
         set {
+            print("[AuthManager] Setting auth token: \(newValue != nil ? "Setting token (\(String(newValue!.prefix(10)))...)" : "Clearing token")")
             if let token = newValue {
                 keychain.saveToken(token)
             } else {
@@ -123,16 +128,23 @@ public class AuthManager: ObservableObject {
         let request = LoginRequest(email: email, password: password)
         let response: AuthResponse = try await apiClient.request("/api/login", method: .post, body: request)
         
+        print("[AuthManager] Login response received - user: \(response.user.email)")
+        print("[AuthManager] Token received: \(response.token != nil ? "Yes" : "No")")
+        
         self.currentUser = response.user
         self.isAuthenticated = true
         
         if let token = response.token {
+            print("[AuthManager] Saving token: \(String(token.prefix(10)))...")
             self.authToken = token
+        } else {
+            print("[AuthManager] WARNING: No token in login response!")
         }
         
         // Save user data to keychain
         if let userData = try? JSONEncoder().encode(response.user) {
             keychain.saveUserData(userData)
+            print("[AuthManager] Saved user data to keychain")
         }
     }
     

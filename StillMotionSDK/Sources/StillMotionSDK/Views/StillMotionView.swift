@@ -21,14 +21,6 @@ public struct StillMotionView: View {
         .onAppear {
             print("[StillMotionView] View appeared - isAuthenticated: \(authManager.isAuthenticated)")
             print("[StillMotionView] Current user: \(authManager.currentUser?.email ?? "nil")")
-            
-            // Test keychain functionality
-            authManager.testKeychain()
-            
-            // Force a check for auth state
-            Task {
-                await authManager.fetchCurrentUser()
-            }
         }
         .onChange(of: authManager.isAuthenticated) { isAuthenticated in
             print("[StillMotionView] Auth state changed to: \(isAuthenticated)")
