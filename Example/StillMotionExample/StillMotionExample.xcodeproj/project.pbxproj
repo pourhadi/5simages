@@ -3,22 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37F059182E03DC5400A11927 /* StillMotionSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 37F059172E03DC5400A11927 /* StillMotionSDK */; };
 		8D1234561234567812345678 /* StillMotionExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1234551234567812345678 /* StillMotionExampleApp.swift */; };
 		8D1234581234567812345678 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1234571234567812345678 /* ContentView.swift */; };
-		8D12345A1234567912345678 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D1234591234567912345678 /* Assets.xcassets */; };
-		8D12345D1234567912345678 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D12345C1234567912345678 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8D1234521234567812345678 /* StillMotionExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StillMotionExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D1234551234567812345678 /* StillMotionExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillMotionExampleApp.swift; sourceTree = "<group>"; };
 		8D1234571234567812345678 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		8D1234591234567912345678 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		8D12345C1234567912345678 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,6 +23,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37F059182E03DC5400A11927 /* StillMotionSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,18 +51,8 @@
 			children = (
 				8D1234551234567812345678 /* StillMotionExampleApp.swift */,
 				8D1234571234567812345678 /* ContentView.swift */,
-				8D1234591234567912345678 /* Assets.xcassets */,
-				8D12345B1234567912345678 /* Preview Content */,
 			);
 			path = StillMotionExample;
-			sourceTree = "<group>";
-		};
-		8D12345B1234567912345678 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				8D12345C1234567912345678 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -111,6 +99,9 @@
 				Base,
 			);
 			mainGroup = 8D1234491234567812345678;
+			packageReferences = (
+				37F059162E03DC5400A11927 /* XCLocalSwiftPackageReference "../../StillMotionSDK" */,
+			);
 			productRefGroup = 8D1234531234567812345678 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -125,8 +116,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D12345D1234567912345678 /* Preview Assets.xcassets in Resources */,
-				8D12345A1234567912345678 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,7 +260,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"StillMotionExample/Preview Content\"";
+				DEVELOPMENT_TEAM = 84476NUWZH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs access to your photo library to save generated GIFs.";
@@ -300,7 +289,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"StillMotionExample/Preview Content\"";
+				DEVELOPMENT_TEAM = 84476NUWZH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs access to your photo library to save generated GIFs.";
@@ -344,6 +333,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		37F059162E03DC5400A11927 /* XCLocalSwiftPackageReference "../../StillMotionSDK" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../StillMotionSDK;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		37F059172E03DC5400A11927 /* StillMotionSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StillMotionSDK;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8D12344A1234567812345678 /* Project object */;
 }

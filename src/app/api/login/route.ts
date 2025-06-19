@@ -78,9 +78,11 @@ export async function POST(request: NextRequest) {
       user: {
         id: session.user.id,
         email: session.user.email,
+        name: dbUser?.name ?? null,
         credits: dbUser?.credits ?? 5,
         isAdmin: dbUser?.isAdmin ?? false,
-        createdAt: dbUser?.createdAt ?? new Date().toISOString()
+        createdAt: (dbUser?.createdAt ?? new Date()).toISOString(),
+        updatedAt: (dbUser?.updatedAt ?? new Date()).toISOString()
       }
     };
     
