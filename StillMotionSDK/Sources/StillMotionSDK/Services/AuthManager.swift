@@ -8,7 +8,7 @@ public class AuthManager: ObservableObject {
     @Published public private(set) var currentUser: User?
     @Published public private(set) var isAuthenticated = false
     
-    private let keychain = KeychainManager()
+    internal let keychain = KeychainManager()
     private let apiClient = APIClient()
     
     var authToken: String? {
@@ -23,15 +23,47 @@ public class AuthManager: ObservableObject {
     }
     
     private init() {
-        checkAuthStatus()
+        restoreAuthState()
     }
     
-    private func checkAuthStatus() {
+    private func restoreAuthState() {
+        // First try to restore cached user data for immediate UI update
+        if let userData = keychain.getUserData(),
+           let user = try? userDecoder.decode(User.self, from: userData) {
+            self.currentUser = user
+            self.isAuthenticated = true
+        }
+        
+        // Then verify with server and update if needed
         if authToken != nil {
             Task {
                 await fetchCurrentUser()
             }
         }
+    }
+    
+    private var userDecoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            
+            // Try with fractional seconds first
+            if let date = formatter.date(from: dateString) {
+                return date
+            }
+            
+            // Fallback to without fractional seconds
+            formatter.formatOptions = [.withInternetDateTime]
+            if let date = formatter.date(from: dateString) {
+                return date
+            }
+            
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+        }
+        return decoder
     }
     
     public func login(email: String, password: String) async throws {
@@ -43,6 +75,11 @@ public class AuthManager: ObservableObject {
         
         if let token = response.token {
             self.authToken = token
+        }
+        
+        // Save user data to keychain
+        if let userData = try? JSONEncoder().encode(response.user) {
+            keychain.saveUserData(userData)
         }
     }
     
@@ -56,6 +93,11 @@ public class AuthManager: ObservableObject {
         if let token = response.token {
             self.authToken = token
         }
+        
+        // Save user data to keychain
+        if let userData = try? JSONEncoder().encode(response.user) {
+            keychain.saveUserData(userData)
+        }
     }
     
     public func forgotPassword(email: String) async throws {
@@ -67,6 +109,7 @@ public class AuthManager: ObservableObject {
         self.currentUser = nil
         self.isAuthenticated = false
         self.authToken = nil
+        keychain.deleteUserData()
     }
     
     public func fetchCurrentUser() async {
@@ -76,10 +119,38 @@ public class AuthManager: ObservableObject {
             let user: User = try await apiClient.request("/api/user")
             self.currentUser = user
             self.isAuthenticated = true
+            
+            // Update cached user data
+            if let userData = try? JSONEncoder().encode(user) {
+                keychain.saveUserData(userData)
+            }
         } catch {
             if case APIError.unauthorized = error {
                 logout()
             }
+        }
+    }
+    
+    internal func updateUserCredits(_ credits: Int) {
+        guard let user = currentUser else { return }
+        
+        // Create a new user instance with updated credits
+        let updatedUser = User(
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            credits: credits,
+            isAdmin: user.isAdmin,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+        )
+        
+        // Update the current user
+        self.currentUser = updatedUser
+        
+        // Save to keychain for persistence
+        if let userData = try? JSONEncoder().encode(updatedUser) {
+            keychain.saveUserData(userData)
         }
     }
 }
@@ -87,6 +158,7 @@ public class AuthManager: ObservableObject {
 class KeychainManager {
     private let service = "ai.stillmotion.sdk"
     private let tokenKey = "authToken"
+    private let userDataKey = "userData"
     
     func saveToken(_ token: String) {
         let data = token.data(using: .utf8)!
@@ -126,6 +198,47 @@ class KeychainManager {
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: tokenKey
+        ]
+        
+        SecItemDelete(query as CFDictionary)
+    }
+    
+    func saveUserData(_ data: Data) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: userDataKey,
+            kSecValueData as String: data
+        ]
+        
+        SecItemDelete(query as CFDictionary)
+        SecItemAdd(query as CFDictionary, nil)
+    }
+    
+    func getUserData() -> Data? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: userDataKey,
+            kSecReturnData as String: true
+        ]
+        
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        
+        guard status == errSecSuccess,
+              let data = result as? Data else {
+            return nil
+        }
+        
+        return data
+    }
+    
+    func deleteUserData() {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: userDataKey
         ]
         
         SecItemDelete(query as CFDictionary)
