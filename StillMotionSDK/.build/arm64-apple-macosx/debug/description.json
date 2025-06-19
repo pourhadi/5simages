@@ -28,6 +28,10 @@
       "inputs" : [
         {
           "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Helpers/CrossPlatform.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/AuthModels.swift"
         },
         {
@@ -56,6 +60,14 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Utils/Extensions.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/AnimatedGIFView.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/DetailView.swift"
         },
         {
@@ -80,10 +92,6 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/Modules/SwiftSoup.swiftmodule"
-        },
-        {
-          "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/sources"
         }
       ],
@@ -91,6 +99,7 @@
       "moduleName" : "StillMotionSDK",
       "moduleOutputPath" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/Modules/StillMotionSDK.swiftmodule",
       "objects" : [
+        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/CrossPlatform.swift.o",
         "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AuthModels.swift.o",
         "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/User.swift.o",
         "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/Video.swift.o",
@@ -98,6 +107,8 @@
         "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AuthManager.swift.o",
         "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/VideoService.swift.o",
         "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/StillMotionSDK.swift.o",
+        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/Extensions.swift.o",
+        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AnimatedGIFView.swift.o",
         "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/DetailView.swift.o",
         "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/GalleryView.swift.o",
         "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/GeneratorView.swift.o",
@@ -106,7 +117,7 @@
       ],
       "otherArguments" : [
         "-target",
-        "arm64-apple-macosx10.15",
+        "arm64-apple-macosx13.0",
         "-incremental",
         "-enable-batch-mode",
         "-serialize-diagnostics",
@@ -163,6 +174,10 @@
       "outputs" : [
         {
           "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/CrossPlatform.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AuthModels.swift.o"
         },
         {
@@ -191,6 +206,14 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/Extensions.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AnimatedGIFView.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/DetailView.swift.o"
         },
         {
@@ -216,6 +239,7 @@
       ],
       "prepareForIndexing" : false,
       "sources" : [
+        "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Helpers/CrossPlatform.swift",
         "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/AuthModels.swift",
         "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/User.swift",
         "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/Video.swift",
@@ -223,6 +247,8 @@
         "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Services/AuthManager.swift",
         "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Services/VideoService.swift",
         "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/StillMotionSDK.swift",
+        "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Utils/Extensions.swift",
+        "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/AnimatedGIFView.swift",
         "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/DetailView.swift",
         "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/GalleryView.swift",
         "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/GeneratorView.swift",
@@ -262,7 +288,7 @@
       ],
       "otherArguments" : [
         "-target",
-        "arm64-apple-macosx10.15",
+        "arm64-apple-macosx13.0",
         "-incremental",
         "-enable-batch-mode",
         "-serialize-diagnostics",
@@ -432,694 +458,6 @@
       ],
       "tempsPath" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDKTests.build",
       "wholeModuleOptimization" : false
-    },
-    "C.SwiftSoup-arm64-apple-macosx26.0-debug.module" : {
-      "executable" : "/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
-      "fileList" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/sources",
-      "importPath" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/Modules",
-      "inputs" : [
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ArrayExt.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Attribute.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Attributes.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/BinarySearch.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/BooleanAttribute.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CharacterExt.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CharacterReader.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Cleaner.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Collector.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CombiningEvaluator.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Comment.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Connection.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CssSelector.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DataNode.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DataUtil.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Document.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DocumentType.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Element.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Elements.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Entities.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Evaluator.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Exception.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/FormElement.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HtmlTreeBuilder.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HtmlTreeBuilderState.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HttpStatusException.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Mutex.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Node.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/NodeTraversor.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/NodeVisitor.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/OrderedSet.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseError.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseErrorList.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseSettings.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Parser.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParsingStrings.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Pattern.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/QueryParser.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SerializationException.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SimpleDictionary.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StreamReader.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/String.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StringBuilder.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StringUtil.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StructuralEvaluator.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SwiftSoup.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Tag.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TextNode.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Token.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TokenQueue.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Tokeniser.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TokeniserState.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TreeBuilder.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UTF8Arrays.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UnfairLock.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UnicodeScalar.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Validate.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Whitelist.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/XmlDeclaration.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/XmlTreeBuilder.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/swift-version-39B54973F684ADAB.txt"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/sources"
-        }
-      ],
-      "isLibrary" : true,
-      "moduleName" : "SwiftSoup",
-      "moduleOutputPath" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/Modules/SwiftSoup.swiftmodule",
-      "objects" : [
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ArrayExt.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Attribute.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Attributes.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/BinarySearch.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/BooleanAttribute.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CharacterExt.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CharacterReader.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Cleaner.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Collector.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CombiningEvaluator.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Comment.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Connection.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CssSelector.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/DataNode.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/DataUtil.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Document.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/DocumentType.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Element.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Elements.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Entities.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Evaluator.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Exception.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/FormElement.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/HtmlTreeBuilder.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/HtmlTreeBuilderState.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/HttpStatusException.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Mutex.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Node.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/NodeTraversor.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/NodeVisitor.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/OrderedSet.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParseError.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParseErrorList.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParseSettings.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Parser.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParsingStrings.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Pattern.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/QueryParser.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SerializationException.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SimpleDictionary.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StreamReader.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/String.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StringBuilder.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StringUtil.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StructuralEvaluator.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SwiftSoup.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Tag.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TextNode.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Token.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TokenQueue.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Tokeniser.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TokeniserState.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TreeBuilder.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/UTF8Arrays.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/UnfairLock.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/UnicodeScalar.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Validate.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Whitelist.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/XmlDeclaration.swift.o",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/XmlTreeBuilder.swift.o"
-      ],
-      "otherArguments" : [
-        "-target",
-        "arm64-apple-macosx10.15",
-        "-incremental",
-        "-enable-batch-mode",
-        "-serialize-diagnostics",
-        "-index-store-path",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/index/store",
-        "-Onone",
-        "-enable-testing",
-        "-j14",
-        "-DSWIFT_PACKAGE",
-        "-DDEBUG",
-        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
-        "-module-cache-path",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/ModuleCache",
-        "-parseable-output",
-        "-parse-as-library",
-        "-emit-objc-header",
-        "-emit-objc-header-path",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SwiftSoup-Swift.h",
-        "-swift-version",
-        "5",
-        "-plugin-path",
-        "/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
-        "-sdk",
-        "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk",
-        "-F",
-        "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
-        "-F",
-        "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
-        "-I",
-        "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
-        "-L",
-        "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
-        "-g",
-        "-Xcc",
-        "-isysroot",
-        "-Xcc",
-        "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk",
-        "-Xcc",
-        "-F",
-        "-Xcc",
-        "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
-        "-Xcc",
-        "-F",
-        "-Xcc",
-        "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
-        "-Xcc",
-        "-fPIC",
-        "-Xcc",
-        "-g",
-        "-suppress-warnings",
-        "-package-name",
-        "swiftsoup"
-      ],
-      "outputFileMapPath" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/output-file-map.json",
-      "outputs" : [
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ArrayExt.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Attribute.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Attributes.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/BinarySearch.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/BooleanAttribute.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CharacterExt.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CharacterReader.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Cleaner.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Collector.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CombiningEvaluator.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Comment.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Connection.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CssSelector.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/DataNode.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/DataUtil.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Document.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/DocumentType.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Element.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Elements.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Entities.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Evaluator.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Exception.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/FormElement.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/HtmlTreeBuilder.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/HtmlTreeBuilderState.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/HttpStatusException.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Mutex.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Node.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/NodeTraversor.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/NodeVisitor.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/OrderedSet.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParseError.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParseErrorList.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParseSettings.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Parser.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParsingStrings.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Pattern.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/QueryParser.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SerializationException.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SimpleDictionary.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StreamReader.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/String.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StringBuilder.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StringUtil.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StructuralEvaluator.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SwiftSoup.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Tag.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TextNode.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Token.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TokenQueue.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Tokeniser.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TokeniserState.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TreeBuilder.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/UTF8Arrays.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/UnfairLock.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/UnicodeScalar.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Validate.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Whitelist.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/XmlDeclaration.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/XmlTreeBuilder.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/Modules/SwiftSoup.swiftmodule"
-        }
-      ],
-      "prepareForIndexing" : false,
-      "sources" : [
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ArrayExt.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Attribute.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Attributes.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/BinarySearch.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/BooleanAttribute.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CharacterExt.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CharacterReader.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Cleaner.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Collector.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CombiningEvaluator.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Comment.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Connection.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CssSelector.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DataNode.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DataUtil.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Document.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DocumentType.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Element.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Elements.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Entities.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Evaluator.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Exception.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/FormElement.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HtmlTreeBuilder.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HtmlTreeBuilderState.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HttpStatusException.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Mutex.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Node.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/NodeTraversor.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/NodeVisitor.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/OrderedSet.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseError.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseErrorList.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseSettings.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Parser.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParsingStrings.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Pattern.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/QueryParser.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SerializationException.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SimpleDictionary.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StreamReader.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/String.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StringBuilder.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StringUtil.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StructuralEvaluator.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SwiftSoup.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Tag.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TextNode.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Token.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TokenQueue.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Tokeniser.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TokeniserState.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TreeBuilder.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UTF8Arrays.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UnfairLock.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UnicodeScalar.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Validate.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Whitelist.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/XmlDeclaration.swift",
-        "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/XmlTreeBuilder.swift"
-      ],
-      "tempsPath" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build",
-      "wholeModuleOptimization" : false
     }
   },
   "swiftFrontendCommands" : {
@@ -1133,6 +471,7 @@
       "-package-name",
       "stillmotionsdk",
       "-c",
+      "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Helpers/CrossPlatform.swift",
       "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/AuthModels.swift",
       "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/User.swift",
       "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/Video.swift",
@@ -1140,6 +479,8 @@
       "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Services/AuthManager.swift",
       "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Services/VideoService.swift",
       "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/StillMotionSDK.swift",
+      "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Utils/Extensions.swift",
+      "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/AnimatedGIFView.swift",
       "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/DetailView.swift",
       "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/GalleryView.swift",
       "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/GeneratorView.swift",
@@ -1148,7 +489,7 @@
       "-I",
       "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/Modules",
       "-target",
-      "arm64-apple-macosx10.15",
+      "arm64-apple-macosx13.0",
       "-incremental",
       "-enable-batch-mode",
       "-serialize-diagnostics",
@@ -1214,7 +555,7 @@
       "-I",
       "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/Modules",
       "-target",
-      "arm64-apple-macosx10.15",
+      "arm64-apple-macosx13.0",
       "-incremental",
       "-enable-batch-mode",
       "-serialize-diagnostics",
@@ -1333,149 +674,18 @@
       "stillmotionsdk",
       "-driver-use-frontend-path",
       "/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
-    ],
-    "SwiftSoup" : [
-      "/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
-      "-module-name",
-      "SwiftSoup",
-      "-package-name",
-      "swiftsoup",
-      "-c",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ArrayExt.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Attribute.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Attributes.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/BinarySearch.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/BooleanAttribute.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CharacterExt.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CharacterReader.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Cleaner.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Collector.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CombiningEvaluator.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Comment.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Connection.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CssSelector.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DataNode.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DataUtil.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Document.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DocumentType.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Element.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Elements.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Entities.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Evaluator.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Exception.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/FormElement.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HtmlTreeBuilder.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HtmlTreeBuilderState.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HttpStatusException.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Mutex.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Node.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/NodeTraversor.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/NodeVisitor.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/OrderedSet.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseError.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseErrorList.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseSettings.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Parser.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParsingStrings.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Pattern.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/QueryParser.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SerializationException.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SimpleDictionary.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StreamReader.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/String.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StringBuilder.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StringUtil.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StructuralEvaluator.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SwiftSoup.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Tag.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TextNode.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Token.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TokenQueue.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Tokeniser.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TokeniserState.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TreeBuilder.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UTF8Arrays.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UnfairLock.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UnicodeScalar.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Validate.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Whitelist.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/XmlDeclaration.swift",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/XmlTreeBuilder.swift",
-      "-I",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/Modules",
-      "-target",
-      "arm64-apple-macosx10.15",
-      "-incremental",
-      "-enable-batch-mode",
-      "-serialize-diagnostics",
-      "-index-store-path",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/index/store",
-      "-Onone",
-      "-enable-testing",
-      "-j14",
-      "-DSWIFT_PACKAGE",
-      "-DDEBUG",
-      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
-      "-module-cache-path",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/ModuleCache",
-      "-parseable-output",
-      "-parse-as-library",
-      "-emit-objc-header",
-      "-emit-objc-header-path",
-      "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SwiftSoup-Swift.h",
-      "-swift-version",
-      "5",
-      "-plugin-path",
-      "/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
-      "-sdk",
-      "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk",
-      "-F",
-      "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
-      "-F",
-      "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
-      "-I",
-      "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
-      "-L",
-      "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
-      "-g",
-      "-Xcc",
-      "-isysroot",
-      "-Xcc",
-      "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk",
-      "-Xcc",
-      "-F",
-      "-Xcc",
-      "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
-      "-Xcc",
-      "-F",
-      "-Xcc",
-      "/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
-      "-Xcc",
-      "-fPIC",
-      "-Xcc",
-      "-g",
-      "-suppress-warnings",
-      "-package-name",
-      "swiftsoup",
-      "-driver-use-frontend-path",
-      "/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
     ]
   },
   "targetDependencyMap" : {
     "StillMotionSDK" : [
-      "SwiftSoup"
+
     ],
     "StillMotionSDKPackageTests" : [
       "StillMotionSDKTests",
-      "StillMotionSDK",
-      "SwiftSoup"
+      "StillMotionSDK"
     ],
     "StillMotionSDKTests" : [
-      "StillMotionSDK",
-      "SwiftSoup"
-    ],
-    "SwiftSoup" : [
-
+      "StillMotionSDK"
     ]
   },
   "testDiscoveryCommands" : {
@@ -1509,6 +719,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Helpers/CrossPlatform.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/AuthModels.swift"
         },
         {
@@ -1534,6 +748,14 @@
         {
           "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/StillMotionSDK.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Utils/Extensions.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/AnimatedGIFView.swift"
         },
         {
           "kind" : "file",
@@ -1585,6 +807,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AnimatedGIFView.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AuthManager.swift.o"
         },
         {
@@ -1593,7 +819,15 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/CrossPlatform.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/DetailView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/Extensions.swift.o"
         },
         {
           "kind" : "file",
@@ -1634,246 +868,6 @@
         {
           "kind" : "file",
           "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDKTests.build/StillMotionSDKTests.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ArrayExt.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Attribute.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Attributes.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/BinarySearch.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/BooleanAttribute.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CharacterExt.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CharacterReader.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Cleaner.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Collector.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CombiningEvaluator.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Comment.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Connection.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/CssSelector.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/DataNode.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/DataUtil.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Document.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/DocumentType.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Element.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Elements.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Entities.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Evaluator.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Exception.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/FormElement.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/HtmlTreeBuilder.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/HtmlTreeBuilderState.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/HttpStatusException.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Mutex.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Node.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/NodeTraversor.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/NodeVisitor.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/OrderedSet.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParseError.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParseErrorList.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParseSettings.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Parser.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/ParsingStrings.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Pattern.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/QueryParser.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SerializationException.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SimpleDictionary.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StreamReader.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/String.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StringBuilder.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StringUtil.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/StructuralEvaluator.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/SwiftSoup.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Tag.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TextNode.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Token.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TokenQueue.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Tokeniser.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TokeniserState.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/TreeBuilder.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/UTF8Arrays.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/UnfairLock.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/UnicodeScalar.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Validate.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/Whitelist.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/XmlDeclaration.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/XmlTreeBuilder.swift.o"
         }
       ],
       "outputFilePath" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDKPackageTests.product/Objects.LinkFileList"
@@ -1891,256 +885,6 @@
         }
       ],
       "outputFilePath" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDKTests.build/sources"
-    },
-    "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/sources" : {
-      "alwaysOutOfDate" : false,
-      "inputs" : [
-        {
-          "kind" : "virtual",
-          "name" : "<sources-file-list>"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ArrayExt.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Attribute.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Attributes.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/BinarySearch.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/BooleanAttribute.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CharacterExt.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CharacterReader.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Cleaner.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Collector.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CombiningEvaluator.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Comment.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Connection.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/CssSelector.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DataNode.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DataUtil.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Document.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/DocumentType.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Element.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Elements.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Entities.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Evaluator.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Exception.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/FormElement.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HtmlTreeBuilder.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HtmlTreeBuilderState.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/HttpStatusException.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Mutex.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Node.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/NodeTraversor.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/NodeVisitor.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/OrderedSet.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseError.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseErrorList.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParseSettings.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Parser.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/ParsingStrings.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Pattern.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/QueryParser.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SerializationException.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SimpleDictionary.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StreamReader.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/String.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StringBuilder.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StringUtil.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/StructuralEvaluator.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/SwiftSoup.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Tag.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TextNode.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Token.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TokenQueue.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Tokeniser.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TokeniserState.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/TreeBuilder.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UTF8Arrays.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UnfairLock.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/UnicodeScalar.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Validate.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/Whitelist.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/XmlDeclaration.swift"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/dan/projects/i2v/StillMotionSDK/.build/checkouts/SwiftSoup/Sources/XmlTreeBuilder.swift"
-        }
-      ],
-      "outputFilePath" : "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/SwiftSoup.build/sources"
     },
     "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/swift-version-39B54973F684ADAB.txt" : {
       "alwaysOutOfDate" : true,

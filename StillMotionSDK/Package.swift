@@ -6,20 +6,17 @@ let package = Package(
     name: "StillMotionSDK",
     platforms: [
         .iOS(.v16),
-        .macOS(.v10_15)
+        .macOS(.v13)
     ],
     products: [
         .library(
             name: "StillMotionSDK",
             targets: ["StillMotionSDK"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/scinfu/SwiftSoup.git", from: "2.6.0"),
-    ],
+    dependencies: [],
     targets: [
         .target(
-            name: "StillMotionSDK",
-            dependencies: ["SwiftSoup"]),
+            name: "StillMotionSDK"),
         .testTarget(
             name: "StillMotionSDKTests",
             dependencies: ["StillMotionSDK"]),

@@ -1,5 +1,10 @@
 import SwiftUI
+#if canImport(UIKit)
 import Photos
+#else
+import AppKit
+import UniformTypeIdentifiers
+#endif
 
 public struct DetailView: View {
     @StateObject private var videoService = VideoService.shared
@@ -19,37 +24,9 @@ public struct DetailView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    if video.videoStatus == .completed, let gifUrl = video.gifUrl {
-                        AsyncImage(url: URL(string: gifUrl)) { phase in
-                            switch phase {
-                            case .empty:
-                                Rectangle()
-                                    .fill(Color.gray.opacity(0.2))
-                                    .aspectRatio(1, contentMode: .fit)
-                                    .overlay {
-                                        ProgressView()
-                                    }
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                            case .failure(_):
-                                Rectangle()
-                                    .fill(Color.gray.opacity(0.2))
-                                    .aspectRatio(1, contentMode: .fit)
-                                    .overlay {
-                                        VStack(spacing: 12) {
-                                            Image(systemName: "exclamationmark.triangle")
-                                                .font(.largeTitle)
-                                                .foregroundStyle(.secondary)
-                                            Text("Failed to load GIF")
-                                                .foregroundStyle(.secondary)
-                                        }
-                                    }
-                            @unknown default:
-                                EmptyView()
-                            }
-                        }
+                    if video.videoStatus == .completed, let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
+                        AnimatedGIF(url: url)
+                            .aspectRatio(contentMode: .fit)
                     } else {
                         statusView
                     }
@@ -57,15 +34,17 @@ public struct DetailView: View {
                     detailPane
                 }
             }
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Close") {
                         dismiss()
                     }
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Menu {
                         if video.videoStatus == .completed {
                             Button(action: handleDownload) {
@@ -247,7 +226,7 @@ public struct DetailView: View {
             .padding(.horizontal)
             .padding(.bottom)
         }
-        .background(Color(.systemBackground))
+        .background(Color.systemBackground)
     }
     
     private func formattedDate(_ date: Date) -> String? {
@@ -296,6 +275,7 @@ public struct DetailView: View {
     }
     
     private func saveToPhotos(data: Data) {
+        #if canImport(UIKit)
         PHPhotoLibrary.requestAuthorization { status in
             guard status == .authorized else { return }
             
@@ -308,6 +288,19 @@ public struct DetailView: View {
                 }
             }
         }
+        #else
+        // On macOS, save to Downloads folder
+        let downloadsURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
+        let fileName = "StillMotion_\(Date().timeIntervalSince1970).gif"
+        if let url = downloadsURL?.appendingPathComponent(fileName) {
+            do {
+                try data.write(to: url)
+                NSWorkspace.shared.activateFileViewerSelecting([url])
+            } catch {
+                print("Error saving GIF: \(error)")
+            }
+        }
+        #endif
     }
     
     private func handleDelete() {
@@ -343,6 +336,7 @@ public struct DetailView: View {
     }
 }
 
+#if canImport(UIKit)
 struct ShareSheet: UIViewControllerRepresentable {
     let items: [Any]
     
@@ -352,3 +346,23 @@ struct ShareSheet: UIViewControllerRepresentable {
     
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
+#else
+struct ShareSheet: View {
+    let items: [Any]
+    
+    var body: some View {
+        EmptyView()
+            .onAppear {
+                if let data = items.first as? Data {
+                    let savePanel = NSSavePanel()
+                    savePanel.allowedContentTypes = [.gif]
+                    savePanel.nameFieldStringValue = "animation.gif"
+                    
+                    if savePanel.runModal() == .OK, let url = savePanel.url {
+                        try? data.write(to: url)
+                    }
+                }
+            }
+    }
+}
+#endif

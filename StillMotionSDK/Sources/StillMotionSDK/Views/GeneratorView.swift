@@ -1,7 +1,10 @@
 import SwiftUI
-import PhotosUI
 #if canImport(UIKit)
+import PhotosUI
 import UIKit
+#else
+import AppKit
+import UniformTypeIdentifiers
 #endif
 
 public struct GeneratorView: View {
@@ -22,7 +25,7 @@ public struct GeneratorView: View {
     @State private var showingImagePicker = false
     @State private var isGenerating = false
     @State private var errorMessage: String?
-    @State private var photosPickerItem: PhotosPickerItem?
+    @State private var photosPickerItem: PlatformImagePickerItem?
     
     let initialImageData: Data?
     let initialPrompt: String
@@ -59,15 +62,24 @@ public struct GeneratorView: View {
                 .padding()
             }
             .navigationTitle("Create GIF")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
                         dismiss()
                     }
                 }
             }
+            #if canImport(UIKit)
             .photosPicker(isPresented: $showingImagePicker, selection: $photosPickerItem, matching: .images)
+            #else
+            .sheet(isPresented: $showingImagePicker) {
+                // macOS file picker is handled in button action
+                EmptyView()
+            }
+            #endif
             .onChange(of: photosPickerItem) { newItem in
                 Task {
                     if let data = try? await newItem?.loadTransferable(type: Data.self) {
@@ -101,7 +113,24 @@ public struct GeneratorView: View {
             Text("Image")
                 .font(.headline)
             
-            Button(action: { showingImagePicker = true }) {
+            Button(action: { 
+                #if canImport(UIKit)
+                showingImagePicker = true
+                #else
+                // On macOS, show file picker immediately
+                let panel = NSOpenPanel()
+                panel.allowedContentTypes = [.image]
+                panel.allowsMultipleSelection = false
+                panel.canChooseDirectories = false
+                
+                if panel.runModal() == .OK, let url = panel.url {
+                    if let data = try? Data(contentsOf: url) {
+                        imageData = data
+                        photosPickerItem = PlatformImagePickerItem(url: url)
+                    }
+                }
+                #endif
+            }) {
                 #if canImport(UIKit)
                 if let selectedImage = selectedImage {
                     Image(uiImage: selectedImage)
@@ -121,10 +150,12 @@ public struct GeneratorView: View {
                     placeholderImage
                 }
                 #else
-                if imageData != nil {
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
+                if let imageData = imageData, let nsImage = NSImage(data: imageData) {
+                    Image(nsImage: nsImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                         .frame(height: 200)
+                        .clipped()
                         .cornerRadius(12)
                         .overlay(alignment: .topTrailing) {
                             Image(systemName: "pencil.circle.fill")
@@ -316,7 +347,7 @@ public struct GeneratorView: View {
         
         Task {
             do {
-                let videos = try await videoService.generateVideo(
+                let _ = try await videoService.generateVideo(
                     imageData: imageData,
                     prompt: prompt,
                     enhancePrompt: enhancePrompt,

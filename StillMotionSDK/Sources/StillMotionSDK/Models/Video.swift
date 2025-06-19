@@ -50,7 +50,7 @@ public struct Video: Codable, Identifiable {
     }
     
     public var credits: Int {
-        return mode.credits
+        return mode == .premium ? 3 : 2
     }
 }
 

@@ -2,6 +2,13 @@
   "": {
     "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/master.swiftdeps"
   },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Helpers/CrossPlatform.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/CrossPlatform.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/CrossPlatform.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/CrossPlatform~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/CrossPlatform.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/CrossPlatform.dia"
+  },
   "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Models/AuthModels.swift": {
     "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AuthModels.d",
     "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AuthModels.swift.o",
@@ -50,6 +57,20 @@
     "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/StillMotionSDK~partial.swiftmodule",
     "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/StillMotionSDK.swiftdeps",
     "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/StillMotionSDK.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Utils/Extensions.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/Extensions.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/Extensions.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/Extensions~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/Extensions.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/Extensions.dia"
+  },
+  "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/AnimatedGIFView.swift": {
+    "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AnimatedGIFView.d",
+    "object": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AnimatedGIFView.swift.o",
+    "swiftmodule": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AnimatedGIFView~partial.swiftmodule",
+    "swift-dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AnimatedGIFView.swiftdeps",
+    "diagnostics": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/AnimatedGIFView.dia"
   },
   "/Users/dan/projects/i2v/StillMotionSDK/Sources/StillMotionSDK/Views/DetailView.swift": {
     "dependencies": "/Users/dan/projects/i2v/StillMotionSDK/.build/arm64-apple-macosx/debug/StillMotionSDK.build/DetailView.d",

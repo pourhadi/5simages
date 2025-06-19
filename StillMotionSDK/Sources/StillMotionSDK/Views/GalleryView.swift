@@ -41,9 +41,11 @@ public struct GalleryView: View {
                 }
             }
             .navigationTitle("My GIFs")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.large)
+            #endif
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button(action: { showingGenerator = true }) {
                         Image(systemName: "plus.circle.fill")
                             .font(.title2)
@@ -103,34 +105,8 @@ struct GalleryItemView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                if let gifUrl = video.gifUrl, video.videoStatus == .completed {
-                    AsyncImage(url: URL(string: gifUrl)) { phase in
-                        switch phase {
-                        case .empty:
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .overlay {
-                                    ProgressView()
-                                }
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: geometry.size.width, height: geometry.size.height)
-                                .clipped()
-                        case .failure(_):
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .overlay {
-                                    Image(systemName: "exclamationmark.triangle")
-                                        .foregroundStyle(.secondary)
-                                }
-                        @unknown default:
-                            EmptyView()
-                        }
-                    }
-                } else {
-                    AsyncImage(url: URL(string: video.imageUrl)) { phase in
+                // Always show static image in gallery
+                AsyncImage(url: URL(string: video.imageUrl)) { phase in
                         switch phase {
                         case .empty:
                             Rectangle()
@@ -169,7 +145,6 @@ struct GalleryItemView: View {
                             EmptyView()
                         }
                     }
-                }
                 
                 if video.videoStatus == .failed {
                     ZStack {

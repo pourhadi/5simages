@@ -40,14 +40,18 @@ public struct LoginView: View {
                         if isRegistering {
                             TextField("Name (optional)", text: $name)
                                 .textFieldStyle(.roundedBorder)
+                                #if os(iOS)
                                 .textInputAutocapitalization(.words)
+                                #endif
                                 .autocorrectionDisabled()
                         }
                         
                         TextField("Email", text: $email)
                             .textFieldStyle(.roundedBorder)
+                            #if os(iOS)
                             .keyboardType(.emailAddress)
                             .textInputAutocapitalization(.never)
+                            #endif
                             .autocorrectionDisabled()
                         
                         SecureField("Password", text: $password)
@@ -105,7 +109,9 @@ public struct LoginView: View {
                 }
                 .padding(.bottom, 40)
             }
+            #if os(iOS)
             .navigationBarHidden(true)
+            #endif
             .sheet(isPresented: $showForgotPassword) {
                 ForgotPasswordView()
             }
@@ -166,8 +172,10 @@ struct ForgotPasswordView: View {
                 VStack(spacing: 16) {
                     TextField("Email", text: $email)
                         .textFieldStyle(.roundedBorder)
+                        #if os(iOS)
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
+                        #endif
                         .autocorrectionDisabled()
                     
                     if let message = message {
@@ -197,7 +205,11 @@ struct ForgotPasswordView: View {
                 
                 Spacer()
             }
-            .navigationBarItems(trailing: Button("Cancel") { dismiss() })
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
         }
     }
     
