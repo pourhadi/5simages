@@ -75,22 +75,13 @@ public struct GalleryView: View {
                                         }
                                     } preview: {
                                         if video.videoStatus == .completed, let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
-                                            VStack(spacing: 12) {
-                                                GalleryGIFPreview(url: url)
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(maxWidth: 400)
-                                                    .frame(minHeight: 200, maxHeight: 600)
-                                                    .cornerRadius(12)
-                                                
-                                                Text(video.enhancedPrompt ?? video.prompt)
-                                                    .font(.caption)
-                                                    .multilineTextAlignment(.center)
-                                                    .lineLimit(3)
-                                                    .frame(maxWidth: 400)
-                                                    .padding(.horizontal)
-                                            }
-                                            .padding()
-                                            .background(backgroundColorCompat)
+                                            GalleryGIFPreview(url: url)
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(maxWidth: 400)
+                                                .frame(minHeight: 200, maxHeight: 600)
+                                                .cornerRadius(12)
+                                                .padding()
+                                                .background(backgroundColorCompat)
                                         }
                                     }
                             }
