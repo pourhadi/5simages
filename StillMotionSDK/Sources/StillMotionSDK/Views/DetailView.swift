@@ -26,16 +26,19 @@ public struct DetailView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    if video.videoStatus == .completed, let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
-                        AnimatedGIFContainer(url: url)
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxHeight: 400)
-                            .padding(.horizontal)
-                    } else {
-                        statusView
-                            .frame(maxHeight: 400)
-                            .padding(.horizontal)
+                    VStack {
+                        if video.videoStatus == .completed, let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
+                            AnimatedGIFContainer(url: url)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxHeight: 400)
+                                .clipped()
+                        } else {
+                            statusView
+                                .frame(maxHeight: 400)
+                        }
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal)
                     
                     detailPane
                 }
@@ -403,6 +406,9 @@ struct AnimatedGIFUIView: UIViewRepresentable {
     func makeUIView(context: Context) -> UIImageView {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        imageView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        imageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         loadGIF(into: imageView)
         return imageView
     }
