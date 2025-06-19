@@ -5,6 +5,48 @@ import Combine
 public class AuthManager: ObservableObject {
     static let shared = AuthManager()
     
+    public static func initialize() {
+        // Force initialization of the singleton
+        _ = shared
+    }
+    
+    public func testKeychain() {
+        print("[AuthManager] Testing keychain...")
+        
+        // Test token operations
+        let testToken = "test-token-12345"
+        keychain.saveToken(testToken)
+        let retrievedToken = keychain.getToken()
+        print("[AuthManager] Token test - saved: \(testToken), retrieved: \(retrievedToken ?? "nil")")
+        
+        // Test user data operations
+        let testUser = User(
+            id: "test-id",
+            email: "test@example.com",
+            name: "Test User",
+            credits: 10,
+            isAdmin: false,
+            createdAt: Date(),
+            updatedAt: Date()
+        )
+        
+        if let userData = try? JSONEncoder().encode(testUser) {
+            keychain.saveUserData(userData)
+            let retrievedData = keychain.getUserData()
+            
+            if let retrievedData = retrievedData,
+               let retrievedUser = try? userDecoder.decode(User.self, from: retrievedData) {
+                print("[AuthManager] User data test - saved: \(testUser.email), retrieved: \(retrievedUser.email)")
+            } else {
+                print("[AuthManager] User data test - failed to retrieve or decode")
+            }
+        }
+        
+        // Clean up test data
+        keychain.deleteToken()
+        keychain.deleteUserData()
+    }
+    
     @Published public private(set) var currentUser: User?
     @Published public private(set) var isAuthenticated = false
     
@@ -23,34 +65,33 @@ public class AuthManager: ObservableObject {
     }
     
     private init() {
+        print("[AuthManager] Initializing AuthManager...")
         restoreAuthState()
     }
     
     private func restoreAuthState() {
-        Task { @MainActor in
-            print("[AuthManager] Restoring auth state...")
+        print("[AuthManager] Restoring auth state...")
+        
+        // Check if we have a saved token
+        if let token = authToken {
+            print("[AuthManager] Found saved token: \(String(token.prefix(10)))...")
             
-            // Check if we have a saved token
-            if let token = authToken {
-                print("[AuthManager] Found saved token: \(String(token.prefix(10)))...")
-                
-                // First try to restore cached user data for immediate UI update
-                if let userData = keychain.getUserData(),
-                   let user = try? userDecoder.decode(User.self, from: userData) {
-                    print("[AuthManager] Restored user from cache: \(user.email)")
-                    self.currentUser = user
-                    self.isAuthenticated = true
-                    print("[AuthManager] Auth state updated - isAuthenticated: \(self.isAuthenticated)")
-                }
-                
-                // Then verify with server and update if needed
-                Task {
-                    print("[AuthManager] Verifying auth with server...")
-                    await fetchCurrentUser()
-                }
-            } else {
-                print("[AuthManager] No saved token found")
+            // First try to restore cached user data for immediate UI update
+            if let userData = keychain.getUserData(),
+               let user = try? userDecoder.decode(User.self, from: userData) {
+                print("[AuthManager] Restored user from cache: \(user.email)")
+                self.currentUser = user
+                self.isAuthenticated = true
+                print("[AuthManager] Auth state updated - isAuthenticated: \(self.isAuthenticated)")
             }
+            
+            // Then verify with server and update if needed in background
+            Task { @MainActor in
+                print("[AuthManager] Verifying auth with server...")
+                await fetchCurrentUser()
+            }
+        } else {
+            print("[AuthManager] No saved token found")
         }
     }
     
@@ -184,7 +225,7 @@ class KeychainManager {
         
         SecItemDelete(query as CFDictionary)
         let status = SecItemAdd(query as CFDictionary, nil)
-        print("[KeychainManager] Save token status: \(status)")
+        print("[KeychainManager] Save token status: \(status) (\(keychainErrorMessage(status)))")
     }
     
     func getToken() -> String? {
@@ -198,7 +239,7 @@ class KeychainManager {
         
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
-        print("[KeychainManager] Get token status: \(status)")
+        print("[KeychainManager] Get token status: \(status) (\(keychainErrorMessage(status)))")
         
         guard status == errSecSuccess,
               let data = result as? Data,
@@ -232,7 +273,7 @@ class KeychainManager {
         
         SecItemDelete(query as CFDictionary)
         let status = SecItemAdd(query as CFDictionary, nil)
-        print("[KeychainManager] Save user data status: \(status)")
+        print("[KeychainManager] Save user data status: \(status) (\(keychainErrorMessage(status)))")
     }
     
     func getUserData() -> Data? {
@@ -246,7 +287,7 @@ class KeychainManager {
         
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
-        print("[KeychainManager] Get user data status: \(status)")
+        print("[KeychainManager] Get user data status: \(status) (\(keychainErrorMessage(status)))")
         
         guard status == errSecSuccess,
               let data = result as? Data else {
@@ -266,5 +307,38 @@ class KeychainManager {
         ]
         
         SecItemDelete(query as CFDictionary)
+    }
+    
+    private func keychainErrorMessage(_ status: OSStatus) -> String {
+        switch status {
+        case errSecSuccess:
+            return "Success"
+        case errSecItemNotFound:
+            return "Item not found"
+        case errSecDuplicateItem:
+            return "Duplicate item"
+        case errSecAuthFailed:
+            return "Authentication failed"
+        case errSecNoAccessForItem:
+            return "No access"
+        case errSecUnimplemented:
+            return "Unimplemented"
+        case errSecParam:
+            return "Invalid parameter"
+        case errSecAllocate:
+            return "Memory allocation error"
+        case errSecNotAvailable:
+            return "Service not available"
+        case errSecReadOnly:
+            return "Read only"
+        case errSecNoSuchKeychain:
+            return "No such keychain"
+        case errSecInvalidKeychain:
+            return "Invalid keychain"
+        case errSecDataTooLarge:
+            return "Data too large"
+        default:
+            return "Unknown error: \(status)"
+        }
     }
 }
