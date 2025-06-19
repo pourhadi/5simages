@@ -73,13 +73,14 @@ public class VideoService: ObservableObject {
     
     public func toggleLike(_ videoId: String) async throws {
         struct LikeResponse: Codable {
-            let isLiked: Bool
+            let success: Bool
+            let video: Video
         }
         
         let response: LikeResponse = try await apiClient.request("/api/videos/\(videoId)/like", method: .post)
         
         if let index = videos.firstIndex(where: { $0.id == videoId }) {
-            videos[index].isLiked = response.isLiked
+            videos[index] = response.video
         }
     }
     

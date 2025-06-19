@@ -277,7 +277,11 @@ public struct DetailView: View {
         Task {
             do {
                 try await videoService.toggleLike(currentVideo.id)
-                videos[currentIndex].isLiked.toggle()
+                // The video will be updated in the videoService.videos array
+                // We need to update our local copy as well
+                if let updatedVideo = videoService.videos.first(where: { $0.id == currentVideo.id }) {
+                    videos[currentIndex] = updatedVideo
+                }
             } catch {
                 print("Failed to toggle like: \(error)")
             }
