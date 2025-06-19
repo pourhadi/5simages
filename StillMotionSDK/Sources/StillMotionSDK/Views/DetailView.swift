@@ -10,7 +10,8 @@ import UniformTypeIdentifiers
 
 public struct DetailView: View {
     @StateObject private var videoService = VideoService.shared
-    @State private var video: Video
+    @State private var currentIndex: Int
+    @State private var videos: [Video]
     @State private var showingShareSheet = false
     @State private var showingGenerator = false
     @State private var gifData: Data?
@@ -18,28 +19,48 @@ public struct DetailView: View {
     @State private var showingDeleteAlert = false
     @Environment(\.dismiss) private var dismiss
     
+    private var currentVideo: Video {
+        videos[currentIndex]
+    }
+    
     public init(video: Video) {
-        self._video = State(initialValue: video)
+        self._currentIndex = State(initialValue: 0)
+        self._videos = State(initialValue: [video])
+    }
+    
+    public init(videos: [Video], currentIndex: Int) {
+        self._currentIndex = State(initialValue: currentIndex)
+        self._videos = State(initialValue: videos)
     }
     
     public var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    VStack {
-                        if video.videoStatus == .completed, let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
-                            AnimatedGIFContainer(url: url)
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxHeight: 400)
-                                .clipped()
-                        } else {
-                            statusView
-                                .frame(maxHeight: 400)
+            VStack(spacing: 0) {
+                // GIF view with horizontal swiping
+                TabView(selection: $currentIndex) {
+                    ForEach(Array(videos.enumerated()), id: \.element.id) { index, video in
+                        VStack {
+                            if video.videoStatus == .completed, let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
+                                AnimatedGIFContainer(url: url)
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxHeight: 400)
+                                    .clipped()
+                            } else {
+                                statusView(for: video)
+                                    .frame(maxHeight: 400)
+                            }
                         }
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal)
+                        .tag(index)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal)
-                    
+                }
+                #if os(iOS)
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: videos.count > 1 ? .automatic : .never))
+                #endif
+                .frame(height: 450)
+                
+                ScrollView {
                     detailPane
                 }
             }
@@ -55,7 +76,7 @@ public struct DetailView: View {
                 
                 ToolbarItem(placement: .primaryAction) {
                     Menu {
-                        if video.videoStatus == .completed {
+                        if currentVideo.videoStatus == .completed {
                             Button(action: handleDownload) {
                                 Label("Download", systemImage: "arrow.down.circle")
                             }
@@ -81,9 +102,9 @@ public struct DetailView: View {
             .sheet(isPresented: $showingGenerator) {
                 GeneratorView(
                     initialImageData: nil,
-                    initialPrompt: video.prompt,
-                    enhancePrompt: video.enhancedPrompt != nil,
-                    mode: video.mode
+                    initialPrompt: currentVideo.prompt,
+                    enhancePrompt: currentVideo.enhancedPrompt != nil,
+                    mode: currentVideo.mode
                 )
             }
             .alert("Delete GIF", isPresented: $showingDeleteAlert) {
@@ -94,15 +115,15 @@ public struct DetailView: View {
             } message: {
                 Text("Are you sure you want to delete this GIF? This action cannot be undone.")
             }
-            .task {
-                if video.videoStatus == .processing || video.videoStatus == .pending {
+            .task(id: currentIndex) {
+                if currentVideo.videoStatus == .processing || currentVideo.videoStatus == .pending {
                     await pollForUpdates()
                 }
             }
         }
     }
     
-    private var statusView: some View {
+    private func statusView(for video: Video) -> some View {
         Rectangle()
             .fill(Color.gray.opacity(0.1))
             .aspectRatio(1, contentMode: .fit)
@@ -145,9 +166,9 @@ public struct DetailView: View {
             HStack {
                 Button(action: handleLike) {
                     HStack(spacing: 8) {
-                        Image(systemName: video.isLiked == true ? "heart.fill" : "heart")
+                        Image(systemName: currentVideo.isLiked == true ? "heart.fill" : "heart")
                             .font(.title2)
-                            .foregroundStyle(video.isLiked == true ? .red : .primary)
+                            .foregroundStyle(currentVideo.isLiked == true ? .red : .primary)
                         Text("Like")
                             .fontWeight(.medium)
                     }
@@ -159,7 +180,7 @@ public struct DetailView: View {
                 
                 Spacer()
                 
-                if video.videoStatus == .completed {
+                if currentVideo.videoStatus == .completed {
                     HStack(spacing: 16) {
                         Button(action: handleTweak) {
                             Image(systemName: "slider.horizontal.3")
@@ -183,7 +204,7 @@ public struct DetailView: View {
                     Text("Original Image")
                         .font(.headline)
                     
-                    AsyncImage(url: URL(string: video.imageUrl)) { phase in
+                    AsyncImage(url: URL(string: currentVideo.imageUrl)) { phase in
                         switch phase {
                         case .success(let image):
                             image
@@ -203,30 +224,30 @@ public struct DetailView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Prompt")
                         .font(.headline)
-                    Text(video.enhancedPrompt ?? video.prompt)
+                    Text(currentVideo.enhancedPrompt ?? currentVideo.prompt)
                         .font(.body)
                         .foregroundStyle(.secondary)
                 }
                 
-                if video.enhancedPrompt != nil {
+                if currentVideo.enhancedPrompt != nil {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Original Prompt")
                             .font(.headline)
-                        Text(video.prompt)
+                        Text(currentVideo.prompt)
                             .font(.body)
                             .foregroundStyle(.secondary)
                     }
                 }
                 
                 HStack {
-                    Label(video.mode.displayName, systemImage: video.mode == .premium ? "star.fill" : "star")
+                    Label(currentVideo.mode.displayName, systemImage: currentVideo.mode == .premium ? "star.fill" : "star")
                         .font(.caption)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(15)
                     
-                    Label("\(video.credits) credits", systemImage: "bolt.fill")
+                    Label("\(currentVideo.credits) credits", systemImage: "bolt.fill")
                         .font(.caption)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
@@ -234,7 +255,7 @@ public struct DetailView: View {
                         .cornerRadius(15)
                 }
                 
-                if let createdAt = formattedDate(video.createdAt) {
+                if let createdAt = formattedDate(currentVideo.createdAt) {
                     Text(createdAt)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -255,8 +276,8 @@ public struct DetailView: View {
     private func handleLike() {
         Task {
             do {
-                try await videoService.toggleLike(video.id)
-                video.isLiked.toggle()
+                try await videoService.toggleLike(currentVideo.id)
+                videos[currentIndex].isLiked.toggle()
             } catch {
                 print("Failed to toggle like: \(error)")
             }
@@ -272,7 +293,7 @@ public struct DetailView: View {
     }
     
     private func handleDownload() {
-        guard let gifUrl = video.gifUrl else { return }
+        guard let gifUrl = currentVideo.gifUrl else { return }
         
         isDownloading = true
         Task {
@@ -323,9 +344,20 @@ public struct DetailView: View {
     private func handleDelete() {
         Task {
             do {
-                try await videoService.deleteVideo(video.id)
+                try await videoService.deleteVideo(currentVideo.id)
                 await MainActor.run {
-                    dismiss()
+                    // Remove the deleted video from the array
+                    videos.remove(at: currentIndex)
+                    
+                    // If no videos left, dismiss
+                    if videos.isEmpty {
+                        dismiss()
+                    } else {
+                        // Adjust current index if needed
+                        if currentIndex >= videos.count {
+                            currentIndex = videos.count - 1
+                        }
+                    }
                 }
             } catch {
                 print("Failed to delete video: \(error)")
@@ -334,12 +366,12 @@ public struct DetailView: View {
     }
     
     private func pollForUpdates() async {
-        while video.videoStatus == .processing || video.videoStatus == .pending {
+        while currentVideo.videoStatus == .processing || currentVideo.videoStatus == .pending {
             do {
                 try await Task.sleep(nanoseconds: 2_000_000_000)
-                let updatedVideo = try await videoService.checkVideoStatus(video.id)
+                let updatedVideo = try await videoService.checkVideoStatus(currentVideo.id)
                 await MainActor.run {
-                    self.video = updatedVideo
+                    self.videos[currentIndex] = updatedVideo
                 }
                 
                 if updatedVideo.videoStatus == .completed || updatedVideo.videoStatus == .failed {

@@ -1,8 +1,14 @@
 import SwiftUI
 
+struct VideoSelection: Identifiable {
+    let id = UUID()
+    let video: Video
+    let index: Int
+}
+
 public struct GalleryView: View {
     @StateObject private var videoService = VideoService.shared
-    @State private var selectedVideo: Video?
+    @State private var selectedVideo: (video: Video, index: Int)?
     @State private var showingGenerator = false
     
     private let columns = [
@@ -20,12 +26,12 @@ public struct GalleryView: View {
                 } else {
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 0) {
-                            ForEach(videoService.videos) { video in
+                            ForEach(Array(videoService.videos.enumerated()), id: \.element.id) { index, video in
                                 GalleryItemView(video: video)
                                     .aspectRatio(1, contentMode: .fill)
                                     .clipped()
                                     .onTapGesture {
-                                        selectedVideo = video
+                                        selectedVideo = (video, index)
                                     }
                             }
                         }
@@ -52,8 +58,11 @@ public struct GalleryView: View {
                     }
                 }
             }
-            .sheet(item: $selectedVideo) { video in
-                DetailView(video: video)
+            .sheet(item: Binding<VideoSelection?>(
+                get: { selectedVideo.map { VideoSelection(video: $0.video, index: $0.index) } },
+                set: { _ in selectedVideo = nil }
+            )) { selection in
+                DetailView(videos: videoService.videos, currentIndex: selection.index)
             }
             .sheet(isPresented: $showingGenerator) {
                 GeneratorView()
