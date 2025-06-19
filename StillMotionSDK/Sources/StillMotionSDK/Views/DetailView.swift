@@ -125,6 +125,14 @@ public struct DetailView: View {
             }
     }
     
+    private var backgroundColorCompat: Color {
+        #if canImport(UIKit)
+        return Color(UIColor.systemBackground)
+        #else
+        return Color(NSColor.windowBackgroundColor)
+        #endif
+    }
+    
     private var detailPane: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
@@ -228,7 +236,7 @@ public struct DetailView: View {
             .padding(.horizontal)
             .padding(.bottom)
         }
-        .background(Color.systemBackground)
+        .background(backgroundColorCompat)
     }
     
     private func formattedDate(_ date: Date) -> String? {
