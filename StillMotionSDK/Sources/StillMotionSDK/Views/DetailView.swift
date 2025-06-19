@@ -19,7 +19,7 @@ public struct DetailView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    if video.status == .completed, let gifUrl = video.gifUrl {
+                    if video.videoStatus == .completed, let gifUrl = video.gifUrl {
                         AsyncImage(url: URL(string: gifUrl)) { phase in
                             switch phase {
                             case .empty:
@@ -67,7 +67,7 @@ public struct DetailView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
-                        if video.status == .completed {
+                        if video.videoStatus == .completed {
                             Button(action: handleDownload) {
                                 Label("Download", systemImage: "arrow.down.circle")
                             }
@@ -95,9 +95,7 @@ public struct DetailView: View {
                     initialImageData: nil,
                     initialPrompt: video.prompt,
                     enhancePrompt: video.enhancedPrompt != nil,
-                    mode: video.mode,
-                    sampleSteps: video.sampleSteps,
-                    sampleGuideScale: video.sampleGuideScale
+                    mode: video.mode
                 )
             }
             .alert("Delete GIF", isPresented: $showingDeleteAlert) {
@@ -109,7 +107,7 @@ public struct DetailView: View {
                 Text("Are you sure you want to delete this GIF? This action cannot be undone.")
             }
             .task {
-                if video.status == .processing || video.status == .pending {
+                if video.videoStatus == .processing || video.videoStatus == .pending {
                     await pollForUpdates()
                 }
             }
@@ -122,7 +120,7 @@ public struct DetailView: View {
             .aspectRatio(1, contentMode: .fit)
             .overlay {
                 VStack(spacing: 16) {
-                    if video.status == .processing || video.status == .pending {
+                    if video.videoStatus == .processing || video.videoStatus == .pending {
                         ProgressView()
                             .scaleEffect(1.5)
                         Text("Generating your GIF...")
@@ -130,7 +128,7 @@ public struct DetailView: View {
                         Text("This may take a few moments")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                    } else if video.status == .failed {
+                    } else if video.videoStatus == .failed {
                         Image(systemName: "exclamationmark.circle.fill")
                             .font(.system(size: 50))
                             .foregroundStyle(.red)
@@ -165,7 +163,7 @@ public struct DetailView: View {
                 
                 Spacer()
                 
-                if video.status == .completed {
+                if video.videoStatus == .completed {
                     HStack(spacing: 16) {
                         Button(action: handleTweak) {
                             Image(systemName: "slider.horizontal.3")
@@ -262,7 +260,7 @@ public struct DetailView: View {
         Task {
             do {
                 try await videoService.toggleLike(video.id)
-                video.isLiked?.toggle()
+                video.isLiked.toggle()
             } catch {
                 print("Failed to toggle like: \(error)")
             }
@@ -326,7 +324,7 @@ public struct DetailView: View {
     }
     
     private func pollForUpdates() async {
-        while video.status == .processing || video.status == .pending {
+        while video.videoStatus == .processing || video.videoStatus == .pending {
             do {
                 try await Task.sleep(nanoseconds: 2_000_000_000)
                 let updatedVideo = try await videoService.checkVideoStatus(video.id)
@@ -334,7 +332,7 @@ public struct DetailView: View {
                     self.video = updatedVideo
                 }
                 
-                if updatedVideo.status == .completed || updatedVideo.status == .failed {
+                if updatedVideo.videoStatus == .completed || updatedVideo.videoStatus == .failed {
                     break
                 }
             } catch {

@@ -18,13 +18,8 @@ public class VideoService: ObservableObject {
         isLoading = true
         defer { isLoading = false }
         
-        struct Response: Codable {
-            let videos: [Video]
-            let total: Int
-        }
-        
-        let response: Response = try await apiClient.request("/api/user/videos?limit=\(limit)&offset=\(offset)")
-        self.videos = response.videos
+        let videos: [Video] = try await apiClient.request("/api/videos")
+        self.videos = videos
     }
     
     public func generateVideo(imageData: Data, 
@@ -72,7 +67,7 @@ public class VideoService: ObservableObject {
     }
     
     public func deleteVideo(_ videoId: String) async throws {
-        let _: [String: String] = try await apiClient.request("/api/videos/\(videoId)", method: .delete)
+        let _: [String: String] = try await apiClient.request("/api/videos?id=\(videoId)", method: .delete)
         videos.removeAll { $0.id == videoId }
     }
     

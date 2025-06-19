@@ -103,7 +103,7 @@ struct GalleryItemView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                if let gifUrl = video.gifUrl, video.status == .completed {
+                if let gifUrl = video.gifUrl, video.videoStatus == .completed {
                     AsyncImage(url: URL(string: gifUrl)) { phase in
                         switch phase {
                         case .empty:
@@ -145,7 +145,7 @@ struct GalleryItemView: View {
                                 .frame(width: geometry.size.width, height: geometry.size.height)
                                 .clipped()
                                 .overlay {
-                                    if video.status == .processing || video.status == .pending {
+                                    if video.videoStatus == .processing || video.videoStatus == .pending {
                                         ZStack {
                                             Color.black.opacity(0.5)
                                             VStack(spacing: 8) {
@@ -171,7 +171,7 @@ struct GalleryItemView: View {
                     }
                 }
                 
-                if video.status == .failed {
+                if video.videoStatus == .failed {
                     ZStack {
                         Color.black.opacity(0.7)
                         VStack(spacing: 8) {
