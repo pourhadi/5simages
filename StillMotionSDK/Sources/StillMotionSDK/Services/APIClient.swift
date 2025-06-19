@@ -32,7 +32,25 @@ class APIClient {
     private let session = URLSession.shared
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            
+            // Try with fractional seconds first
+            if let date = formatter.date(from: dateString) {
+                return date
+            }
+            
+            // Fallback to without fractional seconds
+            formatter.formatOptions = [.withInternetDateTime]
+            if let date = formatter.date(from: dateString) {
+                return date
+            }
+            
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+        }
         return decoder
     }()
     
@@ -88,6 +106,13 @@ class APIClient {
             do {
                 return try decoder.decode(T.self, from: data)
             } catch {
+                // Debug: Print the raw response and error
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    print("DEBUG: Failed to decode response:")
+                    print("Raw JSON: \(jsonString)")
+                    print("Decoding error: \(error)")
+                    print("Expected type: \(T.self)")
+                }
                 throw APIError.decodingError
             }
         } catch let error as APIError {
