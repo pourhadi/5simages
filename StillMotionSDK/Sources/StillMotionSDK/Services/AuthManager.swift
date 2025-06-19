@@ -27,17 +27,29 @@ public class AuthManager: ObservableObject {
     }
     
     private func restoreAuthState() {
-        // First try to restore cached user data for immediate UI update
-        if let userData = keychain.getUserData(),
-           let user = try? userDecoder.decode(User.self, from: userData) {
-            self.currentUser = user
-            self.isAuthenticated = true
-        }
-        
-        // Then verify with server and update if needed
-        if authToken != nil {
-            Task {
-                await fetchCurrentUser()
+        Task { @MainActor in
+            print("[AuthManager] Restoring auth state...")
+            
+            // Check if we have a saved token
+            if let token = authToken {
+                print("[AuthManager] Found saved token: \(String(token.prefix(10)))...")
+                
+                // First try to restore cached user data for immediate UI update
+                if let userData = keychain.getUserData(),
+                   let user = try? userDecoder.decode(User.self, from: userData) {
+                    print("[AuthManager] Restored user from cache: \(user.email)")
+                    self.currentUser = user
+                    self.isAuthenticated = true
+                    print("[AuthManager] Auth state updated - isAuthenticated: \(self.isAuthenticated)")
+                }
+                
+                // Then verify with server and update if needed
+                Task {
+                    print("[AuthManager] Verifying auth with server...")
+                    await fetchCurrentUser()
+                }
+            } else {
+                print("[AuthManager] No saved token found")
             }
         }
     }
@@ -161,6 +173,7 @@ class KeychainManager {
     private let userDataKey = "userData"
     
     func saveToken(_ token: String) {
+        print("[KeychainManager] Saving token: \(String(token.prefix(10)))...")
         let data = token.data(using: .utf8)!
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -170,10 +183,12 @@ class KeychainManager {
         ]
         
         SecItemDelete(query as CFDictionary)
-        SecItemAdd(query as CFDictionary, nil)
+        let status = SecItemAdd(query as CFDictionary, nil)
+        print("[KeychainManager] Save token status: \(status)")
     }
     
     func getToken() -> String? {
+        print("[KeychainManager] Retrieving token...")
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -183,13 +198,16 @@ class KeychainManager {
         
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
+        print("[KeychainManager] Get token status: \(status)")
         
         guard status == errSecSuccess,
               let data = result as? Data,
               let token = String(data: data, encoding: .utf8) else {
+            print("[KeychainManager] No token found or error retrieving")
             return nil
         }
         
+        print("[KeychainManager] Retrieved token: \(String(token.prefix(10)))...")
         return token
     }
     
@@ -204,6 +222,7 @@ class KeychainManager {
     }
     
     func saveUserData(_ data: Data) {
+        print("[KeychainManager] Saving user data (\(data.count) bytes)")
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -212,10 +231,12 @@ class KeychainManager {
         ]
         
         SecItemDelete(query as CFDictionary)
-        SecItemAdd(query as CFDictionary, nil)
+        let status = SecItemAdd(query as CFDictionary, nil)
+        print("[KeychainManager] Save user data status: \(status)")
     }
     
     func getUserData() -> Data? {
+        print("[KeychainManager] Retrieving user data...")
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -225,12 +246,15 @@ class KeychainManager {
         
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
+        print("[KeychainManager] Get user data status: \(status)")
         
         guard status == errSecSuccess,
               let data = result as? Data else {
+            print("[KeychainManager] No user data found or error retrieving")
             return nil
         }
         
+        print("[KeychainManager] Retrieved user data (\(data.count) bytes)")
         return data
     }
     

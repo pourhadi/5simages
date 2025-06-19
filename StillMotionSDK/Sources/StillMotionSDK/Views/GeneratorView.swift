@@ -9,7 +9,7 @@ import UniformTypeIdentifiers
 
 public struct GeneratorView: View {
     @StateObject private var videoService = VideoService.shared
-    @StateObject private var authManager = AuthManager.shared
+    @ObservedObject private var authManager = AuthManager.shared
     @Environment(\.dismiss) private var dismiss
     
     #if canImport(UIKit)
