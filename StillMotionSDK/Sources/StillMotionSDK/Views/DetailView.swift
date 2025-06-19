@@ -29,8 +29,12 @@ public struct DetailView: View {
                     if video.videoStatus == .completed, let gifUrl = video.gifUrl, let url = URL(string: gifUrl) {
                         AnimatedGIFContainer(url: url)
                             .aspectRatio(contentMode: .fit)
+                            .frame(maxHeight: 400)
+                            .padding(.horizontal)
                     } else {
                         statusView
+                            .frame(maxHeight: 400)
+                            .padding(.horizontal)
                     }
                     
                     detailPane
