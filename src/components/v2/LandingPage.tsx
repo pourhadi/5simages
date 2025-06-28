@@ -160,7 +160,6 @@ export default function LandingPageV2() {
               </div>
               <div className="text-3xl font-bold text-white">1 Credit</div>
               <p className="text-gray-400">Fast 5s generation at 480p</p>
-              <p className="text-sm text-gray-500">$0.15 per video</p>
             </div>
           </div>
 
@@ -174,7 +173,6 @@ export default function LandingPageV2() {
               </div>
               <div className="text-3xl font-bold text-white">2 Credits</div>
               <p className="text-gray-400">Balanced quality and speed</p>
-              <p className="text-sm text-gray-500">$0.25 per video</p>
             </div>
           </div>
           
@@ -185,7 +183,6 @@ export default function LandingPageV2() {
               </div>
               <div className="text-3xl font-bold text-white">3 Credits</div>
               <p className="text-gray-400">Highest quality results</p>
-              <p className="text-sm text-gray-500">$0.45 per video</p>
             </div>
           </div>
         </div>
