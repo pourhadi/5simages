@@ -159,8 +159,8 @@ export default function LandingPageV2() {
                 <span className="text-[#3EFFE2] font-medium">⚡ Pro</span>
               </div>
               <div className="text-3xl font-bold text-white">1 Credit</div>
-              <p className="text-gray-400">Fast generation</p>
-              <p className="text-sm text-gray-500">$0.09 per video</p>
+              <p className="text-gray-400">Fast 5s generation at 480p</p>
+              <p className="text-sm text-gray-500">$0.15 per video</p>
             </div>
           </div>
 

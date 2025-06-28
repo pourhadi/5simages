@@ -13,7 +13,7 @@ if (!process.env.REPLICATE_API_TOKEN) {
   console.warn("REPLICATE_API_TOKEN is not set. Video generation will fail.");
 }
 
-// Pro model: ByteDance SeedDance-1-Pro ($0.03/second = $0.09 for 3s)
+// Pro model: ByteDance SeedDance-1-Pro ($0.03/second = $0.15 for 5s)
 const PRO_REPLICATE_MODEL_VERSION = "bytedance/seedance-1-pro";
 // Standard model: Kling v1.6 Standard ($0.25/video)
 const STANDARD_REPLICATE_MODEL_VERSION = process.env.STANDARD_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine credit cost based on generation type
-    // Pro: $0.09 = 1 credit
+    // Pro: $0.15 = 1 credit (5s at $0.03/s)
     // Standard: $0.25 = 2 credits
     // Premium: $0.45 = 3 credits
     if (generationType === 'pro') {
@@ -183,12 +183,10 @@ export async function POST(request: NextRequest) {
       modelInputs = {
         image: signedUrl ?? imageUrl,
         prompt: effectivePrompt,
-        video_length: "3s",
+        duration: 5,
+        resolution: "480p",
+        aspect_ratio: "16:9",
         fps: 24,
-        width: 512,
-        height: 512,
-        cfg_scale: 6,
-        steps: 50,
       };
     } else if (generationType === 'standard') {
       modelVersion = STANDARD_REPLICATE_MODEL_VERSION;

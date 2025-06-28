@@ -258,7 +258,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
               <span className="text-[#3EFFE2] font-medium">1 credit</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Fast generation. Great for quick experiments.
+              Fast 5s generation at 480p. Great for quick experiments.
             </p>
           </button>
 
