@@ -13,6 +13,8 @@ if (!process.env.REPLICATE_API_TOKEN) {
   console.warn("REPLICATE_API_TOKEN is not set. Video generation will fail.");
 }
 
+// Pro model: ByteDance SeedDance-1-Pro ($0.03/second = $0.09 for 3s)
+const PRO_REPLICATE_MODEL_VERSION = "bytedance/seedance-1-pro";
 // Standard model: Kling v1.6 Standard ($0.25/video)
 const STANDARD_REPLICATE_MODEL_VERSION = process.env.STANDARD_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
 // Premium model: wan-2.1-i2v-480p ($0.45/video)
@@ -73,9 +75,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine credit cost based on generation type
+    // Pro: $0.09 = 1 credit
     // Standard: $0.25 = 2 credits
     // Premium: $0.45 = 3 credits
-    if (generationType === 'premium') {
+    if (generationType === 'pro') {
+      cost = 1;
+    } else if (generationType === 'premium') {
       cost = 3;
     } else {
       // Default to standard
@@ -172,7 +177,20 @@ export async function POST(request: NextRequest) {
     let modelVersion = STANDARD_REPLICATE_MODEL_VERSION;
     let modelInputs: Record<string, string | number> = {};
     
-    if (generationType === 'standard') {
+    if (generationType === 'pro') {
+      modelVersion = PRO_REPLICATE_MODEL_VERSION;
+      // ByteDance SeedDance-1-Pro model inputs
+      modelInputs = {
+        image: signedUrl ?? imageUrl,
+        prompt: effectivePrompt,
+        video_length: "3s",
+        fps: 16,
+        width: 512,
+        height: 512,
+        cfg_scale: 6,
+        steps: 50,
+      };
+    } else if (generationType === 'standard') {
       modelVersion = STANDARD_REPLICATE_MODEL_VERSION;
       // Kling v1.6 Standard model inputs
       modelInputs = {
@@ -193,8 +211,8 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    // If using Standard model, skip primary API and use Replicate directly
-    if (generationType === 'standard') {
+    // If using Standard or Pro model, skip primary API and use Replicate directly
+    if (generationType === 'standard' || generationType === 'pro') {
       // Construct webhook URL for Vercel deployment
       let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL;
       

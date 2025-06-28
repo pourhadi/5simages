@@ -21,7 +21,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generationType, setGenerationType] = useState<'standard' | 'premium'>('standard');
+  const [generationType, setGenerationType] = useState<'pro' | 'standard' | 'premium'>('standard');
   const [enhancePrompt, setEnhancePrompt] = useState(true);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [sampleSteps, setSampleSteps] = useState(30);
@@ -42,7 +42,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
     }
   }, [prefill, onPrefillConsumed]);
 
-  const costPerGeneration = generationType === 'standard' ? 2 : 3;
+  const costPerGeneration = generationType === 'pro' ? 1 : generationType === 'standard' ? 2 : 3;
   const totalCost = costPerGeneration * numberOfGenerations;
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -238,7 +238,29 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-white">Generation Mode</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <button
+            type="button"
+            onClick={() => setGenerationType('pro')}
+            disabled={isGenerating}
+            className={`p-6 rounded-2xl border-2 transition-all text-left ${
+              generationType === 'pro'
+                ? 'border-[#3EFFE2] bg-[#3EFFE2]/10'
+                : 'border-gray-600 hover:border-[#3EFFE2]/50'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Zap size={20} className="text-[#3EFFE2]" />
+                <span className="font-semibold text-white">Pro</span>
+              </div>
+              <span className="text-[#3EFFE2] font-medium">1 credit</span>
+            </div>
+            <p className="text-gray-400 text-sm">
+              Fast generation. Great for quick experiments.
+            </p>
+          </button>
 
           <button
             type="button"
