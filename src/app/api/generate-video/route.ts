@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
         image: signedUrl ?? imageUrl,
         prompt: effectivePrompt,
         video_length: "3s",
-        fps: 16,
+        fps: 24,
         width: 512,
         height: 512,
         cfg_scale: 6,
