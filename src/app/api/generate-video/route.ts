@@ -13,13 +13,15 @@ if (!process.env.REPLICATE_API_TOKEN) {
   console.warn("REPLICATE_API_TOKEN is not set. Video generation will fail.");
 }
 
-// Pro model: ByteDance SeedDance-1-Pro ($0.03/second = $0.15 for 5s)
-const PRO_REPLICATE_MODEL_VERSION = "bytedance/seedance-1-pro";
-// Standard model: Kling v1.6 Standard ($0.25/video)
-const STANDARD_REPLICATE_MODEL_VERSION = process.env.STANDARD_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
-// Premium model: wan-2.1-i2v-480p ($0.45/video)
+// SeedDance-1-Pro model: ByteDance SeedDance-1-Pro ($0.03/second = $0.15 for 5s)
+const SEEDANCE_REPLICATE_MODEL_VERSION = "bytedance/seedance-1-pro";
+// Kling v1.6 Standard model: Kling v1.6 Standard ($0.25/video)
+const KLING_REPLICATE_MODEL_VERSION = process.env.KLING_REPLICATE_MODEL_VERSION ?? "kwaivgi/kling-v1.6-standard:c1b16805f929c47270691c7158f1e892dcaf3344b8d19fcd7475e525853b8b2c";
+// Wan 2.1 i2v 480p model: wan-2.1-i2v-480p ($0.45/video)
 // Using wavespeedai's wan model implementation
-const PREMIUM_REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
+const WAN_REPLICATE_MODEL_VERSION = "wavespeedai/wan-2.1-i2v-480p";
+// Hailuo-02 model: minimax/hailuo-02 ($0.045/second = $0.45 for 10s)
+const HAILUO_REPLICATE_MODEL_VERSION = "minimax/hailuo-02";
 // Model version and prompt prefix for optional prompt enhancement via llava-13b
 const LLAVA_ENHANCER_MODEL_VERSION = process.env.LLAVA_ENHANCER_MODEL_VERSION ?? "yorickvp/llava-13b:80537f9eead1a5bfa72d5ac6ea6414379be41d4d4f6679fd776e9535d1eb58bb";
 // Prefix to include before user instructions when asking llava-13b to enhance the prompt
@@ -75,15 +77,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine credit cost based on generation type
-    // Pro: $0.15 = 1 credit (5s at $0.03/s)
-    // Standard: $0.25 = 2 credits
-    // Premium: $0.45 = 3 credits
-    if (generationType === 'pro') {
+    // SeedDance-1-Pro: $0.15 = 1 credit (5s at $0.03/s)
+    // Kling v1.6 Standard: $0.25 = 2 credits
+    // Wan 2.1 i2v 480p: $0.45 = 3 credits
+    // Hailuo-02: $0.45 = 3 credits (10s at $0.045/s)
+    if (generationType === 'seedance-1-pro') {
       cost = 1;
-    } else if (generationType === 'premium') {
+    } else if (generationType === 'wan-2.1-i2v-480p') {
+      cost = 3;
+    } else if (generationType === 'hailuo-02') {
       cost = 3;
     } else {
-      // Default to standard
+      // Default to kling-v1.6-standard
       cost = 2;
     }
     // Check credits and create video record in a transaction
@@ -174,11 +179,11 @@ export async function POST(request: NextRequest) {
     // }
 
     // Select model based on generation type
-    let modelVersion = STANDARD_REPLICATE_MODEL_VERSION;
-    let modelInputs: Record<string, string | number> = {};
+    let modelVersion = KLING_REPLICATE_MODEL_VERSION;
+    let modelInputs: Record<string, string | number | boolean> = {};
     
-    if (generationType === 'pro') {
-      modelVersion = PRO_REPLICATE_MODEL_VERSION;
+    if (generationType === 'seedance-1-pro') {
+      modelVersion = SEEDANCE_REPLICATE_MODEL_VERSION;
       // ByteDance SeedDance-1-Pro model inputs
       modelInputs = {
         image: signedUrl ?? imageUrl,
@@ -188,8 +193,8 @@ export async function POST(request: NextRequest) {
         aspect_ratio: "16:9",
         fps: 24,
       };
-    } else if (generationType === 'standard') {
-      modelVersion = STANDARD_REPLICATE_MODEL_VERSION;
+    } else if (generationType === 'kling-v1.6-standard') {
+      modelVersion = KLING_REPLICATE_MODEL_VERSION;
       // Kling v1.6 Standard model inputs
       modelInputs = {
         prompt: effectivePrompt,
@@ -198,8 +203,8 @@ export async function POST(request: NextRequest) {
         start_image: signedUrl ?? imageUrl,
         cfg_scale: 0.5,
       };
-    } else if (generationType === 'premium') {
-      modelVersion = PREMIUM_REPLICATE_MODEL_VERSION;
+    } else if (generationType === 'wan-2.1-i2v-480p') {
+      modelVersion = WAN_REPLICATE_MODEL_VERSION;
       // wan-2.1-i2v-480p model inputs
       modelInputs = {
         image: signedUrl ?? imageUrl,
@@ -207,10 +212,20 @@ export async function POST(request: NextRequest) {
         sample_steps: sampleSteps,
         sample_guidance_scale: sampleGuideScale,
       };
+    } else if (generationType === 'hailuo-02') {
+      modelVersion = HAILUO_REPLICATE_MODEL_VERSION;
+      // minimax/hailuo-02 model inputs
+      modelInputs = {
+        prompt: effectivePrompt,
+        duration: 10,
+        resolution: "768p",
+        prompt_optimizer: true,
+        first_frame_image: signedUrl ?? imageUrl,
+      };
     }
 
-    // If using Standard or Pro model, skip primary API and use Replicate directly
-    if (generationType === 'standard' || generationType === 'pro') {
+    // If using Kling, SeedDance, or Hailuo model, skip primary API and use Replicate directly
+    if (generationType === 'kling-v1.6-standard' || generationType === 'seedance-1-pro' || generationType === 'hailuo-02') {
       // Construct webhook URL for Vercel deployment
       let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL;
       

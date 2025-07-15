@@ -152,11 +152,11 @@ export default function LandingPageV2() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           <div className="bg-[#1A1A1D] border border-[#2A2A2D] rounded-3xl p-8">
             <div className="text-center space-y-4">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#3EFFE2]/10 border border-[#3EFFE2]/20 rounded-full">
-                <span className="text-[#3EFFE2] font-medium">⚡ Pro</span>
+                <span className="text-[#3EFFE2] font-medium text-sm">⚡ SeedDance-1-Pro</span>
               </div>
               <div className="text-3xl font-bold text-white">1 Credit</div>
               <p className="text-gray-400">Fast 5s generation at 480p</p>
@@ -169,7 +169,7 @@ export default function LandingPageV2() {
             </div>
             <div className="text-center space-y-4">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1E3AFF]/10 border border-[#1E3AFF]/20 rounded-full">
-                <span className="text-[#1E3AFF] font-medium">⚡ Standard</span>
+                <span className="text-[#1E3AFF] font-medium text-sm">⚡ Kling v1.6</span>
               </div>
               <div className="text-3xl font-bold text-white">2 Credits</div>
               <p className="text-gray-400">Balanced quality and speed</p>
@@ -179,10 +179,20 @@ export default function LandingPageV2() {
           <div className="bg-[#1A1A1D] border border-[#2A2A2D] rounded-3xl p-8">
             <div className="text-center space-y-4">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF497D]/10 border border-[#FF497D]/20 rounded-full">
-                <span className="text-[#FF497D] font-medium">✨ Premium</span>
+                <span className="text-[#FF497D] font-medium text-sm">✨ Wan 2.1</span>
               </div>
               <div className="text-3xl font-bold text-white">3 Credits</div>
-              <p className="text-gray-400">Highest quality results</p>
+              <p className="text-gray-400">High quality, advanced settings</p>
+            </div>
+          </div>
+          
+          <div className="bg-[#1A1A1D] border border-[#2A2A2D] rounded-3xl p-8">
+            <div className="text-center space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#A855F7]/10 border border-[#A855F7]/20 rounded-full">
+                <span className="text-[#A855F7] font-medium text-sm">✨ Hailuo-02</span>
+              </div>
+              <div className="text-3xl font-bold text-white">3 Credits</div>
+              <p className="text-gray-400">10s generation at 768p</p>
             </div>
           </div>
         </div>

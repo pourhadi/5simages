@@ -21,7 +21,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generationType, setGenerationType] = useState<'pro' | 'standard' | 'premium'>('standard');
+  const [generationType, setGenerationType] = useState<'seedance-1-pro' | 'kling-v1.6-standard' | 'wan-2.1-i2v-480p' | 'hailuo-02'>('kling-v1.6-standard');
   const [enhancePrompt, setEnhancePrompt] = useState(true);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [sampleSteps, setSampleSteps] = useState(30);
@@ -42,7 +42,11 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
     }
   }, [prefill, onPrefillConsumed]);
 
-  const costPerGeneration = generationType === 'pro' ? 1 : generationType === 'standard' ? 2 : 3;
+  const costPerGeneration = 
+    generationType === 'seedance-1-pro' ? 1 :
+    generationType === 'kling-v1.6-standard' ? 2 :
+    generationType === 'wan-2.1-i2v-480p' ? 3 :
+    generationType === 'hailuo-02' ? 3 : 2;
   const totalCost = costPerGeneration * numberOfGenerations;
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -115,7 +119,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
             prompt,
             generationType,
             enhancePrompt,
-            ...(generationType === 'premium' && {
+            ...(generationType === 'wan-2.1-i2v-480p' && {
               sampleSteps,
               sampleGuideScale,
             }),
@@ -238,14 +242,14 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-white">Generation Mode</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
           <button
             type="button"
-            onClick={() => setGenerationType('pro')}
+            onClick={() => setGenerationType('seedance-1-pro')}
             disabled={isGenerating}
             className={`p-6 rounded-2xl border-2 transition-all text-left ${
-              generationType === 'pro'
+              generationType === 'seedance-1-pro'
                 ? 'border-[#3EFFE2] bg-[#3EFFE2]/10'
                 : 'border-gray-600 hover:border-[#3EFFE2]/50'
             }`}
@@ -253,7 +257,7 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Zap size={20} className="text-[#3EFFE2]" />
-                <span className="font-semibold text-white">Pro</span>
+                <span className="font-semibold text-white text-sm">SeedDance-1-Pro</span>
               </div>
               <span className="text-[#3EFFE2] font-medium">1 credit</span>
             </div>
@@ -264,10 +268,10 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
 
           <button
             type="button"
-            onClick={() => setGenerationType('standard')}
+            onClick={() => setGenerationType('kling-v1.6-standard')}
             disabled={isGenerating}
             className={`p-6 rounded-2xl border-2 transition-all text-left ${
-              generationType === 'standard'
+              generationType === 'kling-v1.6-standard'
                 ? 'border-[#1E3AFF] bg-[#1E3AFF]/10'
                 : 'border-gray-600 hover:border-[#1E3AFF]/50'
             }`}
@@ -275,21 +279,21 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Zap size={20} className="text-[#1E3AFF]" />
-                <span className="font-semibold text-white">Standard</span>
+                <span className="font-semibold text-white text-sm">Kling v1.6 Standard</span>
               </div>
               <span className="text-[#3EFFE2] font-medium">2 credits</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Balanced quality and speed. Recommended for most uses.
+              Balanced quality and speed. 5s at 16:9 aspect ratio.
             </p>
           </button>
 
           <button
             type="button"
-            onClick={() => setGenerationType('premium')}
+            onClick={() => setGenerationType('wan-2.1-i2v-480p')}
             disabled={isGenerating}
             className={`p-6 rounded-2xl border-2 transition-all text-left ${
-              generationType === 'premium'
+              generationType === 'wan-2.1-i2v-480p'
                 ? 'border-[#FF497D] bg-[#FF497D]/10'
                 : 'border-gray-600 hover:border-[#FF497D]/50'
             }`}
@@ -297,12 +301,34 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Sparkles size={20} className="text-[#FF497D]" />
-                <span className="font-semibold text-white">Premium</span>
+                <span className="font-semibold text-white text-sm">Wan 2.1 i2v 480p</span>
               </div>
               <span className="text-[#3EFFE2] font-medium">3 credits</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Highest quality results. Best for detailed animations.
+              High quality detailed animations. Advanced settings available.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setGenerationType('hailuo-02')}
+            disabled={isGenerating}
+            className={`p-6 rounded-2xl border-2 transition-all text-left ${
+              generationType === 'hailuo-02'
+                ? 'border-[#A855F7] bg-[#A855F7]/10'
+                : 'border-gray-600 hover:border-[#A855F7]/50'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Sparkles size={20} className="text-[#A855F7]" />
+                <span className="font-semibold text-white text-sm">Hailuo-02</span>
+              </div>
+              <span className="text-[#3EFFE2] font-medium">3 credits</span>
+            </div>
+            <p className="text-gray-400 text-sm">
+              10s generation at 768p. Longer duration videos.
             </p>
           </button>
         </div>
@@ -345,8 +371,8 @@ export default function GIFGeneratorV2({ prefill, onSuccess, onPrefillConsumed }
         )}
       </div>
 
-      {/* Advanced Settings (Premium Mode Only) */}
-      {generationType === 'premium' && (
+      {/* Advanced Settings (Wan 2.1 Mode Only) */}
+      {generationType === 'wan-2.1-i2v-480p' && (
         <div className="space-y-3">
           <button
             type="button"
