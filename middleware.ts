@@ -3,14 +3,19 @@ import type { NextRequest } from 'next/server';
 import { createSupabaseMiddlewareClient } from '@/lib/supabaseServer';
 
 export async function middleware(request: NextRequest) {
-  // MAINTENANCE MODE: Redirect all traffic to maintenance page
+  // MAINTENANCE MODE: Redirect all traffic to maintenance page if enabled
+  const isMaintenanceMode = process.env.MAINTENANCE_MODE === 'true';
   const isMaintenancePage = request.nextUrl.pathname === '/maintenance';
 
-  if (!isMaintenancePage) {
+  if (isMaintenanceMode && !isMaintenancePage) {
     return NextResponse.redirect(new URL('/maintenance', request.url));
   }
 
-  // Allow access to maintenance page
+  // If not in maintenance mode and trying to access maintenance page, redirect to home
+  if (!isMaintenanceMode && isMaintenancePage) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
   const response = NextResponse.next();
   const supabase = createSupabaseMiddlewareClient(request, response);
 
