@@ -7,12 +7,19 @@ export async function middleware(request: NextRequest) {
   const isMaintenanceMode = process.env.MAINTENANCE_MODE === 'true';
   const isMaintenancePage = request.nextUrl.pathname === '/maintenance';
 
+  // Debug logging
+  console.log('[Middleware] Path:', request.nextUrl.pathname);
+  console.log('[Middleware] MAINTENANCE_MODE:', process.env.MAINTENANCE_MODE);
+  console.log('[Middleware] isMaintenanceMode:', isMaintenanceMode);
+
   if (isMaintenanceMode && !isMaintenancePage) {
+    console.log('[Middleware] Redirecting to maintenance page');
     return NextResponse.redirect(new URL('/maintenance', request.url));
   }
 
   // If not in maintenance mode and trying to access maintenance page, redirect to home
   if (!isMaintenanceMode && isMaintenancePage) {
+    console.log('[Middleware] Redirecting to home - maintenance mode disabled');
     return NextResponse.redirect(new URL('/', request.url));
   }
 
