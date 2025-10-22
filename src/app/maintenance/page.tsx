@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "StillMotion.ai | Under Maintenance",
+  description: "StillMotion.ai is temporarily offline for scheduled maintenance."
+};
+
 export default function MaintenancePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">

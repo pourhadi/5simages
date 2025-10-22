@@ -4,12 +4,15 @@ import { createSupabaseMiddlewareClient } from '@/lib/supabaseServer';
 
 export async function middleware(request: NextRequest) {
   // MAINTENANCE MODE: Redirect all traffic to maintenance page if enabled
-  const isMaintenanceMode = process.env.MAINTENANCE_MODE === 'true';
+  const maintenanceModeValue = process.env.MAINTENANCE_MODE ?? '';
+  const normalizedMaintenanceValue = maintenanceModeValue.trim().toLowerCase();
+  const isMaintenanceMode = ['true', '1', 'yes', 'on'].includes(normalizedMaintenanceValue);
   const isMaintenancePage = request.nextUrl.pathname === '/maintenance';
 
   // Debug logging
   console.log('[Middleware] Path:', request.nextUrl.pathname);
   console.log('[Middleware] MAINTENANCE_MODE:', process.env.MAINTENANCE_MODE);
+  console.log('[Middleware] normalizedMaintenanceValue:', normalizedMaintenanceValue);
   console.log('[Middleware] isMaintenanceMode:', isMaintenanceMode);
 
   if (isMaintenanceMode && !isMaintenancePage) {
