@@ -49,7 +49,6 @@ export const globalShortcuts = {
   newGif: { key: 'n', meta: true, description: 'Create new GIF' },
   search: { key: '/', description: 'Focus search' },
   gallery: { key: 'g', meta: true, description: 'Go to gallery' },
-  credits: { key: 'c', meta: true, description: 'Buy credits' },
   help: { key: '?', shift: true, description: 'Show shortcuts' },
   escape: { key: 'Escape', description: 'Close modal/dialog' },
 };

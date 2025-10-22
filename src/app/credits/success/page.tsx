@@ -87,18 +87,13 @@ function SuccessContent() {
                 {creditCount} credits have been added to your account.
               </p>
             )}
-            <div className="pt-4 space-y-3">
+            <div className="pt-4 space-y-3 text-center text-gray-300">
+              <p>Your balance will update automatically once processing is complete.</p>
               <Link
                 href="/gallery"
                 className="block w-full py-3 px-6 rounded-xl text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-center font-medium hover:opacity-90 transition"
               >
                 Go to your gallery
-              </Link>
-              <Link
-                href="/credits"
-                className="block w-full py-3 px-6 rounded-xl text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-center font-medium hover:opacity-90 transition"
-              >
-                Check my balance
               </Link>
               <Link
                 href="/"
@@ -122,12 +117,9 @@ function SuccessContent() {
               If you believe this is an error, please contact support.
             </p>
             <div className="pt-4 space-y-3">
-              <Link
-                href="/credits"
-                className="block w-full py-3 px-6 rounded-xl text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-center font-medium hover:opacity-90 transition"
-              >
-                Try again
-              </Link>
+              <p className="text-center text-gray-300">
+                Credit purchases are currently disabled. If funds were deducted, please contact support with your payment details.
+              </p>
               <Link
                 href="/"
                 className="block w-full py-3 px-6 border border-gray-600 text-gray-300 text-center rounded-xl hover:bg-[#1A1A1D] transition"

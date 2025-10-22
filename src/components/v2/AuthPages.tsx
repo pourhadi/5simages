@@ -41,6 +41,7 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const isLogin = mode === 'login';
+  const isRegistrationDisabled = !isLogin;
   const [redirectUrl, setRedirectUrl] = useState<string>('/');
   
   // Check for OAuth errors and redirect parameter
@@ -80,6 +81,11 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
   });
 
   const onSubmit = async (data: Record<string, string>) => {
+    if (!isLogin) {
+      toast.error('New account sign-ups are currently disabled.');
+      return;
+    }
+
     setIsLoading(true);
     try {
       const endpoint = isLogin ? '/api/login' : '/api/register';
@@ -130,6 +136,11 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!isLogin) {
+      toast.error('New account sign-ups are currently disabled.');
+      return;
+    }
+
     setIsGoogleLoading(true);
     try {
       // Store redirect URL in session storage for OAuth callback
@@ -175,12 +186,12 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
             </p>
           </div>
 
-          {/* Free credits highlight for register */}
+          {/* Registration status */}
           {!isLogin && (
-            <div className="mb-8 p-4 bg-gradient-to-r from-[#3EFFE2]/10 to-[#1E3AFF]/10 border border-[#3EFFE2]/20 rounded-2xl">
-              <div className="text-center">
-                <div className="text-[#3EFFE2] font-semibold mb-1">🎉 Welcome Bonus</div>
-                <div className="text-white text-sm">Get 5 free credits when you sign up</div>
+            <div className="mb-8 p-4 bg-gradient-to-r from-[#FF497D]/10 to-[#A53FFF]/10 border border-[#FF497D]/20 rounded-2xl">
+              <div className="text-center space-y-1">
+                <div className="text-[#FF497D] font-semibold">Sign-ups unavailable</div>
+                <div className="text-white text-sm">New account registration is currently disabled. Please check back later.</div>
               </div>
             </div>
           )}
@@ -312,11 +323,11 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
             {/* Submit button */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || isRegistrationDisabled}
               className="w-full py-3 px-6 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] rounded-xl text-white font-semibold transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#FF497D]/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {isLoading 
-                ? (isLogin ? 'Signing in...' : 'Creating account...') 
+              {isLoading
+                ? (isLogin ? 'Signing in...' : 'Creating account...')
                 : (isLogin ? 'Sign In' : 'Create Account')
               }
             </button>
@@ -334,7 +345,7 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
 
           <button
             onClick={handleGoogleSignIn}
-            disabled={isLoading || isGoogleLoading}
+            disabled={isLoading || isGoogleLoading || isRegistrationDisabled}
             className="w-full py-3 px-6 bg-[#0D0D0E] border border-[#2A2A2D] rounded-xl text-white font-semibold transition-all duration-300 hover:bg-[#2A2A2D] hover:border-[#3A3A3D] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
           >
             <Chrome size={20} />
@@ -346,17 +357,12 @@ export default function AuthPagesV2({ mode, searchParams }: AuthPagesV2Props) {
             {isLogin ? (
               <>
                 Don&apos;t have an account?{' '}
-                <Link 
-                  href="/register" 
-                  className="text-[#FF497D] hover:text-[#A53FFF] transition-colors font-medium"
-                >
-                  Sign up
-                </Link>
+                <span className="text-gray-500">Sign ups are currently disabled.</span>
               </>
             ) : (
               <>
                 Already have an account?{' '}
-                <Link 
+                <Link
                   href="/login" 
                   className="text-[#FF497D] hover:text-[#A53FFF] transition-colors font-medium"
                 >

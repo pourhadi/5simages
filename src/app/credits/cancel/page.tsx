@@ -15,15 +15,9 @@ function CancelContent() {
             Payment Cancelled
           </h2>
           <p className="text-gray-600 text-center">
-            Your credit purchase was cancelled. No payment has been processed.
+            Credit purchases are currently unavailable. If you need assistance, please contact support and reference your payment attempt.
           </p>
           <div className="pt-4 space-y-3">
-            <Link
-              href="/credits"
-              className="block w-full py-3 px-6 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
-            >
-              Try Again
-            </Link>
             <Link
               href="/"
               className="block w-full py-3 px-6 border border-gray-600 text-gray-300 text-center rounded-xl hover:bg-[#1A1A1D] transition"

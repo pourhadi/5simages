@@ -3,7 +3,7 @@
 import useSWR from 'swr';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Zap, ChevronRight, LogOut, Menu, X } from 'lucide-react';
+import { Zap, LogOut, Menu, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import Logo from './Logo';
 
@@ -132,19 +132,14 @@ export default function Navbar() {
           <div className="hidden md:flex md:items-center">
             {user && (
               <div className="flex items-center space-x-4">
-                <Link
-                  href="/credits"
-                  className="flex items-center gap-1 bg-black hover:bg-gray-800 px-3 h-10 rounded-full transition-colors group"
-                  onClick={() => mutate()}
-                >
+                <div className="flex items-center gap-1 bg-black px-3 h-10 rounded-full">
                   <Zap size={16} className="text-[#3EFFE2]" />
                   <span className="text-sm font-medium text-white">
                     {user.credits || 0} credits
                   </span>
-                  <ChevronRight size={14} className="text-gray-400 group-hover:text-white transition-colors" />
-                </Link>
-                <div 
-                  className="relative ml-3" 
+                </div>
+                <div
+                  className="relative ml-3"
                   ref={userMenuRef}
                   onMouseEnter={openUserMenu}
                   onMouseLeave={closeUserMenuWithDelay}
@@ -172,13 +167,9 @@ export default function Navbar() {
                       <div className="px-4 py-2 text-sm font-medium text-gray-400 truncate border-b border-gray-700">
                         {user.email}
                       </div>
-                      <Link
-                        href="/credits"
-                        className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-900"
-                        onClick={() => mutate()}
-                      >
-                        Buy Credits
-                      </Link>
+                      <div className="px-4 py-2 text-sm text-gray-500">
+                        Credit purchases unavailable
+                      </div>
                       <button
                         onClick={async () => {
                           // Sign out via API and redirect to login (full reload)
@@ -207,12 +198,14 @@ export default function Navbar() {
               >
                 Sign In
               </Link>
-              <Link
-                href="/register"
-                className="px-3 py-2 rounded-md text-sm font-medium bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white hover:opacity-90 transition"
+              <button
+                type="button"
+                disabled
+                title="Sign ups are currently disabled"
+                className="px-3 py-2 rounded-md text-sm font-medium bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] text-white opacity-50 cursor-not-allowed"
               >
                 Sign Up
-              </Link>
+              </button>
             </div>
           )}
           </div>
@@ -270,14 +263,10 @@ export default function Navbar() {
                 </div>
               </div>
               <div className="mt-3 px-2 space-y-1">
-                <Link
-                  href="/credits"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700 flex items-center"
-                  onClick={closeMenu}
-                >
+                <div className="px-3 py-2 rounded-md text-base font-medium text-gray-500 flex items-center">
                   <Zap className="mr-2 h-5 w-5" />
-                  Buy Credits
-                </Link>
+                  Purchases unavailable
+                </div>
                 <button
                   onClick={async () => {
                     // Sign out via API and redirect to login (full reload)
@@ -307,13 +296,14 @@ export default function Navbar() {
                 >
                   Sign In
                 </Link>
-                <Link
-                  href="/register"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] hover:opacity-90 transition"
-                  onClick={closeMenu}
+                <button
+                  type="button"
+                  disabled
+                  title="Sign ups are currently disabled"
+                  className="block w-full px-3 py-2 rounded-md text-base font-medium text-white bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] opacity-50 cursor-not-allowed"
                 >
                   Sign Up
-                </Link>
+                </button>
               </div>
             </div>
           )}

@@ -37,13 +37,14 @@ export default function LandingPageV2() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
               <button
-                onClick={() => router.push('/register')}
-                className="group relative px-8 py-4 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] rounded-2xl text-white font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF497D]/25"
+                type="button"
+                disabled
+                title="Sign ups are currently disabled"
+                className="group relative px-8 py-4 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] rounded-2xl text-white font-semibold text-lg opacity-50 cursor-not-allowed"
               >
                 <span className="relative z-10">Start Creating Free</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
               </button>
-              
+
               <button
                 onClick={() => router.push('/login')}
                 className="px-8 py-4 border-2 border-gray-600 rounded-2xl text-gray-300 font-semibold text-lg hover:border-[#FF497D] hover:text-white transition-all duration-300"
@@ -51,11 +52,11 @@ export default function LandingPageV2() {
                 Sign In
               </button>
             </div>
-            
-            {/* Free credits highlight */}
+
+            {/* Sign-up status message */}
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1A1D] border border-[#2A2A2D] rounded-full">
-              <div className="w-3 h-3 bg-[#3EFFE2] rounded-full animate-pulse"></div>
-              <span className="text-[#3EFFE2] font-medium">5 Free Credits • No Card Required</span>
+              <div className="w-3 h-3 bg-[#FF497D] rounded-full animate-pulse"></div>
+              <span className="text-[#FF497D] font-medium">New account sign ups are temporarily unavailable</span>
             </div>
           </div>
         </div>
@@ -208,11 +209,12 @@ export default function LandingPageV2() {
             Join thousands of creators bringing their images to life
           </p>
           <button
-            onClick={() => router.push('/register')}
-            className="group relative px-8 py-4 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] rounded-2xl text-white font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[#FF497D]/25"
+            type="button"
+            disabled
+            title="Sign ups are currently disabled"
+            className="group relative px-8 py-4 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] rounded-2xl text-white font-semibold text-lg opacity-50 cursor-not-allowed"
           >
             <span className="relative z-10">Start Creating Now</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FF497D] via-[#A53FFF] to-[#1E3AFF] rounded-2xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
           </button>
         </div>
       </div>
